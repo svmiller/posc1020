@@ -20,6 +20,8 @@ permalink: blog/:year/:month/:title
 job.title: "Assistant Professor"
 excerpt_separator: "<!--more-->"
 
+include: ['_images']
+
 # SEO stuff
 # google_author: ""
 # google_site_verification: ""

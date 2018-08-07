@@ -1,8 +1,16 @@
 ---
 layout: page
-title: Lectures/Materials
-permalink: /lectures-materials/
+title: Course Materials
+permalink: /course-materials/
 ---
+
+{% include image.html url="/_images/friedenetal2016.jpg" caption="The Textbook for the Semester" width=300 align="right" %}
+
+## Book
+
+Frieden, Jeffry A, David A. Lake and Kenneth A. Schultz (2016). [*World Politics: Interests, Interactions, Institutions*](https://www.amazon.com/World-Politics-Interests-Interactions-Institutions/dp/0393938093). 3rd Edition. New York, NY: W.W. Norton and Company.
+
+## Additional Course Materials
 
 Students must read the following documents in the first week of class. These outline my expectations for the rest of the semester.
 
