@@ -61,7 +61,7 @@
           {% if site.authorurl %}
   <li>
     <a href="{{site.authorurl}}">
-      <i class="fas fa-globe" style="color:gray"></i> {{site.authorurl}}
+      <i class="fas fa-globe" style="color:gray"></i> {{site.authorurl  | remove: "https://" | remove: "http://" | remove: "www."}}
     </a>
   </li>
 {% endif %}
