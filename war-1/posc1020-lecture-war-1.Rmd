@@ -1,0 +1,427 @@
+---
+title: "Why Are There Wars?"
+subtitle: POSC 1020  -- Introduction to International Relations
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: false
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE, warning=F)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadstuff, include=FALSE}
+# knitr::opts_chunk$set(cache=FALSE)
+
+library(tidyverse)
+library(stevemisc)
+library(maddison)
+library(DiagrammeR)
+
+InterWars <- read_csv("~/Dropbox/data/cow/wars/Inter-StateWarData_v4.0.csv") 
+ExtraWars <- read_csv("~/Dropbox/data/cow/wars/Extra-StateWarData_v4.0.csv") 
+IntraWars <- read_csv("~/Dropbox/data/cow/wars/Intra-StateWarData_v4.1.csv") 
+
+DDY <- read_csv("~/Dropbox/projects/mid-project/gml-mid-data/2.02/gml-ddy-disputes-2.02.csv")
+States <- read_csv("~/Dropbox/data/cow/states/states2016.csv")
+
+
+States %>%
+  mutate(endyear = ifelse(endyear == 2011, 2015, endyear)) %>%
+  rowwise() %>%
+  mutate(year = list(seq(styear, endyear))) %>%
+  ungroup() %>%
+  unnest() %>%
+  arrange(ccode, year) %>%
+  select(ccode, year) %>%
+  distinct(ccode, year) -> CYs
+
+```
+
+
+# Introduction
+### Puzzle(s) for Today
+
+*War is a costly and ultimately inefficient means to address disputes. So why does it happen?*
+
+### War is Fortunately Still a Rare Event
+
+We care about war because of its costs, but most countries are at peace most of the time.
+
+### The American Case
+
+Consider the case of the United States and American deaths from:
+
+- 9/11: 2,996
+- Terrorism: around a dozen per year (recent spikes in Orlando, San Bernardino)
+- Iraq War: 4,493
+- Murder, average year: 16,121
+- Car accidents, average year: 33,804
+- Accidental falls, average year: 30,208
+- Diabetes as underlying condition, 2015: 79,535
+
+### 
+
+```{r perc-states-war-by-year-1816-2010, eval=T, echo=F, fig.height=8.5, fig.width=14, message = F}
+
+CYs %>%
+  group_by(year) %>%
+  summarize(numstates = n()) -> Numstates
+
+DDY %>%
+  filter(hostlev == 5) %>%
+  distinct(ccode1, year, .keep_all=TRUE) %>%
+  group_by(year) %>%
+  summarize(numstateswars = n()) %>%
+  left_join(Numstates, .) %>%
+  mutate(numstateswars = ifelse(is.na(numstateswars), 0, numstateswars),
+         perc = mround2(numstateswars/numstates)) %>% 
+  ggplot(.,aes(year, perc)) + theme_steve_web() + 
+  geom_bar(stat="identity", fill="#f8766d", alpha=0.8, color="black") +
+  xlab("Year") + ylab("Percentage of the State System") +
+  scale_x_continuous(breaks = seq(1820, 2010, by = 10)) +
+  labs(title = "The Percentage of States Involved in Interstate War by Year, 1816-2010",
+       subtitle = "We treat interstate war as (fortunately) a rare event but the 1860s, 1910s, and 1940s stand out as particularly violent decades.",
+       caption = "Data: GML MID data (v. 2.02) and Correlates of War State System Membership List.")
+
+
+
+```
+
+<!-- ![Percentage of States Involved in Interstate War (Figure 3.1)](figure31.png) -->
+
+### Defining our Terms
+
+Let's be clear with our terms:
+
+- *War*: Sustained combats between at least two participants that meets a miminum severity threshold.
+    - Practically: 1,000 battle-related deaths per year (excluding civilian casualties).
+- *Interstate*: a subset of war between at least two state system members.
+- *State*: commonly a country, but with some caveats 
+    - e.g. recognition, population size
+
+# What Do States Fight Over?
+### Kashmir: Breathtaking, but Strategically Not That Valuable
+
+![Kashmir is breathtaking but ultimately strategically worthless](kashmir.jpg)
+
+### Territorial Claims in Kashmir
+
+![Territorial Claims in Kashmir](kashmir-dispute.jpeg)
+
+<!-- ### The Importance of Territory
+
+![The Distribution of Wars by Issue (Vasquez, 1993 via Holsti, 1991)](tab1.png) -->
+
+###
+
+```{r wars-by-issue-type-holsti-vasquez, eval=T, echo=F, fig.height=8.5, fig.width=14, message = F}
+tribble(
+  ~period, ~Type, ~perc, ~count,
+  #-----, -------, -----, -----
+  "1648-1714", "Territory", 77, 17,
+  "1648-1714", "Territory + Territory-related", 86, 19,
+  "1648-1714", "Other Issue", 14, 3,
+  "1715-1814", "Territory", 72, 26,
+  "1715-1814", "Territory + Territory-related", 83, 4+26,
+  "1715-1814", "Other Issue", 17, 6,
+  "1815-1914", "Territory", 58, 18,
+  "1815-1914", "Territory + Territory-related", 84, 18+8,
+  "1815-1914", "Other Issue", 16, 5,
+  "1918-1941", "Territory", 73, 22,
+  "1918-1941", "Territory + Territory-related", 93, 28,
+  "1918-1941", "Other Issue", 7, 2,
+  "1945-[1990]", "Territory", 47, 27,
+  "1945-[1990]", "Territory + Territory-related", 79, 27+19,
+  "1945-[1990]", "Other Issue", 21, 12
+) %>%
+  mutate(Type = forcats::fct_relevel(Type, "Territory", "Territory + Territory-related", "Other Issue"),
+         perc = perc/100) %>%
+  ggplot(.,aes(x=period, y=perc, fill=Type)) + theme_steve_web() +
+  geom_bar(stat="identity", position = "dodge",
+           alpha = I(0.8), color="black") +
+  xlab("Historical Period") + ylab("Percentage of All Wars") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Percentage and Frequency of Wars By Issue Type, 1648-1990",
+       subtitle = "Most wars over time have been fought over territory or territory-related issues than other issue types.",
+       caption = "Data: Vasquez (1993) via Holsti (1991). Note: counts appear on top of the bars by issue-type.") +
+  geom_text(aes(label = count, group = Type), color="black",
+            position = position_dodge(width=.9), size=4,
+            vjust = -.5, family ="Open Sans")
+
+```
+
+### Wars Over Other Issues
+
+Other issues, by contrast, are not as war-prone but can still lead to war.
+
+- Composition of another side's regime (Iraq War, Vietnam War)
+- Trade (e.g. Anglo-Dutch War)
+- Various other policy concerns
+    - Treatment of co-ethnics has come up recently (hello, Russia...)
+    
+# Bargaining and War
+### War as Failed Bargain
+
+However, it's not as simple as saying "states fight wars over stuff." *Wars are failed bargains.*
+
+- States have numerous issues among them they try to resolve.
+- They may use threats of force to influence bargaining.
+- If bargaining fails, states, per our conceptual thinking, resort to war.
+    
+### A Simple Model of Crisis Bargaining
+
+To that end, we devise a simple theoretical model of crisis bargaining.
+
+- There are two players (A and B).
+- A makes an offer (0 $< x <$ 1) that B accepts or rejects.
+    - If B accepts, A gets $1 - x$ and B gets $x$.
+    - If B rejects, A and B fight a war.
+
+### A Simple Model of Crisis Bargaining
+
+The war's outcome is determined by Nature (*N*)
+
+- In game theory, Nature is a preference-less robotic actor that assigns outcomes based on probability.
+- If (A or B) wins, (A or B) gets all the good in question minus the cost of fighting a war ($1 - k$)
+    - Assume: $k > 0$
+    - Costs could obviously be asymmetrical (e.g. $k_A$, $k_B$), but it won't change much about this illustration.
+- The loser gets none of the good and eats the war cost too ($-k$).
+
+We assume minimal offers that equal the utility of war induce a pre-war bargain.
+
+### A Simple Model of Crisis Bargaining
+
+Here's a simple visual representation of what we're talking about.
+
+![](crisis-bargaining.png)
+
+```{r diagrammer-example, eval=F, echo=F, fig.height=8.5, fig.width=14, message = F}
+# One of these days I'll make this work to PDF.
+
+grViz(" 
+  digraph {
+    # Multiple level nodes
+    node [shape = square, color=CornflowerBlue]
+    A [label = 'A']; 
+    0 [label = '0', shape = none];
+    B [label = 'B'];
+    1 [label = '1', shape = none];
+    Accept [label = '1 - x, x', shape = none];
+    N;
+    Awins [shape = none, label = '1 - k, k'];
+    Bwins [shape = none, label = '-k, 1 - k']
+
+
+
+     # Connect nodes with edges and labels
+    A -> 0 
+    A -> B
+    A -> 1
+    B -> Accept [headlabel = 'Accept', labeldistance = 5, labelangle=75] 
+    B -> N [label = '       Reject']
+    N -> Awins [headlabel = 'A wins (1 - p)', labeldistance=4.5 ,
+        labelangle=75]
+    N -> Bwins [label = 'B wins (p)']
+  }
+
+[1]: 'A' 
+[2]: '0'
+[3]: paste0('Model 3\\n Split 3') 
+[4]: paste0('Model 6\\n Split 4') 
+")
+
+# rsvg::rsvg_png(full_game, "full-game.pdf")
+svgd <- export_svg(full_game)
+export_graph(svgd)
+
+pdf_digraph <- function(filename, code){
+  capture.output({
+  g <- grViz(paste("digraph{", code, "}"))
+  DiagrammeRsvg::export_svg(g) %>% charToRaw %>% rsvg::rsvg_pdf(filename)
+  },  file='NUL')
+  knitr::include_graphics(filename)
+}
+
+# cat(export_svg(grViz("digraph {A -> B}")), file='ouput.svg')
+
+pdf_digraph(full_game, "node [shape = square, color=CornflowerBlue]
+    A [label = 'A']; 
+    0 [label = '0', shape = none];
+    B [label = 'B'];
+    1 [label = '1', shape = none];
+    Accept [label = '1 - x, x', shape = none];
+    N;
+    Awins [shape = none, label = '1 - k, k'];
+    Bwins [shape = none, label = '-k, 1 - k']
+
+
+
+     # Connect nodes with edges and labels
+    A -> 0 
+    A -> B
+    A -> 1
+    B -> Accept [headlabel = 'Accept', labeldistance = 5, labelangle=75] 
+    B -> N [label = '       Reject']
+    N -> Awins [headlabel = 'A wins (1 - p)', labeldistance=4.5 ,
+        labelangle=75]
+    N -> Bwins [label = 'B wins (p)']")
+
+
+```
+
+
+### Solving This Game
+
+How do we solve this game? How do A and B avoid a war they do not want to fight?
+
+- The way to solve extensive form (i.e. "tree") games like this is **backwards induction**.
+- Players play games ex ante (calculating payoffs from the beginning)
+rather than ex post (i.e. hindsight).
+- They must anticipate what their choices to begin games might do as
+the game unfolds.
+
+In short, we can solve a game by starting at the end and working
+back to the beginning.
+
+### Solving This Game
+
+For our purpose, we need to get rid of Nature.
+
+- Nature  doesn't have preferences and doesn't "move." It just assigns outcomes.
+- Here, it simulates what would happen if B rejected A's demand.
+
+We can calculate what would happen if Nature moved by calculating the expected utility of war for A and B.
+
+### Expected Utility for A of the War
+
+\begin{eqnarray}
+EU(\textrm{A} | \textrm{B Rejects Demand)} &=& (1 - p)(1 - k) + p(-k)   \nonumber \\
+   &=& 1 - k - p + pk - pk \nonumber \\
+   &=& 1 - p - k \nonumber
+\end{eqnarray}
+
+
+### Expected Utility for B of the War
+
+\begin{eqnarray}
+EU(\textrm{B} | \textrm{B Rejects Demand)} &=& (1 - p)(-k) + p(1 - k)   \nonumber \\
+   &=& -k + pk + p - pk \nonumber \\
+   &=& p - k \nonumber
+\end{eqnarray}
+
+### The Game Tree, with Nature Removed
+
+![](crisis-bargaining-no-nature.png)
+
+### Solving This Game
+
+Now, continuing the backward induction, we focus on B.
+
+- B ends the game with the decision to accept or reject.
+- B does not need to look ahead, per se. It's now evaluating whether it maximizes its utility by accepting or rejecting a deal.
+
+### Solving This Game
+
+Formally, B rejects when $p - k > x$.
+
+- It accepts when $x \ge p - k$.
+- Notice A has a "first-mover advantage" in this game.
+    - This allows it to offer the bare minimum to induce B to accept.
+    - It would not offer anymore than necessary because that drives down A's utility.
+
+We say A's offer of $x = p - k$ is a minimal one for B to accept.
+
+### Solving This Game
+
+Would A actually offer that, though?
+
+- In other words, are $x = p - k$ and $1 - x \ge 1 - p - k$ both true?
+
+Recall: we just demonstrated $x = p + k$. From that, we can say  $1 - x \ge 1 - p - k$ by definition.
+
+- The costs of war ($k$) are positive values to subtract from the utility of fighting a war.
+
+### The Proof
+
+What A would get (1 - *x*) must at least equal 1 - *k - p*. Therefore:
+
+\begin{eqnarray}
+1 - x &\ge& 1 - k - p     \nonumber \\
+1 - 1 + k + p   &\ge& x \nonumber \\
+p + k &\ge& x \nonumber
+\end{eqnarray}
+
+### Solving This Game
+
+We have just identified an equilibrium where two states agree to a pre-war solution over a contentious issue.
+
+- There exists a bargaining space where A and B resolve their differences and avoid war.
+
+###
+
+![The Bargaining Space](bargaining-space.png)
+
+## War as an Ultimatum Game
+### War as an Ultimatum Game
+
+If you know some game theory, this looks like an ultimatum game. It is.
+
+### War as an Ultimatum Game
+
+Assume you and I cannot agree how to split $100.
+
+- I want all of it. So do you.
+- For $20, we can set up a fight for $100.
+    - First one to say "matté" (a la *Bloodsport*) loses.
+- Assume *p* = .5, our EU(kumite) = (100)(.5) + (0)(.5) - 20 = 30
+
+By itself, this is a fantastic lottery.
+
+- For $20, you win $30 on average.
+- We would agree to fight if this accurately represented our payoffs.
+
+### War as an Ultimatum Game
+
+Consider that I offer you a deal in light of this. I take $70; you take $30. Would you accept this?
+
+- You might decry this as unequal. It is...
+
+### War as an Ultimatum Game
+
+However, if you were not permitted a counter-offer, you would accept this if you were rational.
+
+- My offer to you just matched your expected utility of fighting.
+- You would accept this, per our assumptions.
+- Any offer I give to you between $30 and $70 would induce you to accept.
+    - I would not offer you $70, though, because that'd be silly of me.
+    
+# Conclusion
+### Conclusion
+
+- War is the most destructive/costly thing we do.
+    - Fortunately, it's a rare event.
+- States mostly fight over the distribution of territory.
+- Conceptually: war is bargaining failure.
+    - We'll talk more next about why exactly bargaining fails.
