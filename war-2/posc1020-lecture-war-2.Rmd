@@ -1,0 +1,264 @@
+---
+title: "Why Bargaining Breaks Down"
+subtitle: POSC 1020  -- Introduction to International Relations
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: false
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+---
+
+# Introduction
+### Puzzle(s) for Today
+
+*War never happens in a world of complete and perfect information, and yet it does. Why?*
+
+
+### How Do We Start to Solve This Game?
+
+![](crisis-bargaining.png)
+
+
+### Expected Utilities for War
+
+- $EU(A | Reject) = 1 - p - k$
+- $EU(B | Reject) = p - k$
+
+### What's the Next Step in our Backward Induction?
+
+![](crisis-bargaining-no-nature.png)
+
+### Now How Do We Proceed from Here?
+
+- When does B accept A's offer?
+- What does A offer to B?
+- Would A ultimately make that offer to B?
+
+### The Bargaining Space
+
+![The Bargaining Space](bargaining-space.png)
+
+# Bargaining Failure
+### Bargaining Failure
+
+When bargaining fails, war follows.
+
+- Thus, we can understand system insecurity as the failure to peacefully bargain differences.
+
+Generally, there are three reasons for bargaining failure.
+
+1. Issue indivisibility
+2. Asymmetric (incomplete) information
+3. Commitment problems
+
+
+
+## Issue Indivisibility
+### Issue Indivisibility
+
+We like to believe the good at stake could be meaningfully divided.
+
+- e.g. U.S.-Iranian strategic interaction over uranium enrichment.
+- Many goods in international relations are divisible.
+
+There are some **indivisible goods** that cannot be meaningfully divided.
+
+- One side will have all the good, other will have none of it.
+
+### Issue Indivisibility
+
+Territory is a common source of issue indivisibility.
+
+- Territory should be divisible.
+	- Land is tangible, over which a line could be drawn on a map.
+- However, territory is the most war-prone issue in the international system.
+
+Scholars have since learned over time that territory is an indivisible good.
+
+- It benefits only the side that occupies and controls it.
+
+### An Incomplete List of "Indivisible" Territorial Disputes
+
+- Israel-Palestine
+- Preah Vihear Temple (Cambodia-Thailand)
+- Kashmir (India-Pakistan)
+- Crimea
+- Taiwan
+
+List goes on, and obviously war and peace vary among these disputes.
+
+### A Famous (Stylized) Case of Issue Indivisibility
+
+![](leopold.jpg)
+
+The Franco-Prussian War can be understood as a war of issue indivisibility.
+
+### A Famous (Stylized) Case of Issue Indivisibility
+
+France and Prussia disputed territory, though the *casus belli* may have been the Spanish monarchy.
+
+- Queen Isabella II abdicated her throne.
+- Prussia recommended Prince Leopold of Hohenzollern-Sigmaringen as the new king.
+- Leopold was an ethnic German suggested to rule a country under considerable French influence.
+
+A two-king solution is a rather foreign concept in the realm of monarchical succession.
+
+## Asymmetric Information
+### Asymmetric Information
+
+**Asymmetric information**, also known as **uncertainty**, is another cause of bargaining failure.
+
+- Neither side has shared information about each side's probability of victory or costs.
+- In other words, parts of the game are not common knowledge.
+
+### A Simple Case of Asymmetric Information
+
+Assume A thinks its probability of victory in war is .8.
+
+- i.e. 1 - *p* = .8, *p* = .2.
+- Assume further that *k* is .1. for this simple exercise.
+
+The greatest *x* that A would offer under these circumstances is .3.
+
+- i.e. *p* + *k* = .2 + .1 = .3
+
+### A Simple Case of Asymmetric Information
+
+Suppose B is more optimistic about its chances.
+
+- i.e. *p* = .5, 1 - *p* = .5.
+- We will hold *k* constant at .1.
+
+The *minimum* that B would accept from A is .4.
+
+- i.e. *p - k* = .5 - .1 = .4.
+
+### A Simple Case of Asymmetric Information
+
+Notice what happened here.
+
+- The maximum A would offer is .3.
+- The minimum B would accept is .4.
+
+Both sides see more utility in fighting.
+
+- Asymmetric information erases the possible values of *X* to which they could agree.
+
+## Commitment Problems
+### Commitment Problems
+
+An anarchic international system creates **commitment problems** in international politics.
+
+- Little exists to ensure negotiated settlements hold.
+- There's no certainty both sides are bargaining in good faith.
+
+We can identify two types of a commitment problem.
+
+1. First-strike advantages
+2. Time-inconsistency problems.
+
+### First-Strike Advantage
+
+Assume B has a possible first-strike advantage, such that:
+
+\begin{eqnarray}
+p_{(first)} > p > p_{(second)}
+\end{eqnarray}
+
+This means A has one too.
+
+\begin{eqnarray}
+1 - p_{(second)} > 1 - p > 1 - p_{(first)}
+\end{eqnarray}
+
+### First-Strike Advantage
+
+A does not attack first over negotiating if:
+
+- $1 - p_{(second)} - k \le 1 - x$
+- Equivalently: $x \le p_{(second)} + k$
+
+This creates the following inequality.
+
+\begin{eqnarray}
+p_{(first)} - k \le X \le p_{(second)} + k
+\end{eqnarray}
+
+Any offer of *x* in between those, should a value of *x* exist, induces negotiations over a first strike.
+
+### First-Strike Advantage
+
+This also means that $p_{(first)} - k < p_{(second)} + k$ must hold for there to be negotiations. Equivalently:
+
+\begin{eqnarray}
+p_{(first)} - k  &<& p_{(second)} + k    \nonumber \\
+p_{(first)}  - p_{(second)} &<& k + k \nonumber \\
+p_{(first)}  - p_{(second)} &<& 2k \nonumber
+\end{eqnarray}
+
+
+### First-Strike Advantage
+
+Assume these values.
+
+- $p_{(first)} = .7, p_{(second)} = .4, k = .1$
+- Therefore, $p_{(first)} - k = .6$ and $p_{(second)} + k = .5$.
+
+The inequality, $p_{(first)} - k \le X \le p_{(second)} + k$,  does not hold because .5 is not greater than .6.
+
+- Alternatively, $p_{(first)}  - p_{(second)} < 2k$  is not true either.
+
+Each side has a first-strike advantage and will look to use it.
+
+### Time-Inconsistency Problem
+
+A **time-inconsistency problem** is another type of commitment problem.
+
+- It's when one side exchanges a good now for a good later.
+- This (infamously) doomed the land-for-peace idea from the Oslo accords in 1993.
+
+If A concedes territory now in exchange for a good to be returned later, then it has empowered B to better contest a new division of the territory.
+
+### Time-Inconsistency Problem
+
+Assume A has just conceded some *x* of the territory to B.
+
+- Assume *x* < 1 and B still prefers all the disputed territory.
+
+Under these conditions, A has empowered B to make another demand.
+
+- B has gained an advantage in *p*, which we label as *p* + $\Delta$
+
+### Time-Inconsistency Problem
+
+Why would A agree to concede anything in the first place?
+
+- Concessions today embolden the recipient to make a demand for more concessions tomorrow.
+
+<!-- This can be particularly problematic in some cases.
+
+- Consider Israel's security dilemma, where Hamas, one of the main actors in Palestine, has denied Israel's right to exist. -->
+
+# Conclusion
+### Conclusion
+
+War is ultimately a breakdown of the bargaining process.
+
+- However, war is ex post inefficient.
+- It happens because state leaders cannot locate or commit to an acceptable bargained settlement.
+
+There are three classes of explanations for bargaining failure.
+
+1. Issue indivisibility
+2. Asymmetric information
+3. Commitment problems

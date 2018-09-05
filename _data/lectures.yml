@@ -17,3 +17,8 @@
   filename: war-1
   dirname: war-1
   tldr: "Wars may be mostly fought over territory, but war is conceptually a failed bargain. Here's a simple model to emphasize that."
+
+- title: "Why Bargaining Breaks Down"
+  filename: war-2
+  dirname: war-2
+  tldr: "Wars happens (i.e. bargaining breaks down) because of uncertainty, issue indivisibility, and commitment problems."
