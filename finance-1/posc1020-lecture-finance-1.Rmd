@@ -1,0 +1,468 @@
+---
+title: "Who Invests Overseas and Why?"
+subtitle: POSC 1020  -- Introduction to International Relations
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: false
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+---
+
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadstuff, include=FALSE}
+knitr::opts_chunk$set(cache=FALSE)
+
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(stevemisc)
+library(scales)
+library(WDI)
+library(artyfarty)
+
+Polity <- readxl::read_xls("~/Dropbox/data/polity/p4v2016.xls")
+
+
+```
+
+
+# Introduction
+### Puzzle(s) for Today
+
+*Overseas investment tops about $5 trillion a year. What's happening here and why is this international relations?*
+
+
+### 
+
+![Greeks in Britain urge the EU for Greek debt forgiveness](britain-greece-protest-1.jpg)
+
+### So What Happened?
+
+The international system is still feeling the effects of the subprime mortgage crises. Factors:
+
+- Subprime mortgages
+- Bursting of the housing bubble
+- New financial products (i.e. credit-default swaps)
+- Toxic assets
+- Credit freezes
+- Bank panics
+
+### The Crisis in Europe
+
+This was a disaster in the U.S. and worse in the Eurozone.
+
+- Greece, Ireland, Portugal, and Spain borrowed heavily from rest of Europe to finance housing boom.
+- When that collapsed, those governments ran large deficits by borrowing abroad.
+- However, those governments threatened default, which would've rocked all of Europe.
+
+###
+
+```{r financial-crisis-gdp-growth, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+WDI(country=c("GR", "US", "IE", "PT", "ES"), indicator = "NY.GDP.PCAP.KD.ZG", start=2000, end=2017) %>%
+  rename(gdpgrowth = "NY.GDP.PCAP.KD.ZG", Country = country) %>%
+  ggplot(.,aes(year, gdpgrowth,linetype = Country, group=Country, color=Country)) + 
+  theme_steve_web() +
+  scale_color_manual(values = pal("google")) +
+  geom_line(size=1.5) +
+  geom_hline(yintercept = 0, linetype="dashed") +
+  scale_x_continuous(breaks = seq(2000, 2016, by =2)) +
+  xlab("Year") + ylab("GDP Growth (in Annual %)") +
+  labs(caption = "Data: World Bank National Accounts Data",
+       title = "The 2007 Financial Crisis Rocked GDP Growth in These Five Prominent Countries",
+       subtitle = "These countries are only now digging themselves from the most severe effects of that crisis.")
+
+```
+  
+  
+###
+
+```{r unemployment-rate-financial-crisis, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+WDI(country=c("GR", "US", "IE", "PT", "ES"), indicator = "SL.UEM.TOTL.ZS", start=2000, end=2017) %>%
+  rename(unemp = "SL.UEM.TOTL.ZS", Country = country) %>%
+  ggplot(.,aes(year, unemp,linetype = Country, group=Country, color=Country)) + 
+  theme_steve_web() +
+  geom_line(size=1.5) +
+  scale_color_manual(values = pal("google")) +
+  scale_x_continuous(breaks = seq(2000, 2016, by =2)) +
+  scale_y_continuous(breaks = seq(0, 30, by= 5)) +
+  xlab("Year") + ylab("Unemployment Rate (% of Total Labor Force)") +
+  labs(caption = "Data: International Labour Organization via World Bank API",
+       title = "Unemployment Spiked in These Five Countries as a Result of the 2007 Financial Crisis",
+       subtitle = "Unemployment is still conspicuously high in Greece and Spain.")
+
+```
+      
+
+### The Crisis in Europe
+
+Europe negotiated bailouts, but with austerity measures.
+
+- Unemployment tripled in countries like Greece and Ireland.
+- In Greece: GDP contracted by 20%.
+
+This led to a lot of anti-EU establishment that still puts the continent in a precarious position.
+
+- i.e. international finance has huge IR implications.
+
+# Why Invest Overseas, and How?
+### How and Why Do People Invest Overseas?
+
+There are generally two types of foreign investments: portfolio and direct.
+
+- Portfolio: simple investment with no management input.
+    - Sovereign lending constitutes a big chunk of portfolio investment.
+- Foreign direct investment (FDI): direct investors maintain managerial control over foreign operation.
+    - Think of your BMW plant in Spartanburg, or Michelin plant in Greenville.
+    
+### Why Invest Abroad?
+
+Simple: profit, and a higher rate of return.
+
+- Countries lacking in capital will pay a higher interest for capital investments.
+- Ability to invest in resources not available in home/capital-rich country.
+- Certainly differences in business environment matter too.
+
+###
+
+```{r fdi-high-lowmid-income, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+WDI(country=c("XD", "XO"), indicator = "BX.KLT.DINV.CD.WD", start=1970, end=2017) %>%
+  rename(fdi = "BX.KLT.DINV.CD.WD", Country = country) %>%
+  mutate(fdi = fdi/1000000000000) %>%
+  ggplot(.,aes(year, fdi,linetype = Country, group=Country, color=Country)) + theme_steve_web() +
+  geom_line(size=1.5) +
+  scale_color_manual(values = pal("google")) +
+  scale_x_continuous(breaks = seq(1970, 2015, by =5)) +
+  xlab("Year") + ylab("FDI (in Trillions of Current USD)") +
+  labs(caption = "Data: IMF Balance of Payments Database via World Bank API",
+       title = "FDI in Developing Countries Gets Our Attention but Most FDI is Between Rich Countries",
+       subtitle = "FDI everywhere took a hit after the 2007 financial crisis for obvious reasons.")
+
+```
+
+### The Risks of Foreign Investment
+
+Foreign investment brings a unique risk separate from domestic investment.
+
+- Sovereign risk: more difficult to enforce debt collection in a foreign jurisdiction.
+- Foreign investors don't enjoy the same rights as national borrowers.
+
+### Why Borrow?
+
+Borrowing is usually quite popular within borrowing countries, at least early.
+
+- More capital = cheaper to borrow.
+- Allows for more government spending without taxation.
+
+However, that ends when it's time to pay up.
+
+- Governments usually service their debts through unpopular austerity measures.
+
+### So What's the Problem?
+
+Borrowing is contentious largely because of the **moral hazard**.
+
+- i.e. banks view their profits as private and expect their losses to become public.
+
+This certainly explains Wall Street's line of thinking.
+
+## The International Monetary Fund
+### The Role of the IMF
+
+The IMF helps manage the international monetary system.
+
+- Cooperation through an IGO to guarantee monetary stability.
+- Countries contribute to fund, from which they can draw during a crisis.
+- Loans are provided with low interest rates but with policy strings attached.
+
+### Benefits of the IMF
+
+- IMF facilitates relations between borrowers and lenders.
+- Produces agreements where they might not otherwise exist.
+- Helps signal creditworthiness for would-be borrowers.
+
+### Criticisms of the IMF
+
+IMF does disaster management, but not a lot of disaster prevention. Recent crises:
+
+- Mexico (1982, 1988, 1994)
+- East Asia (1997)
+- Brazil (1998)
+- Russia (1998)
+- Argentina (2001)
+
+In fact, Argentina defaulted on $93 billion of its debt and still hasn't repayed.
+
+### Additional Criticisms of the IMF
+
+IMF negotiations are less than "democratic."
+
+- Routinely, ordinary citizens bear the costs of adjustment.
+
+## The World Bank
+### The World Bank
+
+The World Bank is another BWI to facilitate international finance.
+
+- Gets most of its money from borrowing on other financial markets, typically at low rates.
+- Provides concessional lending below market rates.
+- Typically "project-focused" and invested in poorer countries.
+
+Concessional lending is less controversial than private FDI, but debt is still debt.
+
+
+## Multinational Corporations
+### Multinational Corporations (MNCs)
+
+MNCs constitute one of the major institutional players in international finance. Types of FDI:
+
+- Green field: build a new factory from the ground up (e.g. Michelin in Greenville)
+- Mergers and acquisitions (e.g. Anheuser-Busch InBev)
+- Joint ventures (i.e. shared ownership)
+
+### Why Do MNCs Invest Abroad?
+
+Again, simple: profit, and a higher rate of return.
+
+- Minimize factor costs and search for low-labor.
+- Take advantage of permissive tax environments
+- Take advantage of supply chains that are simply unavailable
+    - i.e. good luck getting an iPhone produced in the U.S.
+    
+### Problems of MNC Investment
+
+MNCs generate profit and economic activity is good. But:
+
+- Not a development panacea.
+- Capital is more mobile than labor.
+- Related problem of immigration.
+
+Further, FDI is not well-regulated at the international level like trade is.
+
+### A Brief Aside on Immigration
+
+
+
+![](anti-immigrant.jpeg)
+
+Labor is a factor of production after all...
+
+###
+
+```{r migrant-pop-usa, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+WDI(country=c("US"), indicator = c("SM.POP.TOTL", "SP.POP.TOTL"), start=1960, end=2017) %>%
+  rename(migrant = SM.POP.TOTL, pop = SP.POP.TOTL) %>%
+  mutate(migrantperc = migrant/pop,
+         narr = paste0(round(migrantperc*100, 2),"%")) %>%
+  filter(!is.na(migrant)) %>%
+  ggplot(., aes(as.factor(year), migrantperc)) + theme_steve_web() +
+  geom_bar(stat="identity", alpha=0.8, color="black", fill="#619cff") +
+  geom_text(aes(label=narr), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4) +
+  xlab("Year") + ylab("Migrant Population as Share of Total Population") +
+  scale_y_continuous(labels=scales::percent) +
+  labs(title = "About 15% of the U.S. Population was Born in Another Country",
+       subtitle = "The trend has accelerated around the time the 'Boomers' started to approach retirement age and as globalization increased after the Cold War.",
+       caption = "Data: United Nations Population Division, Trends in Total Migrant Stock: 2012 Revision (via World Bank)")
+
+```
+
+###
+
+```{r migrant-pop-usa-by-country, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+Migra <- read.csv("~/Dropbox/teaching/posc1020/finance-1/usmigration2017.csv") %>%
+  gather(Country, Count, 1:ncol(.))
+  
+Migra %>%
+  arrange(-Count) %>%
+  mutate(sum = sum(Count, na.rm=T),
+         perc = Count/sum,
+         narr = paste0(round(perc*100, 2),"%")) %>%
+  head(10) %>%
+  ggplot(.,aes(reorder(Country, -perc), perc)) + theme_steve_web() +
+  geom_bar(stat="identity", alpha=0.8, color="black", fill="#619cff") +
+  geom_text(aes(label=narr), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4) +
+  xlab("Country") + ylab("Migrant Population as Share of all Migrants of all Origins") +
+  scale_y_continuous(labels=scales::percent) +
+  scale_x_discrete(labels = c("Mexico", "Puerto Rico", "Philippines", "China",
+                              "Canada", "Cuba", "Germany", "United Kingdom",
+                              "Italy", "South Korea")) +
+  labs(title = "U.S. Migration is Mostly Regional and Mexico Accounts for Just Under a Quarter of It",
+       subtitle = "Mexico, Puerto Rico, Canada, and Cuba combine for about 33% of the U.S.' mid-year migrant population in 2017.",
+       caption = "Data: United Nations Population Division (DESA)")
+```
+
+###
+
+```{r outbound-migrant-pop-usa-by-country, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+Out <- read.csv("~/Dropbox/teaching/posc1020/finance-1/usmigration-out-2017.csv") %>%
+  filter(year == 2017) %>%
+  mutate(popn = as.numeric(gsub(",","",.$pop)),
+         ccode = countrycode::countrycode(country, "country.name", "cown"))
+
+Out %>%
+  arrange(-popn) %>%
+  select(country, pop, popn) %>%
+  slice(-1:-9) %>%
+  slice(-2:-4) %>%
+  slice(-3:-5) %>%
+  slice(-4:-5) %>%
+  slice(-5) %>%
+  slice(-5) %>%
+  slice(-6:-7) %>%
+  slice(-9) %>%
+  slice(-10) %>%
+  head(11) %>%
+  ggplot(.,aes(reorder(country, -popn), popn)) + theme_steve_web() +
+  geom_bar(stat="identity", alpha=0.8, color="black", fill="#619cff") +
+  geom_text(aes(label=pop), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3.5) +
+  scale_y_continuous(labels = scales::comma) +
+  xlab("Country") + ylab("Size of Population Born in the U.S.") +
+  labs(title = "Likewise: Most U.S. Migration is Local or to Familiar/Friendly Countries",
+       subtitle = "Generally, U.S. migration follows to places where FDI is abundant.",
+       caption = "Data: United Nations Population Division (DESA)")
+  
+
+```
+
+###
+
+```{r usa-raceethnic-by-generation, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+tribble(
+  ~Category, ~Generation, ~Percent,
+  "Hispanic", "Generation Z", 33,
+  "Hispanic", "Millennial", 27,
+  "Hispanic", "Gen X", 22,
+  "Hispanic", "Baby Boomer", 14,
+  "Hispanic", "Silent/Greatest", 4,
+  "Black", "Generation Z", 26,
+  "Black", "Millennial", 25,
+  "Black", "Gen X", 21,
+  "Black", "Baby Boomer", 21,
+  "Black", "Silent/Greatest", 7,
+  "Asian", "Generation Z", 20,
+  "Asian", "Millennial", 25,
+  "Asian", "Gen X", 26,
+  "Asian", "Baby Boomer", 21,
+  "Asian", "Silent/Greatest", 8,
+  "White", "Generation Z", 19,
+  "White", "Millennial", 20,
+  "White", "Gen X", 20,
+  "White", "Baby Boomer", 27,
+  "White", "Silent/Greatest", 14
+) %>% 
+  mutate(Generation = forcats::fct_relevel(Generation, 
+                                           "Silent/Greatest", "Baby Boomer", "Gen X", "Millennial", "Generation Z"),
+         Percent = Percent/100) %>%
+  ggplot(., aes(Category, Percent)) + theme_steve_web() +
+  geom_bar(aes(fill=Generation),stat="identity", alpha=0.8, color="black") +
+  scale_y_continuous(labels=scales::percent) +
+    scale_fill_brewer(palette="Spectral") + coord_flip() +
+  geom_text(aes(x = Category, y = Percent, label = paste0(Percent*100,"%"), hjust = 0.5), 
+            size=4, position=position_stack(vjust = 0.5), family="Open Sans") +
+  labs(title = "(Non-Hispanic) White People Are Around 62% of the U.S. Population But They're Getting Older",
+       subtitle = "Meanwhile, more than a majority of African-Americans and Hispanics are Millennials or younger.",
+       caption = "Data: 2014 American Community Survey, via Pew Research Center Analysis
+       http://www.pewhispanic.org/2016/04/20/the-nations-latino-population-is-defined-by-its-youth/
+       Note: categories rounded to sum to 100% for convenience.")
+
+```
+
+
+###
+
+```{r usa-modal-age-by-raceethnic, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+tribble(
+  ~Category, ~Age,
+  "White", 56,
+  "Asian", 27,
+  "Black", 25,
+  "Hispanics", 9
+) %>%
+  ggplot(.,aes(Category, Age)) + theme_steve_web() +
+  geom_bar(stat="identity", color="black", fill="#619cff", alpha=0.8) +
+  geom_text(aes(label=Age), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4, family="Open Sans") +
+  labs(title = "The Modal (i.e. Most Common) Age for a White Person in the U.S. is 56. For Hispanics: 9.",
+       subtitle = "Only about a third of all Hispanics are foreign born but they comprise a large part of the low-skilled labor population.",
+       caption = "Data: U.S. Census 2016 estimate")
+
+```
+
+###
+
+```{r usa-clf-race-projections-bls, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+tribble(
+  ~Category, ~Year, ~Perc,
+  "White, Non-Hispanic", 1996, 75.3,
+  "White, Non-Hispanic", 2006, 69.1,
+  "White, Non-Hispanic", 2016, 63.4,
+  "White, Non-Hispanic", 2026, 58.0,
+  "Black", 1996, 11.3,
+  "Black", 2006, 11.4,
+  "Black", 2016, 12.3,
+  "Black", 2026, 12.7,
+  "Asian", 1996, 4.3,
+  "Asian", 2006, 4.4,
+  "Asian", 2016, 6.0,
+  "Asian", 2026, 7.2,
+  "Hispanic", 1996, 9.5,
+  "Hispanic", 2006, 13.7,
+  "Hispanic", 2016, 16.8,
+  "Hispanic", 2026, 20.6
+) %>%
+  mutate(value = Perc/100,
+         narr = paste0(round(Perc, 1),"%")) %>%
+  ggplot(.,aes(as.factor(Year), value, group=Category, fill=Category)) +
+  theme_steve_web() +
+  geom_text(aes(label=narr), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3.5, family = "Open Sans") +
+  geom_bar(stat="identity", color="black", alpha=0.8, position="dodge") +
+  scale_fill_manual(values = pal("google")) +
+  xlab("Group") + ylab("Percent of the Civlian Labor Force") +
+  labs(title = "The BLS Expects White, Non-Hispanics as Percentage of Civlian Labor Force to Decrease 23% From 1996 to 2026",
+       subtitle = "The white, non-Hispanic population is concentrated generations approaching retirement. Meanwhile, Hispanics are expected to become 20% of the labor force, a 115% increase from 1996.",
+       caption = "Data: Employment Projections program, Bureau of Labor Statistics. Source: https://www.bls.gov/emp/tables/civilian-labor-force-detail.htm")
+
+```
+
+# Conclusion
+### Conclusion
+
+International finance is an incredible opportunity, but not an unmitigated blessing.
+
+- Foreign loans are a boon to developing countries but bring eventual harsh costs.
+- FDI brings major investments but with some constraints.
+
+A lot of good has come from increased international finance, but it's all still bargaining.

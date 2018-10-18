@@ -1,0 +1,1891 @@
+country,pop,year
+WORLD,"1,736,288",1990
+More developed regions,"885,534",1990
+Less developed regions,"850,754",1990
+Least developed countries,"38,334",1990
+Less developed regions excluding least developed countries,"812,420",1990
+High-income countries,"1,243,574",1990
+Middle-income countries,"482,311",1990
+Upper-middle-income countries,"372,371",1990
+Lower-middle-income countries,"109,940",1990
+Low-income countries,"9,357",1990
+Sub-Saharan Africa,"20,317",1990
+AFRICA,"52,058",1990
+Eastern Africa,"1,807",1990
+Burundi,,1990
+Comoros,,1990
+Djibouti,,1990
+Eritrea,,1990
+Ethiopia,,1990
+Kenya,,1990
+Madagascar,,1990
+Malawi,,1990
+Mauritius,37,1990
+Mayotte,,1990
+Mozambique,,1990
+Réunion,,1990
+Rwanda,,1990
+Seychelles,,1990
+Somalia,,1990
+South Sudan,,1990
+Uganda,503,1990
+United Republic of Tanzania,808,1990
+Zambia,459,1990
+Zimbabwe,,1990
+Middle Africa,696,1990
+Angola,,1990
+Cameroon,,1990
+Central African Republic,476,1990
+Chad,,1990
+Congo,51,1990
+Democratic Republic of the Congo,,1990
+Equatorial Guinea,,1990
+Gabon,169,1990
+Sao Tome and Principe,,1990
+Northern Africa,"31,741",1990
+Algeria,"4,509",1990
+Egypt,"6,679",1990
+Libya,"19,067",1990
+Morocco,"1,250",1990
+Sudan,,1990
+Tunisia,236,1990
+Western Sahara,,1990
+Southern Africa,"11,799",1990
+Botswana,603,1990
+Lesotho,95,1990
+Namibia,"1,553",1990
+South Africa,"9,267",1990
+Swaziland,281,1990
+Western Africa,"6,015",1990
+Benin,,1990
+Burkina Faso,,1990
+Cabo Verde,188,1990
+Côte d'Ivoire,,1990
+Gambia,,1990
+Ghana,437,1990
+Guinea,552,1990
+Guinea-Bissau,200,1990
+Liberia,"2,959",1990
+Mali,233,1990
+Mauritania,99,1990
+Niger,,1990
+Nigeria,,1990
+Saint Helena,,1990
+Senegal,662,1990
+Sierra Leone,506,1990
+Togo,179,1990
+ASIA,"221,975",1990
+Central Asia,417,1990
+Kazakhstan,,1990
+Kyrgyzstan,,1990
+Tajikistan,417,1990
+Turkmenistan,,1990
+Uzbekistan,,1990
+Eastern Asia,"75,568",1990
+China,"16,962",1990
+China Hong Kong SAR,"7,599",1990
+China Macao SAR,,1990
+Dem. People's Republic of Korea,672,1990
+Japan,"38,375",1990
+Mongolia,247,1990
+Republic of Korea,"11,713",1990
+Southern Asia,"34,313",1990
+Afghanistan,,1990
+Bangladesh,"28,559",1990
+Bhutan,63,1990
+India,"5,649",1990
+Iran (Islamic Republic of),,1990
+Maldives,24,1990
+Nepal,,1990
+Pakistan,,1990
+Sri Lanka,18,1990
+South-Eastern Asia,"32,085",1990
+Brunei Darussalam,113,1990
+Cambodia,91,1990
+Indonesia,"8,745",1990
+Lao People's Democratic Republic,,1990
+Malaysia,,1990
+Myanmar,,1990
+Philippines,"17,746",1990
+Singapore,"3,423",1990
+Thailand,"1,640",1990
+Timor-Leste,64,1990
+Viet Nam,263,1990
+Western Asia,"79,592",1990
+Armenia,,1990
+Azerbaijan,,1990
+Bahrain,453,1990
+Cyprus,791,1990
+Georgia,,1990
+Iraq,,1990
+Israel,"47,532",1990
+Jordan,"1,691",1990
+Kuwait,"2,808",1990
+Lebanon,773,1990
+Oman,,1990
+Qatar,809,1990
+Saudi Arabia,,1990
+State of Palestine,"8,436",1990
+Syrian Arab Republic,,1990
+Turkey,"12,868",1990
+United Arab Emirates,"3,431",1990
+Yemen,,1990
+EUROPE,"542,711",1990
+Eastern Europe,"23,812",1990
+Belarus,42,1990
+Bulgaria,139,1990
+Czechia,517,1990
+Hungary,"2,956",1990
+Poland,"12,778",1990
+Republic of Moldova,,1990
+Romania,705,1990
+Russian Federation,"3,077",1990
+Slovakia,290,1990
+Ukraine,"3,308",1990
+Northern Europe,"196,616",1990
+Channel Islands,,1990
+Denmark,"6,411",1990
+Estonia,91,1990
+Faeroe Islands,21,1990
+Finland,"2,545",1990
+Iceland,"1,077",1990
+Ireland,"15,922",1990
+Isle of Man,242,1990
+Latvia,167,1990
+Lithuania,"1,170",1990
+Norway,"15,827",1990
+Sweden,"11,325",1990
+United Kingdom,"141,818",1990
+Southern Europe,"130,766",1990
+Albania,"3,011",1990
+Andorra,100,1990
+Bosnia and Herzegovina,,1990
+Croatia,"1,187",1990
+Gibraltar,,1990
+Greece,"43,336",1990
+Holy See,,1990
+Italy,"63,755",1990
+Malta,832,1990
+Montenegro,,1990
+Portugal,"5,467",1990
+San Marino,,1990
+Serbia,157,1990
+Slovenia,734,1990
+Spain,"12,187",1990
+TFYR Macedonia,,1990
+Western Europe,"191,517",1990
+Austria,"6,088",1990
+Belgium,"11,241",1990
+France,"40,260",1990
+Germany,"99,835",1990
+Liechtenstein,20,1990
+Luxembourg,"1,098",1990
+Monaco,,1990
+Netherlands,"13,659",1990
+Switzerland,"19,316",1990
+LATIN AMERICA AND THE CARIBBEAN,"579,216",1990
+Caribbean,"272,218",1990
+Anguilla,215,1990
+Antigua and Barbuda,"1,308",1990
+Aruba,425,1990
+Bahamas,"4,247",1990
+Barbados,"1,112",1990
+British Virgin Islands,674,1990
+Caribbean Netherlands,346,1990
+Cayman Islands,"1,632",1990
+Cuba,"1,186",1990
+Curaçao,,1990
+Dominica,226,1990
+Dominican Republic,"9,115",1990
+Grenada,,1990
+Guadeloupe,197,1990
+Haiti,"1,607",1990
+Jamaica,"4,575",1990
+Martinique,,1990
+Montserrat,173,1990
+Puerto Rico,"227,483",1990
+Saint Kitts and Nevis,,1990
+Saint Lucia,276,1990
+Saint Vincent and the Grenadines,291,1990
+Sint Maarten (Dutch part),,1990
+Trinidad and Tobago,"2,430",1990
+Turks and Caicos Islands,454,1990
+United States Virgin Islands,"14,246",1990
+Central America,"232,303",1990
+Belize,"1,901",1990
+Costa Rica,"8,586",1990
+El Salvador,"8,033",1990
+Guatemala,"5,822",1990
+Honduras,"2,692",1990
+Mexico,"198,230",1990
+Nicaragua,"3,721",1990
+Panama,"3,318",1990
+South America,"74,695",1990
+Argentina,"9,992",1990
+Bolivia (Plurinational State of),"3,078",1990
+Brazil,"11,806",1990
+Chile,"5,650",1990
+Colombia,"13,478",1990
+Ecuador,"8,595",1990
+Falkland Islands (Malvinas),15,1990
+French Guiana,,1990
+Guyana,285,1990
+Paraguay,"1,582",1990
+Peru,"7,050",1990
+Suriname,,1990
+Uruguay,"1,525",1990
+Venezuela (Bolivarian Republic of),"11,639",1990
+NORTHERN AMERICA,"242,568",1990
+Bermuda,"3,468",1990
+Canada,"238,998",1990
+Greenland,30,1990
+Saint Pierre and Miquelon,72,1990
+United States of America,,1990
+OCEANIA,"97,760",1990
+Australia/New Zealand,"61,880",1990
+Australia,"53,575",1990
+New Zealand,"8,305",1990
+Melanesia,"1,245",1990
+Fiji,,1990
+New Caledonia,,1990
+Papua New Guinea,"1,110",1990
+Solomon Islands,135,1990
+Vanuatu,,1990
+Micronesia,"30,418",1990
+Guam,"27,990",1990
+Kiribati,43,1990
+Marshall Islands,633,1990
+Micronesia (Fed. States of),234,1990
+Nauru,,1990
+Northern Mariana Islands,"1,203",1990
+Palau,315,1990
+Polynesia,"4,217",1990
+American Samoa,"3,510",1990
+Cook Islands,17,1990
+French Polynesia,372,1990
+Niue,11,1990
+Samoa,266,1990
+Tokelau,,1990
+Tonga,,1990
+Tuvalu,41,1990
+Wallis and Futuna Islands,,1990
+WORLD,"1,836,347",1995
+More developed regions,"894,183",1995
+Less developed regions,"942,164",1995
+Least developed countries,"40,811",1995
+Less developed regions excluding least developed countries,"901,353",1995
+High-income countries,"1,269,397",1995
+Middle-income countries,"555,265",1995
+Upper-middle-income countries,"443,593",1995
+Lower-middle-income countries,"111,672",1995
+Low-income countries,"10,146",1995
+Sub-Saharan Africa,"18,233",1995
+AFRICA,"40,815",1995
+Eastern Africa,"2,011",1995
+Burundi,,1995
+Comoros,,1995
+Djibouti,,1995
+Eritrea,,1995
+Ethiopia,,1995
+Kenya,,1995
+Madagascar,,1995
+Malawi,,1995
+Mauritius,30,1995
+Mayotte,,1995
+Mozambique,,1995
+Réunion,,1995
+Rwanda,,1995
+Seychelles,,1995
+Somalia,,1995
+South Sudan,,1995
+Uganda,494,1995
+United Republic of Tanzania,"1,027",1995
+Zambia,460,1995
+Zimbabwe,,1995
+Middle Africa,944,1995
+Angola,,1995
+Cameroon,,1995
+Central African Republic,683,1995
+Chad,,1995
+Congo,59,1995
+Democratic Republic of the Congo,,1995
+Equatorial Guinea,,1995
+Gabon,202,1995
+Sao Tome and Principe,,1995
+Northern Africa,"22,582",1995
+Algeria,"2,802",1995
+Egypt,"5,336",1995
+Libya,"13,063",1995
+Morocco,"1,147",1995
+Sudan,,1995
+Tunisia,234,1995
+Western Sahara,,1995
+Southern Africa,"9,116",1995
+Botswana,313,1995
+Lesotho,91,1995
+Namibia,"1,485",1995
+South Africa,"7,115",1995
+Swaziland,112,1995
+Western Africa,"6,162",1995
+Benin,,1995
+Burkina Faso,,1995
+Cabo Verde,232,1995
+Côte d'Ivoire,,1995
+Gambia,,1995
+Ghana,435,1995
+Guinea,636,1995
+Guinea-Bissau,257,1995
+Liberia,"2,891",1995
+Mali,242,1995
+Mauritania,105,1995
+Niger,,1995
+Nigeria,,1995
+Saint Helena,,1995
+Senegal,692,1995
+Sierra Leone,493,1995
+Togo,179,1995
+ASIA,"251,804",1995
+Central Asia,338,1995
+Kazakhstan,,1995
+Kyrgyzstan,,1995
+Tajikistan,338,1995
+Turkmenistan,,1995
+Uzbekistan,,1995
+Eastern Asia,"89,639",1995
+China,"18,124",1995
+China Hong Kong SAR,"10,698",1995
+China Macao SAR,,1995
+Dem. People's Republic of Korea,661,1995
+Japan,"43,792",1995
+Mongolia,272,1995
+Republic of Korea,"16,092",1995
+Southern Asia,"34,756",1995
+Afghanistan,,1995
+Bangladesh,"30,085",1995
+Bhutan,74,1995
+India,"4,490",1995
+Iran (Islamic Republic of),,1995
+Maldives,20,1995
+Nepal,,1995
+Pakistan,,1995
+Sri Lanka,87,1995
+South-Eastern Asia,"37,376",1995
+Brunei Darussalam,129,1995
+Cambodia,239,1995
+Indonesia,"5,786",1995
+Lao People's Democratic Republic,,1995
+Malaysia,,1995
+Myanmar,,1995
+Philippines,"23,882",1995
+Singapore,"3,949",1995
+Thailand,"2,742",1995
+Timor-Leste,64,1995
+Viet Nam,585,1995
+Western Asia,"89,695",1995
+Armenia,,1995
+Azerbaijan,,1995
+Bahrain,498,1995
+Cyprus,"1,119",1995
+Georgia,,1995
+Iraq,,1995
+Israel,"56,033",1995
+Jordan,"2,433",1995
+Kuwait,"2,250",1995
+Lebanon,"1,108",1995
+Oman,,1995
+Qatar,879,1995
+Saudi Arabia,,1995
+State of Palestine,"8,244",1995
+Syrian Arab Republic,,1995
+Turkey,"12,735",1995
+United Arab Emirates,"4,396",1995
+Yemen,,1995
+EUROPE,"535,713",1995
+Eastern Europe,"24,138",1995
+Belarus,66,1995
+Bulgaria,352,1995
+Czechia,775,1995
+Hungary,"3,967",1995
+Poland,"10,929",1995
+Republic of Moldova,,1995
+Romania,"1,055",1995
+Russian Federation,"3,051",1995
+Slovakia,743,1995
+Ukraine,"3,200",1995
+Northern Europe,"200,919",1995
+Channel Islands,,1995
+Denmark,"7,504",1995
+Estonia,141,1995
+Faeroe Islands,22,1995
+Finland,"2,494",1995
+Iceland,"1,190",1995
+Ireland,"12,608",1995
+Isle of Man,210,1995
+Latvia,323,1995
+Lithuania,"1,310",1995
+Norway,"15,407",1995
+Sweden,"13,439",1995
+United Kingdom,"146,271",1995
+Southern Europe,"105,722",1995
+Albania,"3,255",1995
+Andorra,95,1995
+Bosnia and Herzegovina,,1995
+Croatia,"1,068",1995
+Gibraltar,,1995
+Greece,"32,841",1995
+Holy See,,1995
+Italy,"45,212",1995
+Malta,974,1995
+Montenegro,,1995
+Portugal,"6,236",1995
+San Marino,,1995
+Serbia,"1,003",1995
+Slovenia,564,1995
+Spain,"14,474",1995
+TFYR Macedonia,,1995
+Western Europe,"204,934",1995
+Austria,"6,869",1995
+Belgium,"11,547",1995
+France,"41,562",1995
+Germany,"104,837",1995
+Liechtenstein,40,1995
+Luxembourg,"1,066",1995
+Monaco,,1995
+Netherlands,"16,636",1995
+Switzerland,"22,377",1995
+LATIN AMERICA AND THE CARIBBEAN,"661,107",1995
+Caribbean,"279,392",1995
+Anguilla,277,1995
+Antigua and Barbuda,"1,733",1995
+Aruba,553,1995
+Bahamas,"4,294",1995
+Barbados,"1,213",1995
+British Virgin Islands,792,1995
+Caribbean Netherlands,722,1995
+Cayman Islands,"1,743",1995
+Cuba,899,1995
+Curaçao,,1995
+Dominica,299,1995
+Dominican Republic,"10,124",1995
+Grenada,,1995
+Guadeloupe,263,1995
+Haiti,"1,891",1995
+Jamaica,"5,615",1995
+Martinique,,1995
+Montserrat,138,1995
+Puerto Rico,"230,426",1995
+Saint Kitts and Nevis,,1995
+Saint Lucia,372,1995
+Saint Vincent and the Grenadines,303,1995
+Sint Maarten (Dutch part),,1995
+Trinidad and Tobago,"2,205",1995
+Turks and Caicos Islands,565,1995
+United States Virgin Islands,"14,965",1995
+Central America,"304,589",1995
+Belize,"1,908",1995
+Costa Rica,"7,301",1995
+El Salvador,"6,306",1995
+Guatemala,"5,639",1995
+Honduras,"3,877",1995
+Mexico,"272,472",1995
+Nicaragua,"2,952",1995
+Panama,"4,134",1995
+South America,"77,126",1995
+Argentina,"9,678",1995
+Bolivia (Plurinational State of),"3,385",1995
+Brazil,"12,894",1995
+Chile,"6,767",1995
+Colombia,"14,273",1995
+Ecuador,"9,854",1995
+Falkland Islands (Malvinas),20,1995
+French Guiana,,1995
+Guyana,459,1995
+Paraguay,"1,684",1995
+Peru,"6,151",1995
+Suriname,,1995
+Uruguay,"1,036",1995
+Venezuela (Bolivarian Republic of),"10,925",1995
+NORTHERN AMERICA,"248,135",1995
+Bermuda,"3,454",1995
+Canada,"244,567",1995
+Greenland,27,1995
+Saint Pierre and Miquelon,87,1995
+United States of America,,1995
+OCEANIA,"98,773",1995
+Australia/New Zealand,"66,543",1995
+Australia,"55,234",1995
+New Zealand,"11,309",1995
+Melanesia,"1,271",1995
+Fiji,,1995
+New Caledonia,,1995
+Papua New Guinea,"1,137",1995
+Solomon Islands,134,1995
+Vanuatu,,1995
+Micronesia,"26,576",1995
+Guam,"23,543",1995
+Kiribati,40,1995
+Marshall Islands,716,1995
+Micronesia (Fed. States of),212,1995
+Nauru,,1995
+Northern Mariana Islands,"1,530",1995
+Palau,535,1995
+Polynesia,"4,383",1995
+American Samoa,"3,544",1995
+Cook Islands,18,1995
+French Polynesia,408,1995
+Niue,14,1995
+Samoa,365,1995
+Tokelau,,1995
+Tonga,,1995
+Tuvalu,34,1995
+Wallis and Futuna Islands,,1995
+WORLD,"1,988,254",2000
+More developed regions,"920,711",2000
+Less developed regions,"1,067,543",2000
+Least developed countries,"43,444",2000
+Less developed regions excluding least developed countries,"1,024,099",2000
+High-income countries,"1,319,237",2000
+Middle-income countries,"655,895",2000
+Upper-middle-income countries,"534,503",2000
+Lower-middle-income countries,"121,392",2000
+Low-income countries,"11,097",2000
+Sub-Saharan Africa,"18,635",2000
+AFRICA,"32,896",2000
+Eastern Africa,"2,598",2000
+Burundi,,2000
+Comoros,,2000
+Djibouti,,2000
+Eritrea,,2000
+Ethiopia,,2000
+Kenya,,2000
+Madagascar,,2000
+Malawi,,2000
+Mauritius,41,2000
+Mayotte,,2000
+Mozambique,,2000
+Réunion,,2000
+Rwanda,,2000
+Seychelles,,2000
+Somalia,,2000
+South Sudan,,2000
+Uganda,"1,013",2000
+United Republic of Tanzania,"1,082",2000
+Zambia,462,2000
+Zimbabwe,,2000
+Middle Africa,"1,173",2000
+Angola,,2000
+Cameroon,,2000
+Central African Republic,831,2000
+Chad,,2000
+Congo,83,2000
+Democratic Republic of the Congo,,2000
+Equatorial Guinea,,2000
+Gabon,259,2000
+Sao Tome and Principe,,2000
+Northern Africa,"14,261",2000
+Algeria,"1,094",2000
+Egypt,"4,416",2000
+Libya,"7,274",2000
+Morocco,"1,208",2000
+Sudan,,2000
+Tunisia,269,2000
+Western Sahara,,2000
+Southern Africa,"8,647",2000
+Botswana,55,2000
+Lesotho,85,2000
+Namibia,"1,379",2000
+South Africa,"6,982",2000
+Swaziland,146,2000
+Western Africa,"6,217",2000
+Benin,,2000
+Burkina Faso,,2000
+Cabo Verde,275,2000
+Côte d'Ivoire,,2000
+Gambia,,2000
+Ghana,487,2000
+Guinea,689,2000
+Guinea-Bissau,313,2000
+Liberia,"2,837",2000
+Mali,223,2000
+Mauritania,108,2000
+Niger,,2000
+Nigeria,,2000
+Saint Helena,,2000
+Senegal,626,2000
+Sierra Leone,480,2000
+Togo,179,2000
+ASIA,"287,815",2000
+Central Asia,291,2000
+Kazakhstan,,2000
+Kyrgyzstan,,2000
+Tajikistan,291,2000
+Turkmenistan,,2000
+Uzbekistan,,2000
+Eastern Asia,"104,483",2000
+China,"19,286",2000
+China Hong Kong SAR,"13,796",2000
+China Macao SAR,,2000
+Dem. People's Republic of Korea,649,2000
+Japan,"44,859",2000
+Mongolia,301,2000
+Republic of Korea,"25,592",2000
+Southern Asia,"35,199",2000
+Afghanistan,,2000
+Bangladesh,"31,610",2000
+Bhutan,85,2000
+India,"3,330",2000
+Iran (Islamic Republic of),,2000
+Maldives,16,2000
+Nepal,,2000
+Pakistan,,2000
+Sri Lanka,158,2000
+South-Eastern Asia,"50,028",2000
+Brunei Darussalam,144,2000
+Cambodia,386,2000
+Indonesia,"2,827",2000
+Lao People's Democratic Republic,,2000
+Malaysia,,2000
+Myanmar,,2000
+Philippines,"35,977",2000
+Singapore,"4,858",2000
+Thailand,"4,411",2000
+Timor-Leste,66,2000
+Viet Nam,"1,359",2000
+Western Asia,"97,814",2000
+Armenia,,2000
+Azerbaijan,,2000
+Bahrain,545,2000
+Cyprus,"1,446",2000
+Georgia,107,2000
+Iraq,,2000
+Israel,"61,396",2000
+Jordan,"3,176",2000
+Kuwait,"2,567",2000
+Lebanon,"1,442",2000
+Oman,,2000
+Qatar,819,2000
+Saudi Arabia,,2000
+State of Palestine,"8,052",2000
+Syrian Arab Republic,,2000
+Turkey,"12,649",2000
+United Arab Emirates,"5,615",2000
+Yemen,,2000
+EUROPE,"543,632",2000
+Eastern Europe,"24,811",2000
+Belarus,90,2000
+Bulgaria,565,2000
+Czechia,"1,033",2000
+Hungary,"4,977",2000
+Poland,"9,349",2000
+Republic of Moldova,,2000
+Romania,"1,348",2000
+Russian Federation,"2,915",2000
+Slovakia,"1,402",2000
+Ukraine,"3,132",2000
+Northern Europe,"213,109",2000
+Channel Islands,,2000
+Denmark,"8,596",2000
+Estonia,191,2000
+Faeroe Islands,26,2000
+Finland,"2,442",2000
+Iceland,"1,392",2000
+Ireland,"16,225",2000
+Isle of Man,178,2000
+Latvia,479,2000
+Lithuania,"1,026",2000
+Norway,"14,956",2000
+Sweden,"14,413",2000
+United Kingdom,"153,185",2000
+Southern Europe,"87,112",2000
+Albania,"3,498",2000
+Andorra,89,2000
+Bosnia and Herzegovina,,2000
+Croatia,835,2000
+Gibraltar,,2000
+Greece,"22,885",2000
+Holy See,,2000
+Italy,"26,750",2000
+Malta,"1,051",2000
+Montenegro,,2000
+Portugal,"7,258",2000
+San Marino,,2000
+Serbia,"1,364",2000
+Slovenia,395,2000
+Spain,"22,987",2000
+TFYR Macedonia,,2000
+Western Europe,"218,600",2000
+Austria,"7,649",2000
+Belgium,"11,518",2000
+France,"42,863",2000
+Germany,"109,838",2000
+Liechtenstein,60,2000
+Luxembourg,965,2000
+Monaco,,2000
+Netherlands,"20,186",2000
+Switzerland,"25,521",2000
+LATIN AMERICA AND THE CARIBBEAN,"763,517",2000
+Caribbean,"288,648",2000
+Anguilla,339,2000
+Antigua and Barbuda,"2,157",2000
+Aruba,681,2000
+Bahamas,"4,300",2000
+Barbados,"1,315",2000
+British Virgin Islands,910,2000
+Caribbean Netherlands,"1,098",2000
+Cayman Islands,"1,829",2000
+Cuba,612,2000
+Curaçao,,2000
+Dominica,356,2000
+Dominican Republic,"11,133",2000
+Grenada,,2000
+Guadeloupe,329,2000
+Haiti,"2,175",2000
+Jamaica,"6,668",2000
+Martinique,,2000
+Montserrat,104,2000
+Puerto Rico,"233,924",2000
+Saint Kitts and Nevis,,2000
+Saint Lucia,511,2000
+Saint Vincent and the Grenadines,318,2000
+Sint Maarten (Dutch part),,2000
+Trinidad and Tobago,"3,501",2000
+Turks and Caicos Islands,676,2000
+United States Virgin Islands,"15,712",2000
+Central America,"393,318",2000
+Belize,"1,914",2000
+Costa Rica,"9,667",2000
+El Salvador,"4,603",2000
+Guatemala,"5,456",2000
+Honduras,"5,061",2000
+Mexico,"358,399",2000
+Nicaragua,"3,006",2000
+Panama,"5,212",2000
+South America,"81,551",2000
+Argentina,"9,364",2000
+Bolivia (Plurinational State of),"3,656",2000
+Brazil,"13,981",2000
+Chile,"7,884",2000
+Colombia,"15,068",2000
+Ecuador,"11,112",2000
+Falkland Islands (Malvinas),21,2000
+French Guiana,,2000
+Guyana,632,2000
+Paraguay,"1,781",2000
+Peru,"7,188",2000
+Suriname,,2000
+Uruguay,705,2000
+Venezuela (Bolivarian Republic of),"10,159",2000
+NORTHERN AMERICA,"259,516",2000
+Bermuda,"3,439",2000
+Canada,"255,952",2000
+Greenland,27,2000
+Saint Pierre and Miquelon,98,2000
+United States of America,,2000
+OCEANIA,"100,878",2000
+Australia/New Zealand,"72,704",2000
+Australia,"59,720",2000
+New Zealand,"12,984",2000
+Melanesia,979,2000
+Fiji,,2000
+New Caledonia,,2000
+Papua New Guinea,851,2000
+Solomon Islands,128,2000
+Vanuatu,,2000
+Micronesia,"22,653",2000
+Guam,"19,095",2000
+Kiribati,38,2000
+Marshall Islands,856,2000
+Micronesia (Fed. States of),197,2000
+Nauru,,2000
+Northern Mariana Islands,"1,951",2000
+Palau,516,2000
+Polynesia,"4,542",2000
+American Samoa,"3,578",2000
+Cook Islands,18,2000
+French Polynesia,437,2000
+Niue,18,2000
+Samoa,463,2000
+Tokelau,,2000
+Tonga,,2000
+Tuvalu,28,2000
+Wallis and Futuna Islands,,2000
+WORLD,"2,285,444",2005
+More developed regions,"1,019,152",2005
+Less developed regions,"1,266,292",2005
+Least developed countries,"48,760",2005
+Less developed regions excluding least developed countries,"1,217,532",2005
+High-income countries,"1,428,983",2005
+Middle-income countries,"843,722",2005
+Upper-middle-income countries,"714,337",2005
+Lower-middle-income countries,"129,385",2005
+Low-income countries,"10,519",2005
+Sub-Saharan Africa,"20,353",2005
+AFRICA,"35,986",2005
+Eastern Africa,"2,912",2005
+Burundi,,2005
+Comoros,,2005
+Djibouti,,2005
+Eritrea,,2005
+Ethiopia,,2005
+Kenya,,2005
+Madagascar,,2005
+Malawi,,2005
+Mauritius,40,2005
+Mayotte,,2005
+Mozambique,,2005
+Réunion,,2005
+Rwanda,,2005
+Seychelles,,2005
+Somalia,,2005
+South Sudan,,2005
+Uganda,"1,006",2005
+United Republic of Tanzania,"1,204",2005
+Zambia,662,2005
+Zimbabwe,,2005
+Middle Africa,"1,795",2005
+Angola,,2005
+Cameroon,823,2005
+Central African Republic,635,2005
+Chad,,2005
+Congo,53,2005
+Democratic Republic of the Congo,,2005
+Equatorial Guinea,,2005
+Gabon,284,2005
+Sao Tome and Principe,,2005
+Northern Africa,"15,633",2005
+Algeria,863,2005
+Egypt,"5,257",2005
+Libya,"8,015",2005
+Morocco,"1,239",2005
+Sudan,,2005
+Tunisia,259,2005
+Western Sahara,,2005
+Southern Africa,"10,230",2005
+Botswana,507,2005
+Lesotho,86,2005
+Namibia,"1,090",2005
+South Africa,"8,357",2005
+Swaziland,190,2005
+Western Africa,"5,416",2005
+Benin,,2005
+Burkina Faso,,2005
+Cabo Verde,307,2005
+Côte d'Ivoire,,2005
+Gambia,,2005
+Ghana,685,2005
+Guinea,550,2005
+Guinea-Bissau,303,2005
+Liberia,"1,236",2005
+Mali,907,2005
+Mauritania,108,2005
+Niger,,2005
+Nigeria,,2005
+Saint Helena,,2005
+Senegal,672,2005
+Sierra Leone,469,2005
+Togo,179,2005
+ASIA,"318,008",2005
+Central Asia,280,2005
+Kazakhstan,,2005
+Kyrgyzstan,,2005
+Tajikistan,280,2005
+Turkmenistan,,2005
+Uzbekistan,,2005
+Eastern Asia,"116,715",2005
+China,"21,277",2005
+China Hong Kong SAR,"13,370",2005
+China Macao SAR,,2005
+Dem. People's Republic of Korea,792,2005
+Japan,"47,789",2005
+Mongolia,447,2005
+Republic of Korea,"33,040",2005
+Southern Asia,"41,078",2005
+Afghanistan,,2005
+Bangladesh,"37,560",2005
+Bhutan,107,2005
+India,"3,077",2005
+Iran (Islamic Republic of),,2005
+Maldives,32,2005
+Nepal,,2005
+Pakistan,,2005
+Sri Lanka,302,2005
+South-Eastern Asia,"51,382",2005
+Brunei Darussalam,147,2005
+Cambodia,301,2005
+Indonesia,"6,654",2005
+Lao People's Democratic Republic,,2005
+Malaysia,,2005
+Myanmar,,2005
+Philippines,"29,119",2005
+Singapore,"9,340",2005
+Thailand,"3,939",2005
+Timor-Leste,70,2005
+Viet Nam,"1,812",2005
+Western Asia,"108,553",2005
+Armenia,,2005
+Azerbaijan,,2005
+Bahrain,771,2005
+Cyprus,"2,116",2005
+Georgia,101,2005
+Iraq,,2005
+Israel,"68,622",2005
+Jordan,"4,587",2005
+Kuwait,"2,772",2005
+Lebanon,"1,129",2005
+Oman,,2005
+Qatar,"1,149",2005
+Saudi Arabia,,2005
+State of Palestine,"7,978",2005
+Syrian Arab Republic,,2005
+Turkey,"13,034",2005
+United Arab Emirates,"6,294",2005
+Yemen,,2005
+EUROPE,"606,941",2005
+Eastern Europe,"31,109",2005
+Belarus,86,2005
+Bulgaria,867,2005
+Czechia,"2,286",2005
+Hungary,"6,147",2005
+Poland,"11,582",2005
+Republic of Moldova,,2005
+Romania,"1,960",2005
+Russian Federation,"3,747",2005
+Slovakia,"1,573",2005
+Ukraine,"2,861",2005
+Northern Europe,"236,636",2005
+Channel Islands,,2005
+Denmark,"9,906",2005
+Estonia,409,2005
+Faeroe Islands,31,2005
+Finland,"3,358",2005
+Iceland,"1,606",2005
+Ireland,"25,210",2005
+Isle of Man,223,2005
+Latvia,603,2005
+Lithuania,936,2005
+Norway,"14,507",2005
+Sweden,"15,522",2005
+United Kingdom,"164,325",2005
+Southern Europe,"108,658",2005
+Albania,"2,953",2005
+Andorra,101,2005
+Bosnia and Herzegovina,,2005
+Croatia,"1,221",2005
+Gibraltar,,2005
+Greece,"23,058",2005
+Holy See,,2005
+Italy,"40,484",2005
+Malta,"1,087",2005
+Montenegro,,2005
+Portugal,"7,303",2005
+San Marino,,2005
+Serbia,"1,346",2005
+Slovenia,614,2005
+Spain,"30,491",2005
+TFYR Macedonia,,2005
+Western Europe,"230,538",2005
+Austria,"8,550",2005
+Belgium,"10,932",2005
+France,"47,875",2005
+Germany,"110,843",2005
+Liechtenstein,91,2005
+Luxembourg,836,2005
+Monaco,,2005
+Netherlands,"22,615",2005
+Switzerland,"28,796",2005
+LATIN AMERICA AND THE CARIBBEAN,"932,810",2005
+Caribbean,"289,751",2005
+Anguilla,390,2005
+Antigua and Barbuda,"2,313",2005
+Aruba,638,2005
+Bahamas,"6,587",2005
+Barbados,"1,147",2005
+British Virgin Islands,"1,042",2005
+Caribbean Netherlands,"1,170",2005
+Cayman Islands,"2,234",2005
+Cuba,609,2005
+Curaçao,,2005
+Dominica,439,2005
+Dominican Republic,"17,858",2005
+Grenada,,2005
+Guadeloupe,404,2005
+Haiti,"2,566",2005
+Jamaica,"6,493",2005
+Martinique,,2005
+Montserrat,109,2005
+Puerto Rico,"223,949",2005
+Saint Kitts and Nevis,,2005
+Saint Lucia,595,2005
+Saint Vincent and the Grenadines,325,2005
+Sint Maarten (Dutch part),150,2005
+Trinidad and Tobago,"3,757",2005
+Turks and Caicos Islands,695,2005
+United States Virgin Islands,"16,281",2005
+Central America,"556,838",2005
+Belize,"2,694",2005
+Costa Rica,"6,332",2005
+El Salvador,"4,871",2005
+Guatemala,"6,473",2005
+Honduras,"4,946",2005
+Mexico,"520,053",2005
+Nicaragua,"3,085",2005
+Panama,"8,384",2005
+South America,"86,221",2005
+Argentina,"6,907",2005
+Bolivia (Plurinational State of),"3,935",2005
+Brazil,"18,779",2005
+Chile,"6,373",2005
+Colombia,"15,025",2005
+Ecuador,"13,118",2005
+Falkland Islands (Malvinas),30,2005
+French Guiana,,2005
+Guyana,852,2005
+Paraguay,"1,696",2005
+Peru,"8,408",2005
+Suriname,,2005
+Uruguay,653,2005
+Venezuela (Bolivarian Republic of),"10,445",2005
+NORTHERN AMERICA,"276,900",2005
+Bermuda,"3,460",2005
+Canada,"273,338",2005
+Greenland,28,2005
+Saint Pierre and Miquelon,74,2005
+United States of America,,2005
+OCEANIA,"114,799",2005
+Australia/New Zealand,"87,522",2005
+Australia,"70,550",2005
+New Zealand,"16,972",2005
+Melanesia,928,2005
+Fiji,,2005
+New Caledonia,,2005
+Papua New Guinea,851,2005
+Solomon Islands,77,2005
+Vanuatu,,2005
+Micronesia,"22,324",2005
+Guam,"18,719",2005
+Kiribati,39,2005
+Marshall Islands,"1,053",2005
+Micronesia (Fed. States of),183,2005
+Nauru,,2005
+Northern Mariana Islands,"1,953",2005
+Palau,377,2005
+Polynesia,"4,025",2005
+American Samoa,"3,066",2005
+Cook Islands,24,2005
+French Polynesia,457,2005
+Niue,19,2005
+Samoa,436,2005
+Tokelau,,2005
+Tonga,,2005
+Tuvalu,23,2005
+Wallis and Futuna Islands,,2005
+WORLD,"2,654,409",2010
+More developed regions,"1,099,254",2010
+Less developed regions,"1,555,155",2010
+Least developed countries,"55,142",2010
+Less developed regions excluding least developed countries,"1,500,013",2010
+High-income countries,"1,516,770",2010
+Middle-income countries,"1,125,004",2010
+Upper-middle-income countries,"975,055",2010
+Lower-middle-income countries,"149,949",2010
+Low-income countries,"10,970",2010
+Sub-Saharan Africa,"26,927",2010
+AFRICA,"44,173",2010
+Eastern Africa,"3,226",2010
+Burundi,,2010
+Comoros,,2010
+Djibouti,,2010
+Eritrea,,2010
+Ethiopia,,2010
+Kenya,,2010
+Madagascar,,2010
+Malawi,,2010
+Mauritius,43,2010
+Mayotte,,2010
+Mozambique,,2010
+Réunion,,2010
+Rwanda,,2010
+Seychelles,,2010
+Somalia,,2010
+South Sudan,,2010
+Uganda,"1,000",2010
+United Republic of Tanzania,"1,234",2010
+Zambia,949,2010
+Zimbabwe,,2010
+Middle Africa,"1,732",2010
+Angola,,2010
+Cameroon,655,2010
+Central African Republic,628,2010
+Chad,,2010
+Congo,125,2010
+Democratic Republic of the Congo,,2010
+Equatorial Guinea,,2010
+Gabon,324,2010
+Sao Tome and Principe,,2010
+Northern Africa,"17,246",2010
+Algeria,948,2010
+Egypt,"5,674",2010
+Libya,"8,768",2010
+Morocco,"1,386",2010
+Sudan,,2010
+Tunisia,470,2010
+Western Sahara,,2010
+Southern Africa,"16,797",2010
+Botswana,961,2010
+Lesotho,87,2010
+Namibia,"1,050",2010
+South Africa,"14,471",2010
+Swaziland,228,2010
+Western Africa,"5,172",2010
+Benin,,2010
+Burkina Faso,,2010
+Cabo Verde,338,2010
+Côte d'Ivoire,,2010
+Gambia,,2010
+Ghana,508,2010
+Guinea,472,2010
+Guinea-Bissau,293,2010
+Liberia,451,2010
+Mali,"1,602",2010
+Mauritania,108,2010
+Niger,,2010
+Nigeria,,2010
+Saint Helena,,2010
+Senegal,752,2010
+Sierra Leone,466,2010
+Togo,182,2010
+ASIA,"385,067",2010
+Central Asia,286,2010
+Kazakhstan,,2010
+Kyrgyzstan,,2010
+Tajikistan,286,2010
+Turkmenistan,,2010
+Uzbekistan,,2010
+Eastern Asia,"142,069",2010
+China,"23,268",2010
+China Hong Kong SAR,"12,976",2010
+China Macao SAR,,2010
+Dem. People's Republic of Korea,934,2010
+Japan,"50,667",2010
+Mongolia,646,2010
+Republic of Korea,"53,578",2010
+Southern Asia,"47,043",2010
+Afghanistan,,2010
+Bangladesh,"43,455",2010
+Bhutan,129,2010
+India,"2,823",2010
+Iran (Islamic Republic of),,2010
+Maldives,38,2010
+Nepal,,2010
+Pakistan,,2010
+Sri Lanka,598,2010
+South-Eastern Asia,"67,081",2010
+Brunei Darussalam,150,2010
+Cambodia,216,2010
+Indonesia,"10,909",2010
+Lao People's Democratic Republic,,2010
+Malaysia,,2010
+Myanmar,,2010
+Philippines,"35,015",2010
+Singapore,"14,344",2010
+Thailand,"3,750",2010
+Timor-Leste,72,2010
+Viet Nam,"2,625",2010
+Western Asia,"128,588",2010
+Armenia,,2010
+Azerbaijan,,2010
+Bahrain,"1,169",2010
+Cyprus,"3,393",2010
+Georgia,102,2010
+Iraq,,2010
+Israel,"76,680",2010
+Jordan,"5,899",2010
+Kuwait,"3,669",2010
+Lebanon,815,2010
+Oman,,2010
+Qatar,"2,412",2010
+Saudi Arabia,,2010
+State of Palestine,"7,904",2010
+Syrian Arab Republic,,2010
+Turkey,"13,431",2010
+United Arab Emirates,"13,114",2010
+Yemen,,2010
+EUROPE,"676,416",2010
+Eastern Europe,"37,642",2010
+Belarus,82,2010
+Bulgaria,"1,132",2010
+Czechia,"3,351",2010
+Hungary,"7,317",2010
+Poland,"14,179",2010
+Republic of Moldova,,2010
+Romania,"2,586",2010
+Russian Federation,"4,502",2010
+Slovakia,"1,764",2010
+Ukraine,"2,729",2010
+Northern Europe,"271,334",2010
+Channel Islands,,2010
+Denmark,"11,215",2010
+Estonia,624,2010
+Faeroe Islands,39,2010
+Finland,"4,273",2010
+Iceland,"1,938",2010
+Ireland,"30,043",2010
+Isle of Man,265,2010
+Latvia,712,2010
+Lithuania,719,2010
+Norway,"16,046",2010
+Sweden,"16,617",2010
+United Kingdom,"188,843",2010
+Southern Europe,"127,356",2010
+Albania,"2,408",2010
+Andorra,100,2010
+Bosnia and Herzegovina,,2010
+Croatia,"1,606",2010
+Gibraltar,,2010
+Greece,"24,284",2010
+Holy See,,2010
+Italy,"54,217",2010
+Malta,"1,199",2010
+Montenegro,302,2010
+Portugal,"6,137",2010
+San Marino,,2010
+Serbia,"1,316",2010
+Slovenia,548,2010
+Spain,"35,239",2010
+TFYR Macedonia,,2010
+Western Europe,"240,084",2010
+Austria,"9,451",2010
+Belgium,"11,277",2010
+France,"49,835",2010
+Germany,"111,303",2010
+Liechtenstein,124,2010
+Luxembourg,"1,095",2010
+Monaco,,2010
+Netherlands,"24,368",2010
+Switzerland,"32,631",2010
+LATIN AMERICA AND THE CARIBBEAN,"1,150,726",2010
+Caribbean,"264,037",2010
+Anguilla,424,2010
+Antigua and Barbuda,"2,469",2010
+Aruba,582,2010
+Bahamas,"8,919",2010
+Barbados,985,2010
+British Virgin Islands,"1,537",2010
+Caribbean Netherlands,517,2010
+Cayman Islands,"2,640",2010
+Cuba,556,2010
+Curaçao,304,2010
+Dominica,534,2010
+Dominican Republic,"24,457",2010
+Grenada,,2010
+Guadeloupe,478,2010
+Haiti,"2,956",2010
+Jamaica,"6,329",2010
+Martinique,,2010
+Montserrat,115,2010
+Puerto Rico,"185,814",2010
+Saint Kitts and Nevis,,2010
+Saint Lucia,627,2010
+Saint Vincent and the Grenadines,331,2010
+Sint Maarten (Dutch part),300,2010
+Trinidad and Tobago,"5,597",2010
+Turks and Caicos Islands,715,2010
+United States Virgin Islands,"16,851",2010
+Central America,"790,667",2010
+Belize,"3,474",2010
+Costa Rica,"12,480",2010
+El Salvador,"5,176",2010
+Guatemala,"7,514",2010
+Honduras,"4,851",2010
+Mexico,"741,918",2010
+Nicaragua,"3,298",2010
+Panama,"11,956",2010
+South America,"96,022",2010
+Argentina,"4,450",2010
+Bolivia (Plurinational State of),"4,206",2010
+Brazil,"23,308",2010
+Chile,"4,902",2010
+Colombia,"17,587",2010
+Ecuador,"18,426",2010
+Falkland Islands (Malvinas),17,2010
+French Guiana,,2010
+Guyana,"1,071",2010
+Paraguay,"1,615",2010
+Peru,"9,115",2010
+Suriname,,2010
+Uruguay,604,2010
+Venezuela (Bolivarian Republic of),"10,721",2010
+NORTHERN AMERICA,"267,047",2010
+Bermuda,"3,481",2010
+Canada,"263,470",2010
+Greenland,31,2010
+Saint Pierre and Miquelon,65,2010
+United States of America,,2010
+OCEANIA,"130,980",2010
+Australia/New Zealand,"105,124",2010
+Australia,"85,330",2010
+New Zealand,"19,794",2010
+Melanesia,752,2010
+Fiji,,2010
+New Caledonia,,2010
+Papua New Guinea,721,2010
+Solomon Islands,31,2010
+Vanuatu,,2010
+Micronesia,"21,661",2010
+Guam,"18,343",2010
+Kiribati,40,2010
+Marshall Islands,"1,346",2010
+Micronesia (Fed. States of),176,2010
+Nauru,,2010
+Northern Mariana Islands,"1,395",2010
+Palau,361,2010
+Polynesia,"3,443",2010
+American Samoa,"2,553",2010
+Cook Islands,29,2010
+French Polynesia,441,2010
+Niue,20,2010
+Samoa,381,2010
+Tokelau,,2010
+Tonga,,2010
+Tuvalu,19,2010
+Wallis and Futuna Islands,,2010
+WORLD,"2,919,168",2015
+More developed regions,"1,195,077",2015
+Less developed regions,"1,724,091",2015
+Least developed countries,"58,117",2015
+Less developed regions excluding least developed countries,"1,665,974",2015
+High-income countries,"1,615,382",2015
+Middle-income countries,"1,290,528",2015
+Upper-middle-income countries,"1,132,926",2015
+Lower-middle-income countries,"157,602",2015
+Low-income countries,"11,465",2015
+Sub-Saharan Africa,"28,980",2015
+AFRICA,"49,056",2015
+Eastern Africa,"3,319",2015
+Burundi,,2015
+Comoros,,2015
+Djibouti,,2015
+Eritrea,,2015
+Ethiopia,,2015
+Kenya,,2015
+Madagascar,,2015
+Malawi,,2015
+Mauritius,49,2015
+Mayotte,,2015
+Mozambique,,2015
+Réunion,,2015
+Rwanda,,2015
+Seychelles,,2015
+Somalia,,2015
+South Sudan,,2015
+Uganda,994,2015
+United Republic of Tanzania,"1,291",2015
+Zambia,985,2015
+Zimbabwe,,2015
+Middle Africa,"1,907",2015
+Angola,,2015
+Cameroon,837,2015
+Central African Republic,548,2015
+Chad,,2015
+Congo,166,2015
+Democratic Republic of the Congo,,2015
+Equatorial Guinea,,2015
+Gabon,356,2015
+Sao Tome and Principe,,2015
+Northern Africa,"20,076",2015
+Algeria,"1,046",2015
+Egypt,"6,730",2015
+Libya,"9,885",2015
+Morocco,"1,806",2015
+Sudan,,2015
+Tunisia,609,2015
+Western Sahara,,2015
+Southern Africa,"18,417",2015
+Botswana,"1,277",2015
+Lesotho,89,2015
+Namibia,992,2015
+South Africa,"15,803",2015
+Swaziland,256,2015
+Western Africa,"5,337",2015
+Benin,,2015
+Burkina Faso,,2015
+Cabo Verde,351,2015
+Côte d'Ivoire,,2015
+Gambia,,2015
+Ghana,602,2015
+Guinea,301,2015
+Guinea-Bissau,311,2015
+Liberia,517,2015
+Mali,"1,728",2015
+Mauritania,108,2015
+Niger,,2015
+Nigeria,,2015
+Saint Helena,,2015
+Senegal,773,2015
+Sierra Leone,464,2015
+Togo,182,2015
+ASIA,"415,325",2015
+Central Asia,283,2015
+Kazakhstan,,2015
+Kyrgyzstan,,2015
+Tajikistan,283,2015
+Turkmenistan,,2015
+Uzbekistan,,2015
+Eastern Asia,"163,258",2015
+China,"26,777",2015
+China Hong Kong SAR,"13,250",2015
+China Macao SAR,,2015
+Dem. People's Republic of Korea,"1,028",2015
+Japan,"54,872",2015
+Mongolia,709,2015
+Republic of Korea,"66,622",2015
+Southern Asia,"49,519",2015
+Afghanistan,,2015
+Bangladesh,"46,008",2015
+Bhutan,136,2015
+India,"2,722",2015
+Iran (Islamic Republic of),,2015
+Maldives,44,2015
+Nepal,,2015
+Pakistan,,2015
+Sri Lanka,609,2015
+South-Eastern Asia,"72,442",2015
+Brunei Darussalam,153,2015
+Cambodia,195,2015
+Indonesia,"12,077",2015
+Lao People's Democratic Republic,,2015
+Malaysia,,2015
+Myanmar,,2015
+Philippines,"35,564",2015
+Singapore,"17,161",2015
+Thailand,"4,055",2015
+Timor-Leste,73,2015
+Viet Nam,"3,164",2015
+Western Asia,"129,823",2015
+Armenia,,2015
+Azerbaijan,,2015
+Bahrain,"1,120",2015
+Cyprus,"3,456",2015
+Georgia,107,2015
+Iraq,,2015
+Israel,"79,082",2015
+Jordan,"2,539",2015
+Kuwait,"4,763",2015
+Lebanon,686,2015
+Oman,,2015
+Qatar,"2,280",2015
+Saudi Arabia,,2015
+State of Palestine,"7,826",2015
+Syrian Arab Republic,,2015
+Turkey,"13,634",2015
+United Arab Emirates,"14,330",2015
+Yemen,,2015
+EUROPE,"708,989",2015
+Eastern Europe,"40,164",2015
+Belarus,87,2015
+Bulgaria,"2,788",2015
+Czechia,"3,502",2015
+Hungary,"7,777",2015
+Poland,"13,671",2015
+Republic of Moldova,,2015
+Romania,"2,876",2015
+Russian Federation,"4,588",2015
+Slovakia,"2,137",2015
+Ukraine,"2,738",2015
+Northern Europe,"271,612",2015
+Channel Islands,,2015
+Denmark,"12,871",2015
+Estonia,557,2015
+Faeroe Islands,41,2015
+Finland,"5,454",2015
+Iceland,"2,046",2015
+Ireland,"30,690",2015
+Isle of Man,276,2015
+Latvia,597,2015
+Lithuania,609,2015
+Norway,"17,568",2015
+Sweden,"19,691",2015
+United Kingdom,"181,212",2015
+Southern Europe,"134,825",2015
+Albania,"2,373",2015
+Andorra,99,2015
+Bosnia and Herzegovina,,2015
+Croatia,"1,616",2015
+Gibraltar,,2015
+Greece,"23,249",2015
+Holy See,,2015
+Italy,"54,679",2015
+Malta,"1,403",2015
+Montenegro,317,2015
+Portugal,"6,957",2015
+San Marino,,2015
+Serbia,"1,286",2015
+Slovenia,555,2015
+Spain,"42,291",2015
+TFYR Macedonia,,2015
+Western Europe,"262,388",2015
+Austria,"11,054",2015
+Belgium,"12,618",2015
+France,"54,833",2015
+Germany,"115,973",2015
+Liechtenstein,131,2015
+Luxembourg,"1,147",2015
+Monaco,,2015
+Netherlands,"28,285",2015
+Switzerland,"38,347",2015
+LATIN AMERICA AND THE CARIBBEAN,"1,288,696",2015
+Caribbean,"246,756",2015
+Anguilla,454,2015
+Antigua and Barbuda,"2,626",2015
+Aruba,612,2015
+Bahamas,"9,664",2015
+Barbados,"1,034",2015
+British Virgin Islands,"1,722",2015
+Caribbean Netherlands,588,2015
+Cayman Islands,"2,607",2015
+Cuba,500,2015
+Curaçao,330,2015
+Dominica,623,2015
+Dominican Republic,"25,814",2015
+Grenada,,2015
+Guadeloupe,496,2015
+Haiti,"3,328",2015
+Jamaica,"6,193",2015
+Martinique,,2015
+Montserrat,121,2015
+Puerto Rico,"165,147",2015
+Saint Kitts and Nevis,,2015
+Saint Lucia,663,2015
+Saint Vincent and the Grenadines,338,2015
+Sint Maarten (Dutch part),312,2015
+Trinidad and Tobago,"5,798",2015
+Turks and Caicos Islands,925,2015
+United States Virgin Islands,"16,861",2015
+Central America,"931,722",2015
+Belize,"4,036",2015
+Costa Rica,"12,673",2015
+El Salvador,"5,397",2015
+Guatemala,"8,643",2015
+Honduras,"6,799",2015
+Mexico,"876,528",2015
+Nicaragua,"3,606",2015
+Panama,"14,040",2015
+South America,"110,218",2015
+Argentina,"5,135",2015
+Bolivia (Plurinational State of),"4,896",2015
+Brazil,"21,068",2015
+Chile,"8,058",2015
+Colombia,"19,690",2015
+Ecuador,"26,802",2015
+Falkland Islands (Malvinas),19,2015
+French Guiana,,2015
+Guyana,"1,255",2015
+Paraguay,"1,576",2015
+Peru,"9,853",2015
+Suriname,,2015
+Uruguay,624,2015
+Venezuela (Bolivarian Republic of),"11,242",2015
+NORTHERN AMERICA,"298,273",2015
+Bermuda,"3,527",2015
+Canada,"294,644",2015
+Greenland,39,2015
+Saint Pierre and Miquelon,63,2015
+United States of America,,2015
+OCEANIA,"158,829",2015
+Australia/New Zealand,"132,943",2015
+Australia,"110,643",2015
+New Zealand,"22,300",2015
+Melanesia,760,2015
+Fiji,,2015
+New Caledonia,,2015
+Papua New Guinea,731,2015
+Solomon Islands,29,2015
+Vanuatu,,2015
+Micronesia,"21,723",2015
+Guam,"18,508",2015
+Kiribati,40,2015
+Marshall Islands,"1,430",2015
+Micronesia (Fed. States of),172,2015
+Nauru,,2015
+Northern Mariana Islands,"1,249",2015
+Palau,324,2015
+Polynesia,"3,403",2015
+American Samoa,"2,548",2015
+Cook Islands,32,2015
+French Polynesia,419,2015
+Niue,20,2015
+Samoa,367,2015
+Tokelau,,2015
+Tonga,,2015
+Tuvalu,17,2015
+Wallis and Futuna Islands,,2015
+WORLD,"3,016,685",2017
+More developed regions,"1,260,127",2017
+Less developed regions,"1,756,558",2017
+Least developed countries,"60,076",2017
+Less developed regions excluding least developed countries,"1,696,482",2017
+High-income countries,"1,676,922",2017
+Middle-income countries,"1,325,618",2017
+Upper-middle-income countries,"1,165,385",2017
+Lower-middle-income countries,"160,233",2017
+Low-income countries,"12,317",2017
+Sub-Saharan Africa,"30,800",2017
+AFRICA,"50,170",2017
+Eastern Africa,"3,985",2017
+Burundi,,2017
+Comoros,,2017
+Djibouti,,2017
+Eritrea,,2017
+Ethiopia,,2017
+Kenya,,2017
+Madagascar,,2017
+Malawi,,2017
+Mauritius,49,2017
+Mayotte,,2017
+Mozambique,,2017
+Réunion,,2017
+Rwanda,,2017
+Seychelles,,2017
+Somalia,,2017
+South Sudan,,2017
+Uganda,"1,404",2017
+United Republic of Tanzania,"1,538",2017
+Zambia,994,2017
+Zimbabwe,,2017
+Middle Africa,"2,024",2017
+Angola,,2017
+Cameroon,889,2017
+Central African Republic,596,2017
+Chad,,2017
+Congo,168,2017
+Democratic Republic of the Congo,,2017
+Equatorial Guinea,,2017
+Gabon,371,2017
+Sao Tome and Principe,,2017
+Northern Africa,"19,370",2017
+Algeria,"1,085",2017
+Egypt,"5,688",2017
+Libya,"10,106",2017
+Morocco,"1,872",2017
+Sudan,,2017
+Tunisia,619,2017
+Western Sahara,,2017
+Southern Africa,"19,365",2017
+Botswana,"1,322",2017
+Lesotho,91,2017
+Namibia,973,2017
+South Africa,"16,713",2017
+Swaziland,266,2017
+Western Africa,"5,426",2017
+Benin,,2017
+Burkina Faso,,2017
+Cabo Verde,359,2017
+Côte d'Ivoire,,2017
+Gambia,,2017
+Ghana,629,2017
+Guinea,292,2017
+Guinea-Bissau,325,2017
+Liberia,448,2017
+Mali,"1,815",2017
+Mauritania,109,2017
+Niger,,2017
+Nigeria,,2017
+Saint Helena,,2017
+Senegal,779,2017
+Sierra Leone,484,2017
+Togo,186,2017
+ASIA,"423,718",2017
+Central Asia,281,2017
+Kazakhstan,,2017
+Kyrgyzstan,,2017
+Tajikistan,281,2017
+Turkmenistan,,2017
+Uzbekistan,,2017
+Eastern Asia,"166,791",2017
+China,"27,365",2017
+China Hong Kong SAR,"13,457",2017
+China Macao SAR,,2017
+Dem. People's Republic of Korea,"1,038",2017
+Japan,"57,066",2017
+Mongolia,732,2017
+Republic of Korea,"67,133",2017
+Southern Asia,"50,594",2017
+Afghanistan,,2017
+Bangladesh,"47,103",2017
+Bhutan,139,2017
+India,"2,694",2017
+Iran (Islamic Republic of),,2017
+Maldives,45,2017
+Nepal,,2017
+Pakistan,,2017
+Sri Lanka,613,2017
+South-Eastern Asia,"74,654",2017
+Brunei Darussalam,161,2017
+Cambodia,201,2017
+Indonesia,"12,355",2017
+Lao People's Democratic Republic,,2017
+Malaysia,,2017
+Myanmar,,2017
+Philippines,"36,683",2017
+Singapore,"17,699",2017
+Thailand,"4,174",2017
+Timor-Leste,74,2017
+Viet Nam,"3,307",2017
+Western Asia,"131,398",2017
+Armenia,,2017
+Azerbaijan,,2017
+Bahrain,"1,149",2017
+Cyprus,"3,401",2017
+Georgia,109,2017
+Iraq,,2017
+Israel,"77,132",2017
+Jordan,"2,638",2017
+Kuwait,"5,190",2017
+Lebanon,674,2017
+Oman,,2017
+Qatar,"2,325",2017
+Saudi Arabia,,2017
+State of Palestine,"7,771",2017
+Syrian Arab Republic,,2017
+Turkey,"16,111",2017
+United Arab Emirates,"14,898",2017
+Yemen,,2017
+EUROPE,"754,236",2017
+Eastern Europe,"42,839",2017
+Belarus,86,2017
+Bulgaria,"3,204",2017
+Czechia,"3,643",2017
+Hungary,"8,216",2017
+Poland,"14,320",2017
+Republic of Moldova,,2017
+Romania,"3,793",2017
+Russian Federation,"4,591",2017
+Slovakia,"2,221",2017
+Ukraine,"2,765",2017
+Northern Europe,"286,310",2017
+Channel Islands,,2017
+Denmark,"14,186",2017
+Estonia,552,2017
+Faeroe Islands,42,2017
+Finland,"5,951",2017
+Iceland,"2,123",2017
+Ireland,"33,006",2017
+Isle of Man,279,2017
+Latvia,577,2017
+Lithuania,558,2017
+Norway,"18,805",2017
+Sweden,"19,740",2017
+United Kingdom,"190,491",2017
+Southern Europe,"136,042",2017
+Albania,"2,393",2017
+Andorra,96,2017
+Bosnia and Herzegovina,,2017
+Croatia,"1,573",2017
+Gibraltar,,2017
+Greece,"22,939",2017
+Holy See,,2017
+Italy,"55,640",2017
+Malta,"1,505",2017
+Montenegro,272,2017
+Portugal,"7,080",2017
+San Marino,,2017
+Serbia,"1,277",2017
+Slovenia,575,2017
+Spain,"42,692",2017
+TFYR Macedonia,,2017
+Western Europe,"289,045",2017
+Austria,"12,172",2017
+Belgium,"12,779",2017
+France,"54,724",2017
+Germany,"138,039",2017
+Liechtenstein,135,2017
+Luxembourg,"1,162",2017
+Monaco,,2017
+Netherlands,"30,259",2017
+Switzerland,"39,775",2017
+LATIN AMERICA AND THE CARIBBEAN,"1,313,319",2017
+Caribbean,"244,131",2017
+Anguilla,463,2017
+Antigua and Barbuda,"2,678",2017
+Aruba,616,2017
+Bahamas,"10,071",2017
+Barbados,"1,039",2017
+British Virgin Islands,"1,796",2017
+Caribbean Netherlands,610,2017
+Cayman Islands,"2,676",2017
+Cuba,492,2017
+Curaçao,336,2017
+Dominica,628,2017
+Dominican Republic,"26,397",2017
+Grenada,,2017
+Guadeloupe,500,2017
+Haiti,"3,412",2017
+Jamaica,"6,237",2017
+Martinique,,2017
+Montserrat,122,2017
+Puerto Rico,"161,025",2017
+Saint Kitts and Nevis,,2017
+Saint Lucia,669,2017
+Saint Vincent and the Grenadines,339,2017
+Sint Maarten (Dutch part),323,2017
+Trinidad and Tobago,"5,836",2017
+Turks and Caicos Islands,998,2017
+United States Virgin Islands,"16,868",2017
+Central America,"955,964",2017
+Belize,"4,429",2017
+Costa Rica,"12,750",2017
+El Salvador,"5,432",2017
+Guatemala,"8,993",2017
+Honduras,"6,866",2017
+Mexico,"899,311",2017
+Nicaragua,"3,686",2017
+Panama,"14,497",2017
+South America,"113,224",2017
+Argentina,"5,327",2017
+Bolivia (Plurinational State of),"5,096",2017
+Brazil,"21,626",2017
+Chile,"8,386",2017
+Colombia,"20,140",2017
+Ecuador,"27,601",2017
+Falkland Islands (Malvinas),19,2017
+French Guiana,,2017
+Guyana,"1,266",2017
+Paraguay,"1,616",2017
+Peru,"10,100",2017
+Suriname,,2017
+Uruguay,630,2017
+Venezuela (Bolivarian Republic of),"11,417",2017
+NORTHERN AMERICA,"309,931",2017
+Bermuda,"3,495",2017
+Canada,"306,334",2017
+Greenland,39,2017
+Saint Pierre and Miquelon,63,2017
+United States of America,,2017
+OCEANIA,"165,311",2017
+Australia/New Zealand,"138,894",2017
+Australia,"116,001",2017
+New Zealand,"22,893",2017
+Melanesia,797,2017
+Fiji,,2017
+New Caledonia,,2017
+Papua New Guinea,769,2017
+Solomon Islands,28,2017
+Vanuatu,,2017
+Micronesia,"22,209",2017
+Guam,"18,979",2017
+Kiribati,41,2017
+Marshall Islands,"1,433",2017
+Micronesia (Fed. States of),173,2017
+Nauru,,2017
+Northern Mariana Islands,"1,256",2017
+Palau,327,2017
+Polynesia,"3,411",2017
+American Samoa,"2,553",2017
+Cook Islands,32,2017
+French Polynesia,427,2017
+Niue,19,2017
+Samoa,363,2017
+Tokelau,,2017
+Tonga,,2017
+Tuvalu,17,2017
+Wallis and Futuna Islands,,2017
