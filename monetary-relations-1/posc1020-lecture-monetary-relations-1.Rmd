@@ -1,0 +1,500 @@
+---
+title: "The Fundamentals of Exchange Rates"
+subtitle: POSC 1020  -- Introduction to International Relations
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: false
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadstuff, include=FALSE}
+knitr::opts_chunk$set(cache=FALSE)
+
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(stevemisc)
+library(scales)
+library(WDI)
+
+# Arg <- read_csv("~/Dropbox/teaching/posc1020/monetary-relations-1/RBARBIS.csv")
+# Mex <- read_csv("~/Dropbox/teaching/posc1020/monetary-relations-1/EXMXUS.csv", na = c("."))
+# EU <- read_csv("~/Dropbox/teaching/posc1020/monetary-relations-1/EXUSEU.csv")
+
+library(fredr)
+
+
+
+recessions = read.table(textConnection(
+"Peak, Trough
+1857-06-01, 1858-12-01
+1860-10-01, 1861-06-01
+1865-04-01, 1867-12-01
+1869-06-01, 1870-12-01
+1873-10-01, 1879-03-01
+1882-03-01, 1885-05-01
+1887-03-01, 1888-04-01
+1890-07-01, 1891-05-01
+1893-01-01, 1894-06-01
+1895-12-01, 1897-06-01
+1899-06-01, 1900-12-01
+1902-09-01, 1904-08-01
+1907-05-01, 1908-06-01
+1910-01-01, 1912-01-01
+1913-01-01, 1914-12-01
+1918-08-01, 1919-03-01
+1920-01-01, 1921-07-01
+1923-05-01, 1924-07-01
+1926-10-01, 1927-11-01
+1929-08-01, 1933-03-01
+1937-05-01, 1938-06-01
+1945-02-01, 1945-10-01
+1948-11-01, 1949-10-01
+1953-07-01, 1954-05-01
+1957-08-01, 1958-04-01
+1960-04-01, 1961-02-01
+1969-12-01, 1970-11-01
+1973-11-01, 1975-03-01
+1980-01-01, 1980-07-01
+1981-07-01, 1982-11-01
+1990-07-01, 1991-03-01
+2001-03-01, 2001-11-01
+2007-12-01, 2009-06-01"), sep=',',
+colClasses=c('Date', 'Date'), header=TRUE) 
+
+
+```
+
+
+# Introduction
+### Puzzle(s) for Today
+
+*I hear a lot about monetary relations and exchange rates. What are those and why do they matter?*
+
+###
+
+![Argentina in the midst of a severe wave of riots in Dec. 2001](arg-riots-2001.jpg)
+
+### What Happened in Argentina?
+
+Argentina seems like one of the most peaceful countries in the region. A timeline of what happened:
+
+- Country had *severe* inflation problems.
+    - Inflation even peaked at 3,000% in 1989.
+- Corrections made largely came from Washington and included:
+    - Convertibility Plan of 1991 that pegged peso 1-to-1 to USD.
+    - Lower trade barriers, privatization of state-owned enterprises.
+    
+This made Argentina an attractive foreign market.
+
+- Convertibility made international transactions easy.
+- Also made it easier to borrow since loans were denominated in USD.
+
+### What Happened in Argentina?
+
+However, Argentina's fixed convertibility plan soon ran into a brick wall.
+
+- Mexican peso crisis (1995) had an observable but contained effect.
+- Currency crises in Asia/Brazil led to Brazil floating its currency.
+    - This depreciated the real, helping Brazil, but hurting Argentina's producers.
+- USD started to appreciate in value, raising Argentina's borrowing costs.
+
+Convertibility (i.e. pegging peso to the dollar) facilitated Argentina's earlier recovery but it soon became a straitjacket.
+
+### The Crisis in 2001
+
+Argentina's depression starts in 1998 but it become a full crisis in 2001.
+
+- Hundreds of thousands rioted in the streets, leaving dozens dead.
+    - Rioters were mostly middle-class who found their debts/expenses (e.g. mortgages) were even more exorbitant.
+- President resigned and was air-lifted from his palace to avoid being killed.
+- Argentina defaulted on $93-billion in debts, the largest default in history.
+
+###
+
+```{r arg-total-reserves-1995-2003, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+fredr(series_id = "TRESEGARM052N",
+                      observation_start = as.Date("1995-01-01"),
+             observation_end = as.Date("2003-01-01")) %>% 
+  mutate(date = as.Date(date),
+         reserves = value/1000000000) %>% tbl_df() %>%
+  ggplot(.,aes(date, reserves)) + geom_line(size=1.1) + theme_steve_web() +
+  geom_ribbon(aes(ymin=-Inf, ymax=reserves),
+              alpha=0.3, fill="#619CFF") +
+  xlab("") + ylab("Total Reserves (in Dollars, Excluding Gold)") +
+  scale_x_date(date_breaks = "1 year", date_minor_breaks = "1 month", date_labels = "%Y") +
+  labs(caption = "Data: International Monetary Fund via Federal Reserve Bank of St. Louis",
+       title = "Argentina Lost Around 45% of its Dollar Reserves in the First Seven Months of 2001",
+       subtitle = "International investors started to lose faith in the dollar peg around the time Argentina's lawmakers started to tinker with the exchange rate.")
+
+
+```
+
+
+
+###
+
+```{r arg-gdp-growth-1990-2002-oecd, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+#fredr_series(series_id = "MKTGDPARA646NWDB",
+#                      observation_start = "1990-01-01",
+#             observation_end = "2002-01-01") %>% data.frame %>%
+#  data.frame(Date = rownames(.), .) %>% 
+#  mutate(Date = as.Date(Date),
+#         gdp = MKTGDPARA646NWDB/1000000000) %>% tbl_df() %>%
+#  ggplot(.,aes(Date, gdp)) + geom_line(size=1.1) + theme_steve_web() +
+#  geom_ribbon(aes(ymin=-Inf, ymax=gdp),
+#              alpha=0.3, fill="#619CFF") +
+#  xlab("Year") + ylab("Real Effective Exchange Rate Index") +
+#  scale_x_date(date_breaks = "2 years",
+#               date_labels = "%Y") +
+#  labs(caption = "Data: Bank for International Settlements via Federal Reserve Bank of St. Louis",
+#       title = "Argentina's Peso Tumbled in 2001 and Has Yet to Recover",
+#       subtitle = "Losing access to foreign finance played a huge role in the depreciation of the Argentinian peso.")
+
+WDI(country=c("AR"), indicator = "NY.GDP.MKTP.KD.ZG", start=1990, end=2002) %>%
+  rename(gdpgrowth = "NY.GDP.MKTP.KD.ZG", Country = country) %>%
+  mutate(gdpgrowth = round(gdpgrowth, 2),
+         lab = paste0(gdpgrowth,"%")) %>%
+  ggplot(.,aes(year, gdpgrowth)) + theme_steve_web() +
+  geom_text(aes(label=lab), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3.5,
+            family = "Open Sans") +
+  geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
+  scale_x_continuous(breaks = seq(1990, 2002, by =1)) +
+  xlab("") + ylab("GDP Growth (Annual %)") +
+  labs(caption = "Data: OECD National Accounts Data via World Bank API.",
+       title = "Argentina's Depression Started in 1999 and Became a Full Crisis in December 2001",
+       subtitle = "The country's GDP shrunk an astounding 67% from 1998 to 2002. By comparison, the U.S. Great Depression was a loss of about 45% of GDP from 1929 to 1933.") +
+  theme(legend.position = "bottom")
+
+```
+
+###
+
+```{r arg-unemployment-rate-1990-present, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+WDI(country=c("AR"), indicator = "SL.UEM.TOTL.ZS", start=1990, end=year(today())) %>%
+  rename(unemp = "SL.UEM.TOTL.ZS", Country = country) %>%
+  mutate(roundunemp = round(unemp, 1),
+         lab = paste0(roundunemp, "%")) %>%
+  ggplot(.,aes(year, unemp)) + theme_steve_web() +
+  geom_text(aes(label=lab), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3.5,
+            family = "Open Sans") +
+  geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
+  scale_x_continuous(breaks = seq(1980, 2016, by =2)) +
+  xlab("") + ylab("Modeled Unemployment Rate") +
+  labs(caption = "Data: International Labour Organization via World Bank API.",
+       title = "Argentina's Unemployment Rate Surged to 20% During its 2001 Depression",
+       subtitle = "The spike followed a similar one as a result of a related 1995 banking crisis.") +
+  theme(legend.position = "bottom")
+
+```
+
+###
+
+```{r arg-inflation-1996-2013-imf, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+fredr(series_id = "FPCPITOTLZGARG",
+                      observation_start = as.Date("1996-01-01"),
+             observation_end = as.Date("2013-01-01")) %>%
+  mutate(date = as.Date(date),
+         cpi = value/100,
+         lab = paste0(round(value, 1), "%")) %>% tbl_df() %>%
+  ggplot(.,aes(year(date), cpi)) + theme_steve_web() +
+  geom_text(aes(label=lab), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3.5,
+            family = "Open Sans") +
+  geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
+  scale_x_continuous(breaks = seq(1996, 2014, by =2)) +
+  xlab("") + ylab("Consumer Price Index (Annual %)") +
+  labs(caption = "Data: IMF via Federal Reserve Bank of St. Louis API.",
+       title = "Inflation Increased to Over 25% from the Previous Year After 2001",
+       subtitle = "Country experts know inflation has historically been the country's most severe recurring problem.")
+
+
+
+# WDI(country=c("AR"), indicator = "FP.CPI.TOTL.ZG", start=1996, end=2013) 
+#   rename(cpi = "FP.CPI.TOTL.ZG", Country = country) %>%
+#   mutate(roundcpi = round(cpi, 2)) %>%
+#   ggplot(.,aes(year, cpi)) + theme_steve_web() +
+#   geom_text(aes(label=roundcpi), vjust=-.5, colour="black",
+#             position=position_dodge(.9), size=3.5,
+#             family = "Open Sans") +
+#  # geom_line(size=1.1) +
+#   geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
+#   #geom_ribbon(aes(ymin=0, ymax=cpi),
+#   #            alpha=0.3, fill="#619CFF") +
+#   scale_x_continuous(breaks = seq(1996, 2014, by =2)) +
+#   xlab("") + ylab("Consumer Price Index (Annual %)") +
+#   labs(caption = "Data: IMF via World Bank API.",
+#        title = "Inflation Increased to Over 25% from the Previous Year After 2001",
+#        subtitle = "Country experts know inflation has historically been the country's most severe recurring problem.")
+
+```
+
+
+###
+
+```{r arg-peso-reer-1994-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+
+
+fredr(series_id = "RBARBIS",
+                      observation_start = as.Date("1994-01-01")) %>%
+  ggplot(.,aes(date, value)) + geom_line(size=1.1) + theme_steve_web() +
+  geom_ribbon(aes(ymin=-Inf, ymax=value),
+              alpha=0.3, fill="#619CFF") +
+  xlab("") + ylab("Real Effective Exchange Rate Index") +
+  scale_x_date(date_breaks = "2 years",
+               date_labels = "%Y") +
+  labs(caption = "Data: Bank for International Settlements via Federal Reserve Bank of St. Louis",
+       title = "Argentina's Peso Tumbled in 2001 and Has Yet to Recover",
+       subtitle = "Losing access to foreign finance played a huge role in the depreciation of the Argentinian peso.")
+
+```
+
+
+### The Problem of Exchange Rates
+
+The crisis has other factors (e.g. contagion, fiscal mismanagement, banking regulations) but its core is the problem of exchange rates.
+
+# What Are Exchange Rates? Why Do They Matter?
+### What Are Exchange Rates?
+
+A national monetary system is a classic public good.
+
+- Allows for convenient ability to exchange goods/services.
+- Little incentive for private firms to provide it.
+
+However, it exists in relation to other national currencies.
+
+- The **exchange rate** is the price at which one currency is traded/exchanged for another.
+
+### Appreciation and Depreciation
+
+Exchange rates are variable.
+
+- **Appreciation**: one currency increases in value relative to others.
+- **Depreciation**: one currency decreases in value relative to others.
+
+When we say Mexico's peso is depreciating, it means one U.S. dollar can buy more pesos.
+
+- Alternatively: more pesos are required to buy a dollar.
+
+###
+
+```{r usa-mex-exchange-rate-1993-present-fed, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+fredr(series_id = "EXMXUS",
+                      observation_start = as.Date("1993-01-01")) %>%
+  ggplot(.,aes(date, value)) + 
+    geom_line(size=1.1) + 
+    geom_ribbon(aes(ymin=-Inf, ymax=value),
+              alpha=0.3, fill="#619CFF") +
+    theme_steve_web() +
+  geom_rect(data=filter(recessions, year(Peak) > 1993), inherit.aes=F, aes(xmin=Peak, xmax=Trough, ymin=-Inf, ymax=+Inf),  alpha=0.4) + 
+  scale_x_date(date_breaks = "2 years", date_minor_breaks = "1 year", date_labels = "%Y") +
+  xlab("") + ylab("The Number of Pesos Required to Obtain a Dollar") +
+  labs(caption = "Data: Board of Governors of the Federal Reserve System (US). Shaded areas indicate U.S. recessions.",
+       title = "The Dollar Has Always Been Strong to the Mexican Peso",
+       subtitle = "Mexico dropped its previous peg (i.e. three new pesos to one USD) in 1995, which you can see in the first few years of the data.")
+
+```
+
+###
+
+```{r usa-euro-exchange-rate-1999-present-fed, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+fredr(series_id = "EXUSEU",
+                      observation_start = as.Date("1999-01-01")) %>%
+  ggplot(.,aes(date, value)) + geom_line(size=1.1) + theme_steve_web() +
+  geom_ribbon(aes(ymin=-Inf, ymax=value),
+              alpha=0.3, fill="#619CFF") +
+  xlab("") + ylab("The Number of U.S. Dollars Required to Obtain a Euro") +
+  geom_hline(yintercept = 1, linetype = "dashed", color="gray66") +
+  geom_rect(data=filter(recessions, year(Peak) > 1999), inherit.aes=F, aes(xmin=Peak, xmax=Trough, ymin=-Inf, ymax=+Inf), alpha=0.4) + 
+  scale_x_date(date_breaks = "2 years", date_minor_breaks = "1 year", date_labels = "%Y") +
+  labs(caption = "Data: Board of Governors of the Federal Reserve System (US). Shaded areas indicate U.S. recessions.",
+       title = "The Euro is Usually Worth More Than the Dollar",
+       subtitle = "A dollar and 15 cents bought one Euro to open 1999 and, despite obvious fluctuation, that's about the exchange rate now.")
+
+```
+
+## Determing Currency Values
+### How Are Currency Values Determined?
+
+Generally: through familiar laws of supply and demand.
+
+- Of note here: the importance of interest rates.
+- Higher interest rates = more demand to invest
+- But, to invest, you need the national currency.
+
+Central banks (e.g. the Federal Reserve in the U.S.) regulate exchange rates through various means.
+
+- Raising or lowering interest rates
+- Changing the quantity of money in circulation
+
+### Allowing Exchange Rates to Vary
+
+Two general strategies for exchange rates: to "fix" or "float."
+
+- Fixed exchange rate: government commits to keep currency at or around specific value.
+    - Nowadays: usually set against another currency. Historically: in gold (i.e. "gold standard")
+- Floating exchange rate: currency changes at market value, more or less freely.
+
+There are intermediate steps.
+
+- Bretton Woods monetary system (1945-1973, "fixed but adjustable")
+
+### Fixed Rate Regimes
+
+Some fixed rate regimes are pegged to other currencies
+
+- Bosnia (1 Bosnian mark = .5 euros, a la Dayton)
+- Denmark (7 kroner = 1 euro)
+- Saudi Arabia (1 USD = 3.75 riyals)
+
+Others are on other national currencies.
+
+- e.g. Ecuador, El Salvador, and Panama all use U.S. dollars
+ 
+## Who Cares About Exchange Rates?
+### Who Cares About Exchange Rates?
+
+Exchange rate policies create winners/losers. Each has tradeoffs for these actors.
+
+1. Governments
+2. Consumers/businesses
+
+### Governments and Exchange Rates
+
+Governments must balance multiple actors in adjusting exchange rates.
+
+- Fixed currency provides stability, which makes investment easier.
+- However, a government must commit itself to that exchange rate regime.
+- This hamstrings a government's ability to respond to recessions.
+
+Floating exchange rates give more flexibility, but also volatility.
+
+### Consumers and Businesses
+
+Even more difficulty follows in finding an ideal exchange rate in society. 
+
+- A strong currency allows citizens to buy more.
+- However, a strong currency puts producers at disadvantage with foreign competition.
+- A weak currency makes national products more competitive.
+- However, it makes consumers worse off and contributes to inflation.
+
+There is no particular reason why one is better for a country overall.
+
+### Consumers and Businesses
+
+The exchange rate policies depend on the nature of the economy, interests groups, and the political system.
+
+- In Europe: biggest cheerleaders for Euro came from smaller countries (e.g. BENELUX) and not the bigger ones (e.g. France, Italy)
+- In Latin America: countries most indebted to U.S. trade pegged to or outright adopted the dollar.
+
+In China: export-oriented economic planning led to overall renmibi devaluation to be competitive.
+
+- However, this makes China's emerging middle class worse off.
+- Related: China is presently pushing the value of the renmibi *up*, not *down*.
+
+
+
+###
+
+```{r usa-chn-reer-1980-2017, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+WDI(country=c("CN", "US"), indicator = "PX.REX.REER", start=1980, end=2017) %>%
+  rename(rer = "PX.REX.REER", Country = country) %>%
+  ggplot(.,aes(year, rer,linetype = Country, group=Country, color=Country)) +
+  theme_steve_web() +
+  geom_line(size=1.5) +
+  scale_x_continuous(breaks = seq(1980, 2015, by =5)) +
+  xlab("") + ylab("Real Effective Exchange Rate Index") +
+  labs(caption = "Data: IMF via World Bank API. Base year: 2010.",
+       title = "The Real Effective Exchange Rates for the Chinese Renmibi and the U.S. Dollar (1980-2017)",
+       subtitle = "China's currency depreciation strategy was obvious in the 1980s but is less evident now.")
+
+```
+
+###
+
+```{r usa-chn-exchange-rate-1980-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+# USRECD: recession data
+
+# recessions %>% filter(year(Peak) > 1980) -> recessions
+
+fredr(series_id = "USRECD",
+                      observation_start = as.Date("1981-01-01")) -> recession
+
+fredr(series_id = "EXCHUS",
+                      observation_start = as.Date("1981-01-01")) %>%
+  ggplot(.,aes(date, value)) + 
+    geom_line(size=1.1) + 
+    geom_ribbon(aes(ymin=-Inf, ymax=value),
+              alpha=0.3, fill="#619CFF") +
+    theme_steve_web() + 
+  geom_rect(data=filter(recessions, year(Peak) > 1980), inherit.aes=F, aes(xmin=Peak, xmax=Trough, ymin=-Inf, ymax=+Inf),  alpha=0.4) + 
+  scale_x_date(date_breaks = "2 years", date_minor_breaks = "1 year", date_labels = "%Y") +
+  xlab("") + ylab("The Number of Renmibi Required to Obtain a Dollar") +
+  labs(caption = "Data: Board of Governors of the Federal Reserve System (US). Shaded areas indicate U.S. recessions.",
+       title = "China's Currency Tango With the U.S. Is Even More Pronounced in the 1990s",
+       subtitle = "China pegged the RMB to the dollar at 8.28 in 1994 and held that peg until July 2005.")
+
+```
+
+### An Aside: A Strong Dollar or Weak Dollar?
+
+A weak dollar is useful if you're concerned about:
+
+- Increasing exports
+- Economic recovery amid downturns
+- Current account imbalances
+
+### An Aside: A Strong Dollar or Weak Dollar?
+
+Some pitfalls of a weak dollar:
+
+- Dollar's centrality in global finance requires faith in its value.
+    - Without this, U.S. borrowing costs go up substantially.
+- Weak dollars could lead to higher interest rates and raise borrowing costs.
+    - i.e. it could actually slow economic recovery.
+- Artificial depreciation could lead to reprisals/trade wars.
+
+A strong dollar increases purchasing power and is arguably a critical American interest.
+
+# Conclusion
+### Conclusion
+
+Monetary policy is an obtuse topic with important implications for your life.
+
+- Wealthier/bigger states prefer some kind of flexibility in their monetary policy.
+- Is a "strong" dollar better than a "weak" one? Depends on what you want.
