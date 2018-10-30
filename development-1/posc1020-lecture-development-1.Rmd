@@ -1,0 +1,496 @@
+---
+title: "Why Are Some Countries Richer Than Others?"
+subtitle: POSC 1020  -- Introduction to International Relations
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: false
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadstuff, include=FALSE}
+
+
+library(WDI)
+library(tidyverse)
+library(stevemisc)
+# library(maddison)
+
+library(fredr)
+
+Colhist <- read_csv("~/Dropbox/data/icow/ICOW Colonial History 1.0/coldata100.csv")
+```
+
+
+# Introduction
+### Puzzle(s) for Today
+
+*Why are some countries rich and others poor?*
+
+###
+
+```{r gddpc-zambia-rok-1960-1975, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+WDI(country = c("ZM", "KR"), indicator = c("NY.GDP.PCAP.CD"),
+    start = 1960, end = 2016, extra = FALSE, cache = NULL) %>%
+  rename(gdppc = `NY.GDP.PCAP.CD`)  %>%
+  mutate(Country = country) %>%
+  filter(year <= 1975) %>%
+  ggplot(.,aes(year, gdppc, group = Country, color=Country, linetype = Country)) + theme_steve_web() +
+  geom_line(size=1.1) + 
+  scale_color_brewer(palette="Set1") +
+  labs(caption = "Data: World Bank",
+       title = "GDP per Capita for Zambia (Rhodesia) and South Korea, 1960-1975",
+       subtitle = "Zambia (Rhodesia) was much better endowed and had more growth potential in the 1960s.") +
+  scale_x_continuous(breaks = seq(1960, 1975, by = 1)) +
+  xlab("Year") + ylab("GDP per Capita")
+```
+
+###
+
+```{r gddpc-zambia-rok-1960-2015, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+WDI(country = c("ZM", "KR"), indicator = c("NY.GDP.PCAP.CD"),
+    start = 1960, end = 2016, extra = FALSE, cache = NULL) %>%
+  rename(gdppc = `NY.GDP.PCAP.CD`)  %>%
+  mutate(Country = country) %>%
+  ggplot(.,aes(year, gdppc, group = Country, color=Country, linetype = Country)) + theme_steve_web() +
+  geom_line(size=1.1) + 
+  scale_color_brewer(palette="Set1") +
+  labs(caption = "Data: World Bank",
+       title = "GDP per Capita for Zambia (Rhodesia) and South Korea, 1960-2016",
+       subtitle = "South Korea's development far exceeded what we would've expected in the 1960s.") +
+  scale_x_continuous(breaks = seq(1960, 2015, by = 5)) +
+  scale_y_continuous(labels = scales::comma) +
+  ylab("GDP per Capita") + xlab("Year")
+```
+
+# What Explains Development?
+### What Explains Development?
+
+1. Geography
+2. Domestic factors
+3. Domestic institutions
+
+### Geography
+
+Geography is less an argument for development and more a correlation. Factors include:
+
+- Southern Hemisphere
+- Landlocked territory
+- Tropical weather/excessive heat
+
+### Geography
+
+There are intuitive arguments here, but geographical explanations mask substantial variation within cases.
+
+- e.g. Chile and Australia in the Southern Hemisphere.
+- Austria, Kazakhstan, and Switzerland are thriving landlocked countries.
+- Oil states in the gulf and Sinagpore are hot/tropical and developed.
+
+### Domestic Factors
+
+Development follows important investment in infrastructure.
+
+- Physical infrastructure
+- Social infrastructure
+- Property rights
+
+Long-term growth requires a meaningful social investment.
+
+### Domestic Factors
+
+Sometimes key actors have no interest in that social investment.
+
+- i.e. wealthy elites see these public goods as redistribution.
+- Infrastructure may siphon cheap labor from the countryside.
+- Actors motivated by race/ethnicity unlikely to see interest in common good.
+
+### Domestic Institutions
+
+Countries better endowed in natural resources generally have less incentive to promote meaningful development.
+
+- We call this a "resource curse."
+
+Intuition behind the "resource curse":
+
+- States rich in primary commodities tend to generate most income from foreign receipts.
+- This decreases incentive to innovate to improve productive capacities.
+
+Recall our previous example of Rhodesia/Zimbabwe and South Korea.
+
+###
+
+```{r top-ten-oil-states, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+WDI(country = "all", indicator = c("NY.GDP.PCAP.CD", "NY.GDP.PETR.RT.ZS"),
+    start = 2015, end = 2015, extra = FALSE, cache = NULL) %>%
+  rename(gdppc = `NY.GDP.PCAP.CD`,
+         oilrent = `NY.GDP.PETR.RT.ZS`) %>%
+  arrange(-oilrent) %>%
+  filter(iso2c != "1A" & iso2c != "ZQ") %>%
+  head(10) %>%
+  mutate(oilround = mround2(oilrent/100),
+         mediangdp = median(gdppc)) %>%
+  ggplot(.,aes(reorder(country, -oilrent), oilrent)) + theme_steve_web() +
+  geom_bar(stat="identity", alpha=0.8, color="black") +
+  xlab("Country") + ylab("Oil Rents as Percentage of GDP") +
+  labs(title = "These Are the Ten Countries Whose Economies Are Most Indebted to Selling Oil Abroad (2015)",
+       subtitle = "There are some conspicuous states in here, but: the median GDP per capita is 8,108 USD and the median GDP (87 billion USD) is half the GDP of South Carolina (the 10th poorest U.S. state).",
+       caption = "Data: World Bank") +
+  geom_text(aes(label=oilround), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4, family = "Open Sans")
+```
+
+###
+
+```{r oil-states-vs-south-carolina, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+tribble(
+  ~Country, ~Metric, ~Value,
+  "South Carolina", "GDP per Capita\n(in thousands USD)", 37.1,
+  "Top Ten Oil Rent States (Median)",  "GDP per Capita\n(in thousands USD)", 8.1,
+  "South Carolina", "GDP\n(in billions USD)", 152.8,
+  "Top Ten Oil Rent States (Median)",  "GDP\n(in billions USD)", 87.8
+) %>%
+  ggplot(.,aes(Metric, Value, color=Metric)) + theme_steve_web() +
+  geom_bar(aes(fill = Country), position = "dodge", stat="identity", alpha = I(0.8),color = I("black")) +
+  theme(legend.title=element_blank()) +
+  scale_fill_brewer(palette="Set1") +
+  geom_text(aes(label=Value, group=Country), color="black",
+            position=position_dodge(width=.9), size=4, vjust = -.5, family="Open Sans") +
+  labs(title = "The Typical Economy and Quality of Life in These Countries Are Well Below Even South Carolina (the 10th Poorest State)",
+       subtitle = "The wealthiest per capita country in that list (Kuwait) would still be the poorest state in the U.S. by around 2,000 USD a head.")
+
+```
+
+###
+
+```{r resource-curse-illustration, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+WDI(country = "all", indicator = c("NY.GDP.MKTP.KD", "NY.GDP.PETR.RT.ZS"),
+    start = 1960, end = 2016, extra = FALSE, cache = NULL) %>%
+  rename(gdppc = `NY.GDP.MKTP.KD`,
+         oilrent = `NY.GDP.PETR.RT.ZS`)  %>%
+  mutate(Country = country,
+         loggdppc = log(gdppc + 1),
+         logoil = log(oilrent + 1)) %>%
+  ggplot(.,aes(logoil, loggdppc)) + theme_steve_web() +
+  geom_point(size=2) + geom_smooth(method="loess", size=2) +
+  labs(caption = "Data: World Bank",
+       title = "Less Developed Countries Tend to Be Better Endowed in Natural Resources",
+       subtitle = "We call this the ''resource curse'' in the development literature.") +
+#  scale_x_continuous(breaks = seq(1960, 2015, by = 5)) +
+  ylab("GDP (Logged)") + xlab("Oil Rents (Logged)")
+```
+
+# Are Rich Countries Responsible for LDCs?
+## The Legacy of Colonialism
+### Are Rich Countries Responsible for Problems in the Developing World?
+
+Short answer: yes, that's an important part of it.
+
+
+
+### The Legacy of Colonialism
+
+Colonialism has an important legacy on development.
+
+- Colonial powers were not interested in promoting meaningful development.
+- Colonial powers were also not benign and "enlightening."
+
+Colonialism is not a total explanation for LDC problems, but it's a real legacy.
+
+###
+
+```{r postcolonial-development-by-colony, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+Colhist %>%
+  filter(State != 2 & State != 20) %>%
+  filter(State < 900) %>%
+  filter(!(State >= 200 & State < 400)) %>%
+  filter(ColRuler != -9 & ColRuler != 710 & ColRuler != 740) %>%
+  select(State, Name, ColRuler,IndFrom) %>%
+  rename(ccode = State) %>%
+  mutate(ColRulerN = factor(countrycode::countrycode(ColRuler,"cown","country.name")),
+         ColRulerN = forcats::fct_recode(ColRulerN, 
+                                         "Former British Colony" = "United Kingdom",
+                                         "Former French Colony" = "France",
+                                         "Former Spanish Colony" = "Spain",
+                                         "Former Belgian Colony" = "Belgium",
+                                         "Former Italian Colony" = "Italy",
+                                         "Former Dutch Colony" = "Netherlands",
+                                         "Former Portuguese Colony" = "Portugal")) %>%
+  filter(ColRulerN != "Russian Federation" & ColRulerN != "Turkey" & ColRulerN != "Russia") %>% 
+  filter(ColRulerN != "Former Italian Colony" & ColRulerN != "Former Dutch Colony") %>%
+  mutate(ColRulerN = as.character(ColRulerN)) -> colhists
+
+
+WDI(country = "all", indicator = c("NY.GDP.PCAP.KD"),
+    start = 1960, end = 2016, extra = FALSE, cache = NULL) %>%
+  rename(gdppc = `NY.GDP.PCAP.KD`)  %>% tbl_df() %>%
+  mutate(ccode = countrycode::countrycode(iso2c, "iso2c", "cown")) %>%
+  filter(!is.na(ccode)) %>%
+  left_join(.,colhists) %>%
+  mutate(Category = ifelse(ccode == 200 | ccode == 230 | ccode == 235 | ccode == 220 |
+                             ccode == 211 , # ccode == 210 | ccode == 365 | ccode == 325 | ccode == 2 | ccode == 640
+                           "Former Colonial Master", ColRulerN)) %>% 
+  filter(!is.na(Category)) %>%
+  group_by(Category, year) %>%
+  summarize(meangdppc = mean(gdppc, na.rm=T)) %>%
+  ggplot(.,aes(year, meangdppc, group = Category, color=Category, linetype = Category)) + theme_steve_web() +
+  geom_line(size=1.1) +
+  scale_x_continuous(breaks = seq(1960, 2015, by = 5)) +
+  xlab("Year") + ylab("Average GDP per Capita") + 
+  scale_y_continuous(labels = scales::comma) +
+  scale_color_brewer(palette="Dark2") +
+  labs(caption = "Data: World Bank (GDP per Capita in Constant USD) and ICOW (Colonial History Data).
+       Note: Data clearly omit states formerly held by Japan (e.g. Koreas), China (e.g. Mongolia), Russia (e.g. Central Asia), Turkey (i.e. Middle East), Italy (Somalia, Eritrea), and Netherlands (Indonesia).
+       Data here also omit the U.S., Canada, and all of Oceania.",
+       title = "Colonialism is a Partial Explanation for Stunted Development but it's a Real Legacy",
+       subtitle = "GDP per capita of former colonial states drags well behind those that were previously colonial masters.") 
+
+```
+
+###
+
+![The consequences of failing to meet a daily rubber quota in Belgian Congo, 1904](cong_hands_1904.jpg)
+
+### Is the International Economy Biased Against LDCs?
+
+Short answer: yes, that's part of it too.
+
+## The Terms of Trade
+### The Trade Bias Against LDCs
+
+LDCs specialize in primary products like raw materials and agricultural goods.
+
+- These markets are usually very competitive (e.g. coffee), which depresses prices.
+- Bigger economies specialize in manufactured goods, which cluster on oligopolies. This raises prices.
+
+Generally, the terms of trade works against LDCs.
+
+- They get less for what they sell and pay more for what they buy.
+
+###
+
+```{r coffee-consumption-since-1990, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+# Check directory for PDF.
+
+tribble(
+  ~Year, ~Value,
+  1990, 74131,
+  1991, 71282,
+  1992, 79216,
+  1993, 77120,
+  1994, 75024,
+  1995, 72371,
+  1996, 77854,
+  1997, 81063,
+  1998, 82767,
+  1999, 85432,
+  2000, 87642,
+  2001, 88950,
+  2002, 91266,
+  2003, 93394,
+  2004, 95487,
+  2005, 96376,
+  2006, 101567,
+  2007, 104655,
+  2008, 106798,
+  2009, 104513,
+  2010, 109145,
+  2011, 111812,
+  2012, 113171,
+  2013, 115931,
+  2014, 120028,
+  2015, 121384,
+  2016, 127178,
+  2017, 126110
+) %>%
+  mutate(Value = Value/100) %>%
+  ggplot(.,aes(factor(Year), Value)) + theme_steve_web() +
+  geom_bar(stat="identity", color="black", alpha = 0.8, fill="#6f4e37") +
+  xlab("") + ylab("Coffee Consumption in Hundreds of Thousands 60kg Bags") +
+  geom_text(aes(label=round(Value, 1)), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3, family = "Open Sans") +
+  labs(title = "The World is Drinking More and More Coffee",
+       subtitle = "Coffee consumption is up over 70% since 1990 in these select countries (i.e. Europe + USA and Japan), suggesting demand for coffee is increasing in rich countries.",
+       caption = "Data: International Coffee Organization")
+  
+
+```
+
+###
+
+```{r price-of-coffee-arabica-robustas, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+# CPIAUCSL: urban consumers
+fredr(series_id = "CPALCY01USM661N",
+                      observation_start = as.Date("1980-01-01")) %>%
+  rename(CPI = value) -> Price
+
+fredr(series_id = "PCOFFOTMUSDM",
+             observation_start = as.Date("1980-01-01")) %>%
+  rename(Arabica = value) -> Arabica
+
+# robustas PCOFFROBUSDM
+
+fredr(series_id = "PCOFFROBUSDM",
+             observation_start = as.Date("1980-01-01")) %>%
+  rename(Robustas = value) -> Robustas 
+
+left_join(Price, Arabica, by="date") %>%
+  left_join(., Robustas, by="date") %>%
+  select(date, CPI, Arabica, Robustas) %>%
+  mutate(last = last(CPI),
+         index = (CPI/last)*100,
+         Arabica = (Arabica/index)*100,
+         Robustas = (Robustas/index)*100) %>%
+  gather(`Type of Bean`, Value, Arabica:Robustas) %>%
+  filter(!is.na(Value)) %>%
+  ggplot(.,aes(date, Value, linetype=`Type of Bean`, color=`Type of Bean`)) + 
+  geom_line(size=1.1) + theme_steve_web() +
+  scale_color_brewer(palette="Set1") +
+  scale_x_date(date_breaks = "2 years",
+               date_labels = "%Y") +
+  ylab("Inflation Adjusted Price in Aug. 2018 USD Dollars per Metric Ton") + xlab("") +
+  labs(title = "The World is Drinking More Coffee, but Coffee is Fetching Lower Prices in the Global Market",
+       subtitle = "Coffee markets are far more competitive than the markets for the machinery necessary to mass produce coffee beans, which forms a kind of trade bias against LDCs.",
+       caption = "Data:  International Monetary Fund via Federal Reserve Bank of St. Louis. 
+       Note: prices are manually converted from nominal to real prices with a Aug. 2018 index.")
+  
+
+```
+
+## Institutional Biases
+### Are Institutions Biased Against LDCs?
+
+Short answer: yes, that an important part of the problem as well.
+
+### The Institutional Bias Against LDCs
+
+Bigger IGOs are dominated by richer countries.
+
+- IMF, WB, and WTO all weight votes by economic size, and not population.
+- The U.S. with just a little support from Europe, can veto any proposal in these IGOs it doesn't like.
+
+###
+
+```{r imf-voting-power, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+IMF <- readxl::read_xlsx("~/Dropbox/teaching/posc1020/development-1/Quota_SDRs.xlsx", sheet=2) %>% slice(1:5)
+
+IMF %>%
+  gather(Year, Value, `1950`:`2016`) %>%
+  group_by(Year) %>%
+  mutate(perc = Value/max(Value)) %>%
+  ungroup() %>%
+  rename(Category = X__1) %>%
+  mutate( Year = as.numeric(Year)) %>%
+  filter(Category != "World") %>%
+  ggplot(.,aes(Year, perc, color=Category, group=Category,linetype=Category)) + theme_steve_web() +
+  geom_line(size=1.1) +
+  scale_x_continuous(breaks=seq(1950, 2015, by =5)) +
+  scale_y_continuous(labels=scales::percent) +
+  scale_color_brewer(palette="Set1") +
+  xlab("Year") + ylab("Percentage of Voting Power") +
+  labs(title = "IMF Voting Rules Privilege the Wealthy States Over the Developing States",
+       subtitle = "Voting power is weighted by economic size/openness/reserves in the IMF, which favor countries like the U.S. despite the majority of the world's population residing in poorer countries.",
+       caption = "Data: International Monetary Fund")
+
+```
+
+### The Institutional Bias Against LDCs
+
+International trade agreements have the same problem.
+
+- Rich countries structure these to their advantage and also protect their industries (esp. agriculture) at the expense of poorer countries.
+
+# Conclusion
+### Conclusion
+
+Why are some countries rich and others poor?
+
+- Correlates: poorer countries are landlocked, have tropical climates, and are in the Southern Hemisphere.
+- Problem: these are noisy indicators at best, and don't explain much.
+- Development hinges on domestic factors/institutions.
+- Problem: these are also noisy and elites may not see an incentive in infrastructure.
+
+Rich countries structured the world in their image.
+
+- Colonial legacies, and fundamental economic/institutional biases all loom large.
+
+<!--
+# What Can LDCs Do About This Bias?
+
+1. Import-substituting industrialization (ISI)
+2. Export-oriented industrialization (EOI)
+3. Commodity cartels
+
+###
+
+![Some countries, like Brazil, chose to cut off imports and protect/foster nascent industries](fnm-fabrica.jpg)
+
+### The ISI Framework
+
+- Enact trade barriers to shield industries from competition
+- Subsidize modern industrial sector
+- Invest in infrastructure to make industrialization possible.
+
+Problems:
+
+- Industries were inefficient
+- Lack of competition usually meant products were low quality
+- Uncompetitive exports compounded economic downturns
+
+**Washington Consensus** to address ISI problems largely ended those policies.
+
+###
+
+![ISI products like the Yugo usually became punch-lines](yugo-00.jpg)
+
+### The EOI Framework
+
+Latin America generally turned inward. The "Asian Tigers" looked outward.
+
+- Market products for quality for richer countries (esp. America)
+- Depress currency to make exports cheap
+- Extend low-interest loans and tax breaks to exporters toward that end.
+
+### Commodity Cartels
+
+Poorer countries sharing common resource have found cartels useful
+
+- OPEC is clearly best example of this.
+
+However, commodity cartels are no quick fix.
+
+- Cartels are hard to govern!
+- Oil is a unique commodity too.
+
+# Conclusion
+### Conclusion
+
+- While everyone prefers development, powerful groups can block it.
+- Domestic institutions play an important role—they may promote or hinder development.
+- Rich countries adopt policies that hurt the poor.
+- Successful development requires a country to overcome both internal and external obstacles. -->
