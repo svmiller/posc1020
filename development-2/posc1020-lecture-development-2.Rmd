@@ -171,17 +171,17 @@ pwt %>% tbl_df() %>%
 
 WDI(country = c("EU", "ZJ"), indicator = c("NY.GDP.MKTP.KD.ZG"),
     start = 1960, end = 2016, extra = FALSE, cache = NULL) %>%
-  rename(gdppc = `NY.GDP.MKTP.KD.ZG`)  %>%
+  rename(gdpgrowth = `NY.GDP.MKTP.KD.ZG`)  %>%
   mutate(Country = country) %>%
   filter(year <= 1990) %>%
-  ggplot(.,aes(year, gdppc, group = Country, color=Country, linetype = Country)) + theme_steve_web() +
+  ggplot(.,aes(year, gdpgrowth, group = Country, color=Country, linetype = Country)) + theme_steve_web() +
   geom_line(size=1.1) + 
   scale_color_brewer(palette="Set1") +
   labs(caption = "Data: World Bank",
        title = "ISI's Failure Wasn't Total as Latin America Experienced Better GDP Growth Until the 1980s",
        subtitle = "We can qualify that Latin America had further to go but growth rates were real in the region, especially in the 1970s (even per capita).") +
   scale_x_continuous(breaks = seq(1960, 1990, by = 5)) +
-  xlab("Year") + ylab("GDP per Capita")
+  xlab("Year") + ylab("GDP Growth Rates")
 ```
 
 ###
@@ -393,7 +393,7 @@ tribble(
             position=position_dodge(width=.9), size=3, vjust = -.5, family="Open Sans") +
   labs(title = "It Didn't Take That Long For South Korea's Motor Vehicle Production to Outpace Brazil",
        subtitle = "South Korea's model found an audience abroad, producing products for foreign consumption in contrast to Brazil's domestic focus.",
-       caption = "Data: Organisation Internationale des Constructeurs d'Automobiles, among other sources.\nNote: production includes figures for passenger cars, light commercial vehicles, minibuses, trucks, buses and coaches.\nProduction is later defined as where vehicle was assembled, amounting to a small bias that favors Brazil over South Korea.") +
+       caption = "Data: Organisation Internationale des Constructeurs d'Automobiles, among other sources.\nNote: production includes figures for passenger cars, light commercial vehicles, minibuses, trucks, buses and coaches.\nProduction is later defined in the 21st century as where vehicle was assembled.") +
   scale_fill_manual(values=c("#009B3A", "#C60C30"))
   
 ```
