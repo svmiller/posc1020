@@ -1,0 +1,596 @@
+---
+title: "Development Policies and Development Politics"
+subtitle: POSC 1020  -- Introduction to International Relations
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: false
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadstuff, include=FALSE}
+knitr::opts_chunk$set(cache=FALSE)
+
+library(rvest)
+library(WDI)
+library(tidyverse)
+library(stevemisc)
+# library(maddison)
+
+library(fredr)
+
+library(pwt9)
+data("pwt9.0")
+
+pwt <- pwt9.0
+
+Mexdebt <- readxl::read_xls("~/Dropbox/data/reinhart-rogoff/18_data.xls", sheet=20, skip=19) %>% slice(-1)
+Argdebt <- readxl::read_xls("~/Dropbox/data/reinhart-rogoff/7_data.xls", sheet=3, skip=20) %>% slice(-1)
+Bradebt <- readxl::read_xls("~/Dropbox/data/reinhart-rogoff/7_data.xls", sheet=8, skip=19) %>% slice(-1)
+
+Mexdebt %>%
+  rename(year = X__1, debt = `debt/GDP`) %>%
+  select(year, debt) %>%
+  mutate(Country = "Mexico") -> Mexdebt
+
+Argdebt %>%
+  rename(year = X__1, debt = `debt/GDP`) %>%
+  select(year, debt) %>%
+  mutate(Country = "Argentina") -> Argdebt
+
+Bradebt %>%
+  rename(year = X__1, debt = `debt/GDP`) %>%
+  select(year, debt) %>%
+  mutate(Country = "Brazil") -> Bradebt
+
+
+Trade <- read_csv("~/Dropbox/data/cow/trade/National_COW_4.0.csv")
+
+# Price <- fred(series_id = "CPIAUCNS",
+#                       observation_start = "1913-01-01") %>% data.frame %>%
+#   data.frame(Date = rownames(.), .) %>% 
+#   mutate(Date = as.Date(Date),
+#          year = lubridate::year(Date)) %>% 
+#   group_by(year) %>%
+#   summarize(cpi = mean(CPIAUCNS)) %>%
+#   mutate(last = last(cpi),
+#        index = (cpi/last)*100) %>% tbl_df()
+
+
+```
+
+
+# Introduction
+### Puzzle(s) for Today
+
+*What explains development success and development failure?*
+
+###
+
+```{r asian-tigers-vs-latin-america, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+pwt %>%
+  filter(country == "Argentina" | country == "Brazil" | country == "Mexico" | 
+           country == "Japan" | country == "Taiwan" | country == "Republic of Korea") %>%
+  mutate(Type = ifelse(country == "Argentina" | country == "Brazil" | country == "Mexico",
+                       "Import Substitution Industrialization", "Export-Oriented Industrialization")) %>%
+  rename(Country = country) %>%
+  mutate(rgdppc = rgdpna/pop) %>%
+  ggplot(.,aes(year,rgdppc,group=Country,color=Country,linetype=Type)) + theme_steve_web() +
+  geom_line(size=1.1) + 
+   scale_color_brewer(palette="Paired") +
+  scale_y_continuous(label=scales::comma) +
+  xlab("Year") + ylab("Real GDP per Capita at Constant 2005 national prices (in mil. 2005US$") +
+  scale_x_continuous(breaks=seq(1950,2015, by=5)) +
+  labs(title="Why Did Development in These 'Asian Tigers' Far Exceed the Three Biggest Economies in Latin America?",
+       subtitle = "One prominent answer focuses on the different development strategies we saw in East Asia vs. Latin America.",
+       caption = "Data: Penn World Table (9.0)") +
+  guides(linetype=F)
+
+```
+
+
+# What Can LDCs Do About This Bias?
+
+1. Import-substituting industrialization (ISI)
+2. Export-oriented industrialization (EOI)
+3. Commodity cartels
+
+### Autos Were Usually Focal Points of ISI
+
+![Some countries, like Brazil, chose to cut off imports and protect/foster nascent industries](fnm-fabrica.jpg)
+
+### The ISI Framework
+
+- Enact trade barriers to shield industries from competition.
+- Subsidize modern industrial sector.
+- Invest in infrastructure to make industrialization possible.
+
+```{r arg-bra-mex-trade-value, echo=F, eval=F, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+Trade %>%
+  select(statename, imports, exports, year) %>%
+  filter(statename == "Argentina" | statename == "Brazil" | statename == "Mexico") %>%
+  left_join(Price, .) %>%
+  mutate(importsa = (imports/index)*100,
+         exportsa = (exports/index)*100) %>%
+  filter(year <= 1990) %>% mutate(Country = forcats::fct_relevel(statename, "Mexico", "Brazil", "Argentina")) %>%
+  ggplot(.,aes(year, importsa, color=Country, linetype=Country)) + theme_steve_web() +
+  geom_line(size=1.1) +
+  scale_x_continuous(breaks = seq(1910, 1990, by = 5)) 
+```
+
+###
+
+```{r, echo=F, eval=F, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+pwt %>% tbl_df() %>%
+  mutate(ccode = countrycode::countrycode(isocode, "iso3c", "cown")) %>%
+  filter((ccode > 20 & ccode < 400)) %>%
+  mutate(Category = ifelse(ccode >= 200, "Europe", "Latin America"),
+         rgdppc = rgdpna/pop) %>%
+  select(ccode,Category, year, rgdppc) %>%
+  group_by(ccode) %>%
+  mutate(growth = (rgdppc - lag(rgdppc, 1))/ lag(rgdppc, 1)*100) %>%
+  ungroup() %>%
+  group_by(Category, year) %>%
+  summarize(growth = mean(growth, na.rm=T)) %>%
+   ggplot(.,aes(year, growth, group = Category, color=Category, linetype = Category)) + theme_steve_web() +
+  geom_line(size=1.1) + 
+  scale_color_brewer(palette="Set1") +
+  labs(caption = "Data: World Bank",
+       title = "GDP per Capita for Zambia (Rhodesia) and South Korea, 1960-1975",
+       subtitle = "Zambia (Rhodesia) was much better endowed and had more growth potential in the 1960s.") +
+  xlab("Year") + ylab("GDP per Capita")
+
+```
+
+```{r lat-america-vs-europe-growth-1960-1990, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+WDI(country = c("EU", "ZJ"), indicator = c("NY.GDP.MKTP.KD.ZG"),
+    start = 1960, end = 2016, extra = FALSE, cache = NULL) %>%
+  rename(gdppc = `NY.GDP.MKTP.KD.ZG`)  %>%
+  mutate(Country = country) %>%
+  filter(year <= 1990) %>%
+  ggplot(.,aes(year, gdppc, group = Country, color=Country, linetype = Country)) + theme_steve_web() +
+  geom_line(size=1.1) + 
+  scale_color_brewer(palette="Set1") +
+  labs(caption = "Data: World Bank",
+       title = "ISI's Failure Wasn't Total as Latin America Experienced Better GDP Growth Until the 1980s",
+       subtitle = "We can qualify that Latin America had further to go but growth rates were real in the region, especially in the 1970s (even per capita).") +
+  scale_x_continuous(breaks = seq(1960, 1990, by = 5)) +
+  xlab("Year") + ylab("GDP per Capita")
+```
+
+###
+
+```{r arg-bra-mex-debt-1945-1990, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+bind_rows(Mexdebt, Argdebt, Bradebt) %>%
+  filter(year >= 1945 & year <= 1990) %>%
+  mutate(Country = forcats::fct_relevel(Country, "Mexico", "Brazil", "Argentina")) %>%
+  ggplot(.,aes(year,debt, color=Country, linetype=Country)) + theme_steve_web() +
+  geom_line(size=1.1) +
+  scale_x_continuous(breaks = seq(1945, 1990, by = 5)) +
+  labs(title = "ISI Usually Meant These Governments Took on Debt Well Beyond Their Ability to Service It",
+       subtitle = "ISI amounts to massive subsidies or even outright ownership of enterprises, which is compounded by the fact these exports weren't competitive.",
+       caption = "Data: Various places, compiled by Reinhart and Rogoff (2009). I promise these statistics were presented without Excel errors, though. :P") +
+  xlab("") + ylab("Central Government Debt/GDP")
+```
+
+### The ISI Framework
+
+Problems:
+
+- Industries were inefficient.
+- Lack of competition usually meant products were low quality.
+- Uncompetitive exports compounded economic downturns.
+
+**Washington Consensus** to address ISI problems largely ended those policies.
+
+###
+
+```{r arg-tariff-rate-1980-2016, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+tribble(
+  ~Year, ~Country, ~tariff,
+  1980, "Argentina", 44,
+  1981, "Argentina", 44,
+  1982, "Argentina", 33,
+  1983, "Argentina", 33,
+  1984, "Argentina", 33,
+  1985, "Argentina", 29.97,
+  1986, "Argentina", 42.28,
+  1987, "Argentina", 42.28,
+  1988, "Argentina", 46.77,
+  1989, "Argentina", 46.77,
+  1990, "Argentina", 22.48,
+  1991, "Argentina", 13.06,
+  1992, "Argentina", 12.63,
+  1993, "Argentina", 11.19,
+  1994, "Argentina", 11.65,
+  1995, "Argentina", 12.10,
+  1996, "Argentina", 12.72,
+  1997, "Argentina", 12.83,
+  1998, "Argentina", 15.26,
+  1999, "Argentina", 15.09,
+  2000, "Argentina", 15.05,
+  2001, "Argentina", 12.71,
+  2002, "Argentina", 13.8,
+  2003, "Argentina", 14.15,
+  2004, "Argentina", 12.35,
+  2005, "Argentina", 11.21,
+  2006, "Argentina", 11.19,
+  2007, "Argentina", 11.21, 
+  2008, "Argentina", 9.98,
+  2009, "Argentina", 10.16,
+  2010, "Argentina", 11.31,
+  2011, "Argentina", 11.29,
+  2012, "Argentina", 11.14,
+  2013, "Argentina", 12.17,
+  2014, "Argentina", 12.58,
+  2015, "Argentina", 12.48,
+  2016, "Argentina", 12.58
+) %>% mutate(tariffp = tariff/100) %>%
+  ggplot(.,aes(Year, tariffp)) + theme_steve_web() + 
+  scale_y_continuous(labels=scales::percent) + 
+  scale_x_continuous(breaks = seq(1980, 2015, by = 5)) +
+  geom_bar(stat="identity", alpha=0.8, fill="#619cff", color="black") +
+  xlab("Year") + ylab("Tariff Rate (Simple Mean)") +
+  labs(title = "Tariff Rates, Like Argentina's Tariff Rate Here, Were Some of the First Targets of Washington Consensus Reforms",
+       subtitle = "Tariffs were a core component to ISI but reducing them were among the first orders of business for economic recovery.",
+       caption = "Data: various sources, primarily World Bank (1980-1984, 2010-2016). See also: Lora's (2012) report for the Inter-American Development Bank.\nNote: 1980-1984 figures are actually means for 1980-1 and 1982-4 via Laird and Nogues' (1989) article in the World Bank Economic Review.")
+  
+```
+
+
+
+### ISI Products Usually Became Punch-Lines
+
+![ISI products like the Yugo usually became punch-lines](yugo-00.jpg)
+
+###
+
+```{r excel-tercel-yugo-sales-data-1985-1992, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+tribble(
+  ~Year, ~Car, ~Sales,
+  1985, "Hyundai Excel", NA,
+  1986, "Hyundai Excel", 168882,
+  1987, "Hyundai Excel", 263610,
+  1988, "Hyundai Excel", 264282,
+  1989, "Hyundai Excel", 148563,
+  1990, "Hyundai Excel", 100590,
+  1991, "Hyundai Excel", 66376,
+  1992, "Hyundai Excel", 42324,
+  1985, "Yugo", 3895,
+  1986, "Yugo", 35910,
+  1987, "Yugo", 48617,
+  1988, "Yugo", 31583,
+  1989, "Yugo", 10391,
+  1990, "Yugo", 5659,
+  1991, "Yugo", 2509,
+  1992, "Yugo", 1311,
+  1985, "Toyota Tercel", 88841,
+  1986, "Toyota Tercel", 76914,
+  1987, "Toyota Tercel", 100590,
+  1988, "Toyota Tercel", 104655,
+  1989, "Toyota Tercel", 97577,
+  1990, "Toyota Tercel", 90808,
+  1991, "Toyota Tercel", 102043,
+  1992, "Toyota Tercel", 96173
+) %>%
+#  filter(Car == "Yugo") %>%
+  mutate(narr = prettyNum(Sales, big.mark=",")) %>%
+  ggplot(., aes(factor(Year), Sales, group=Car, color=Car)) +
+  geom_bar(aes(fill=Car), stat="identity", position="dodge", alpha=0.8, color="black") +
+  theme_steve_web() + scale_fill_brewer(palette="Set1") +
+  scale_y_continuous(labels=scales::comma) +
+  xlab("Year") +
+  geom_text(aes(label=narr, group=Car), color="black",
+            position=position_dodge(width=.9), size=3, vjust = -.5, family="Open Sans") +
+  labs(title = "The Yugo Was Easily Outsold by Similar Models from Asian Automakers and Bottomed Out the U.S. Market Quickly",
+       subtitle ="Despite its competitive price, the Yugo was a junker from the start and became a punchline for car aficionados as well as development scholars critical of ISI.",
+       caption = "Data: carsalesbase.com. Note: I'm aware the inclusion of the Tercel is questionable since the third generation of Tercels were quite different from the first and second generations. Just roll with it.")
+
+```
+
+### The EOI Framework
+
+Latin America generally turned inward. The "Asian Tigers" looked outward.
+
+- Market products for quality for richer countries (esp. America).
+- Depress currency to make exports cheap.
+- Extend low-interest loans and tax breaks to exporters toward that end.
+
+###
+
+```{r bra-rok-auto-export-quality, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+IMF <- readxl::read_xlsx("~/Dropbox/teaching/posc1020/development-2/Export_Quality_Index_7321_Passenger.xlsx", sheet=2) %>% slice(1:5)
+
+IMF %>% slice(1:2) %>%
+  gather(Year, Value, `1963`:`2014`) %>%
+  rename(Country = X__1) %>%
+  mutate(Country = ifelse(Country == "Brazil", "Brazil", "South Korea")) %>%
+  mutate(Year = as.numeric(Year)) %>%
+  ggplot(.,aes(Year, Value, color=Country, group=Country,linetype=Country)) + 
+  theme_steve_web() +
+  geom_line(size=1.1) +
+  scale_x_continuous(breaks=seq(1964, 2014, by =2)) +
+  scale_color_manual(values=c("#009B3A", "#C60C30")) +
+  xlab("Year") + ylab("Export Quality Index") +
+  labs(title = "South Korean Passenger Automobiles Surpassed Brazil's Autos in Export Quality Early into the 1970s",
+       subtitle = "South Koreas's first foray into the distant foreign market may have been Guam (through Hyundai) but cracking the U.S. market soon set it apart from Brazil.",
+       caption = "Data: International Monetary Fund")
+
+```
+
+
+###
+
+```{r bra-rok-auto-production-1950-2016, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+tribble(
+  ~Country, ~Year, ~Value,
+  "South Korea", 1950, 0,
+  "South Korea", 1960, 0,
+  "South Korea", 1970, 28819,
+  "South Korea", 1980, 123135,
+  "South Korea", 1990, 1321630,
+  "South Korea", 1995, 2526400,
+  "South Korea", 2000, 3114988,
+  "South Korea", 2005, 3699350,
+  "South Korea", 2010, 4271741,
+  "South Korea", 2011, 4657094,
+  "South Korea", 2012, 4561766,
+  "South Korea", 2013, 4521429,
+  "South Korea", 2014, 4524932,
+  "South Korea", 2015, 4555957,
+  "South Korea", 2016, 4228509,
+  "Brazil", 1950, 0,
+  "Brazil", 1960, 133041, 
+  "Brazil", 1970, 416089,
+  "Brazil", 1980, 1165714,
+  "Brazil", 1990, 914466,
+  "Brazil", 1995, 1629008,
+  "Brazil", 2000, 1681517,
+  "Brazil", 2005, 2530840,
+  "Brazil", 2010, 3381728,
+  "Brazil", 2011, 3407861,
+  "Brazil", 2012, 3402508,
+  "Brazil", 2013, 3712380,
+  "Brazil", 2014, 3364890,
+  "Brazil", 2015, 2429463,
+  "Brazil", 2016, 2156356
+) %>%
+  mutate(Value = Value/1000,
+         labs = prettyNum(round(Value), ",")) %>%
+  ggplot(.,aes(as.factor(Year), Value, fill=Country)) + theme_steve_web() +
+  geom_bar(stat="identity", position = "dodge", color="black") +
+  scale_y_continuous(labels = scales::comma) +
+  xlab("Year") + ylab("Motor Vehicle Production (in Thousands)") +
+  geom_text(aes(label=labs, group=Country), color="black",
+            position=position_dodge(width=.9), size=3, vjust = -.5, family="Open Sans") +
+  labs(title = "It Didn't Take That Long For South Korea's Motor Vehicle Production to Outpace Brazil",
+       subtitle = "South Korea's model found an audience abroad, producing products for foreign consumption in contrast to Brazil's domestic focus.",
+       caption = "Data: Organisation Internationale des Constructeurs d'Automobiles, among other sources.\nNote: production includes figures for passenger cars, light commercial vehicles, minibuses, trucks, buses and coaches.\nProduction is later defined as where vehicle was assembled, amounting to a small bias that favors Brazil over South Korea.") +
+  scale_fill_manual(values=c("#009B3A", "#C60C30"))
+  
+```
+
+
+
+### Commodity Cartels
+
+Poorer countries sharing common resource have found cartels useful
+
+- OPEC is clearly best example of this.
+
+###
+
+```{r wti-crude-price-1947-present, fig.height=8.5, fig.width = 14, echo=F, eval = T, message =F, warning = F}
+
+# CPIAUCSL: urban consumers
+# CPALCY01USM661N: Consumer Price Index: Total, All Items for the United States 
+# Urban consumers, all items, has longer reach so I'll go with that.
+fredr(series_id = "CPIAUCSL",
+                      observation_start = as.Date("1947-01-01")) %>%
+  rename(cpi = value) -> Price
+
+last_date <- last(Price$date)
+last_date_ym <- paste(lubridate::month(last_date, label=T, abbr=F), lubridate::year(last_date))
+# zoo::as.yearmon(last_date)
+my_ylab = paste0("Inflation Adjusted Price, in ", last_date_ym, " USD Dollars")
+my_caption = paste0("Data: Federal Reserve Bank of St. Louis\nNote: prices are for West Texas Intermediate (WTI), manually converted from nominal to readl prices with a ", last_date_ym, " index.")
+my_title = paste0("Average Crude Oil Price, 1947-",lubridate::year(last_date))
+  
+
+fredr(series_id = "WTISPLC",
+             observation_start = as.Date("1947-01-01")) %>%
+  rename(wti = value,
+         seriesid = series_id) %>%
+  left_join(., Price, by="date") %>%
+  select(date, wti, cpi) %>%
+  mutate(last = last(cpi),
+         index = (cpi/last)*100,
+    real = (wti/index)*100) %>%
+  ggplot(.,aes(date, real, group=1)) + geom_line() + theme_steve_web() +
+  scale_x_date(date_breaks = "4 years",
+               date_labels = "%Y") +
+  geom_ribbon(aes(ymin=0, ymax=real),
+              alpha=0.3, fill="blue") +
+  ylab(my_ylab) + xlab("") +
+  annotate("text", x = as.Date("1973-07-01"), y = 75, 
+           label = "Arab oil embargo,\nYom-Kippur War\n(1973)",
+           family="Open Sans") +
+ annotate("text", x = as.Date("1980-01-01"), y =135, 
+          label = "Iranian revolution,\nIran-Iraq War\n(1979/80)",
+          family = "Open Sans") +
+  annotate("text", x = as.Date("2005-01-01"), y = 140, 
+           label = "Energy crisis,\nrecession\n(2007/8)",
+           family = "Open Sans") +
+  annotate("text", x = as.Date("2013-01-01"), y = 140, 
+           label = "Arab Spring\n(2011)",
+           family = "Open Sans") +
+  labs(title = my_title,
+       subtitle = "We observe prominent spikes that coincide with the Arab oil embargo, Iran-Iraq War onset, and the worst consequences of the Iraq War and corollary financial crisis.",
+       caption = my_caption) 
+  # theme(
+  #   axis.text.x = element_text(angle=45,size=7, vjust = 0.5)
+  # )
+
+```
+
+###
+
+```{r opec-production-1972-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+#tibble(year = seq(1960, 1987),
+#       opecv = c(8.7, 9.36, 10.51, 11.51, 12.98, 14.34, 15.77, 16.85, 18.79, 20.91, 23.3, 25.21, 26.89,
+#                 30.63, 30.35, 26.77, 30.33, 30.89, 29.46, 30.58, 26.61, 22.48, 18.78, 17.5, 17.44, 16.18, 18.28, 18.52))
+
+Oil <- readxl::read_xlsx("~/Dropbox/teaching/posc1020/development-2/opec-oil-production.xlsx", skip=10) %>% slice(-1)
+
+Oil %>%
+  mutate_at(vars(starts_with("Crude")),funs(as.numeric)) %>%
+  select(Month, `Crude Oil Production, Total OPEC`) %>%
+  ggplot(.,aes(Month, `Crude Oil Production, Total OPEC`)) + 
+  theme_steve_web() +
+  geom_line() + 
+  xlab("") +
+  scale_x_datetime(breaks = seq(as.POSIXct("1972-01-01"), 
+                            as.POSIXct("2018-01-01"), by = "2 years"),
+    # date_breaks = "2 years",
+                   date_labels = "%Y") +
+  scale_y_continuous(label = scales::comma) +
+  annotate("text", x = as.POSIXlt("1973-07-01"), y = 33000, 
+           label = "Arab oil embargo,\nYom-Kippur War\n(1973)",
+           family="Open Sans", size=3) +
+ annotate("text", x = as.POSIXlt("1980-01-01"), y =32000, 
+          label = "Iranian revolution,\nIran-Iraq War\n(1979/80)",
+          family = "Open Sans", size=3) +
+  annotate("text", x = as.POSIXlt("2007-01-01"), y = 35000, 
+           label = "Energy crisis,\nrecession\n(2007/8)",
+           family = "Open Sans", size=3) +
+  annotate("text", x = as.POSIXlt("2011-01-01"), y = 35000, 
+           label = "Arab Spring\n(2011)",
+           family = "Open Sans", size=3) +
+  geom_ribbon(aes(ymin=-Inf, ymax=`Crude Oil Production, Total OPEC`),
+              alpha=0.3, fill="blue") +
+  labs(title = "OPEC is a Clear Example of a Commodity Cartel Changing the Terms on Which They Trade Goods",
+       subtitle = "OPEC's first success was doubling the price of oil in 1973 in response to the Yom Kippur War. Overall oil production was halved in the 10 years from 1973 to 1983.",
+       caption = "Data: U.S. Energy Information Administration (Feb. 2018 Monthly Energy Review)")
+
+```
+
+### Commodity Cartels
+
+However, commodity cartels are no quick fix.
+
+- Cartels are hard to govern!
+- Oil is a unique commodity too.
+
+###
+
+```{r uae-opec-production-quota-1982-2000, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+Oil %>%
+  mutate_at(vars(starts_with("Crude")),funs(as.numeric)) %>%
+  rename_at(vars(starts_with("Crude")), funs(str_sub(., 23, str_length(.)))) %>%
+  select(Month, `United Arab Emirates`) %>%
+  filter(Month > "1982-03-01") %>%
+  mutate(quota = ifelse(Month >= "1982-03-01" & Month <= "1983-03-01", 1000, NA),
+         quota = ifelse(Month >= "1983-03-01" & Month <= "1984-10-01", 1100, quota),
+         quota = ifelse(Month >= "1984-10-01" & Month <= "1986-08-01", 950, quota),
+         quota = ifelse(Month >= "1986-08-01" & Month <= "1986-12-01", 950, quota),
+         quota = ifelse(Month >= "1986-12-01" & Month <= "1987-06-01", 902, quota),
+         quota = ifelse(Month >= "1987-06-01" & Month <= "1988-12-01", 948, quota),
+         quota = ifelse(Month >= "1988-12-01" & Month <= "1989-06-01", 988, quota),
+         quota = ifelse(Month >= "1989-06-01" & Month <= "1989-09-01", 1041, quota),
+         quota = ifelse(Month >= "1989-09-01" & Month <= "1989-12-01", 1094, quota),
+         quota = ifelse(Month >= "1989-12-01" & Month <= "1990-07-01", 1095, quota),
+         quota = ifelse(Month >= "1990-07-01" & Month <= "1991-03-01", 1500, quota), # Nominally just Aug. 1990
+         quota = ifelse(Month >= "1991-03-01" & Month <= "1991-09-01", 2320, quota),
+         quota = ifelse(Month >= "1992-01-01" & Month <= "1992-09-01", 2244, quota),
+         quota = ifelse(Month >= "1992-12-01" & Month <= "1993-02-01", 2260, quota),
+         quota = ifelse(Month >= "1993-02-01" & Month <= "1993-09-01", 2161, quota),
+         quota = ifelse(Month >= "1993-09-01" & Month <= "1997-12-01", 2161, quota),
+         quota = ifelse(Month >= "1997-12-01" & Month <= "1998-03-01", 2366, quota),
+         quota = ifelse(Month >= "1998-03-01" & Month <= "1998-06-01", 2125, quota),
+         quota = ifelse(Month >= "1998-06-01" & Month <= "2000-06-01", 2157, quota),
+         quota = ifelse(Month >= "1999-03-01" & Month <= "2000-03-01", 2244, quota),
+         quota = ifelse(Month >= "2000-06-01" & Month <= "2000-09-01", 2219, quota),
+         quota = ifelse(Month >= "2000-09-01" & Month <= "2000-10-01", 2289, quota),) %>%
+  rename(Quota = quota,
+         Production = `United Arab Emirates`) %>%
+  filter(Month < "2000-01-01") %>%
+  gather(Category, Value, Quota:Production) %>%
+  ggplot(.,aes(Month, Value, color=Category)) + theme_steve_web() +
+  geom_line(size=1.1) +
+  scale_x_datetime(breaks = seq(as.POSIXct("1982-04-01"), 
+                            as.POSIXct("2000-01-01"), by = "1 year"),
+    # date_breaks = "2 years",
+                   date_labels = "%Y") +
+  scale_y_continuous(label = scales::comma) +
+  xlab("") + ylab("Crude Oil Production (Thousand Barrels per Day)") +
+  labs(title = "Cartels Are Inherently Unstable. OPEC is No Different. And Everyone---like the United Arab Emirates---Cheats",
+       subtitle = "Some OPEC members (e.g. Indonesia) cheat less than others but everyone does it and it kinda defeats the purpose of the cartel.",
+       caption = "Data: U.S. Energy Information Administration (Feb. 2018 Monthly Energy Review)
+       Quota Data: 2016 OPEC Annual Statistical Bulletin")
+  
+
+```
+
+###
+
+```{r rsa-kuw-uae-production-1972-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+Oil %>%
+  mutate_at(vars(starts_with("Crude")),funs(as.numeric)) %>%
+  rename_at(vars(starts_with("Crude")), funs(str_sub(., 23, str_length(.)))) %>%
+  select(Month, `Saudi Arabia`, `United Arab Emirates`, Kuwait) %>%
+  gather(Country, Value, `Saudi Arabia`:ncol(.)) %>%
+  ggplot(.,aes(Month, Value, linetype=Country, color=Country)) + theme_steve_web() +
+  geom_line(size=1.1) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_datetime(breaks = seq(as.POSIXct("1972-01-01"), 
+                            as.POSIXct("2018-01-01"), by = "2 years"),
+    # date_breaks = "2 years",
+                   date_labels = "%Y") +
+  ylab("Crude Oil Production (Thousand Barrels per Day") + xlab("") +
+  labs(title = "Saudi Arabia's Response to Widespread Cheating in the 1980s: Beat Everyone to the Floor",
+       subtitle = "Saudi Arabia has the largest oil reserves, a rather small population, and huge currency reserves.\nIt can take a bloody nose for the cause of the cartel and beat anyone to the floor when it's concerned about market share.",
+       caption = "Data: U.S. Energy Information Administration (Feb. 2018 Monthly Energy Review).")
+# Saudi Arabia found that its position in the 1980s as 'swing producer' just meant it was losing market share. Thereafter, it started beating OPEC states to the floor.
+```
+
+
+
+
+# Conclusion
+### Conclusion
+
+- While everyone prefers development, powerful groups can block it.
+- Domestic institutions play an important role—they may promote or hinder development.
+- Rich countries adopt policies that hurt the poor.
+- Successful development requires a country to overcome both internal and external obstacles. 
