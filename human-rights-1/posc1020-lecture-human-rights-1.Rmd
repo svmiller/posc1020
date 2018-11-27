@@ -1,0 +1,489 @@
+---
+title: "The International Politics of Human Rights"
+subtitle: POSC 1020  -- Introduction to International Relations
+author: Steven V. Miller
+institute: Department of Political Science
+titlegraphic: /Dropbox/teaching/clemson-academic.png
+date: 
+fontsize: 10pt
+output:
+ beamer_presentation:
+    template: ~/Dropbox/miscelanea/svm-r-markdown-templates/svm-latex-beamer.tex
+    latex_engine: xelatex
+    dev: cairo_pdf
+    fig_caption: false
+    slide_level: 3
+make149: true
+mainfont: "Open Sans"
+titlefont: "Titillium Web"
+---
+
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadstuff, include=FALSE}
+knitr::opts_chunk$set(cache=FALSE)
+
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(stevemisc)
+library(scales)
+library(knitr)
+
+LHR <- read_csv("~/Dropbox/data/latent-human-rights/HumanRightsProtectionScores_v2.04.csv")
+ITT <- foreign::read.dta("~/Dropbox/data/itt/RevisedSAFINAL_11Mar2013.dta") %>% tbl_df()
+
+LHR <- read_csv("~/Dropbox/teaching/posc1020/human-rights-1/cache/M_2_Full_Data.csv")
+
+Vdem <- read_csv("~/Dropbox/data/v-dem/8/V-Dem-CY+Others-v8.csv")
+
+```
+
+
+# Introduction
+### Puzzle(s) for Today
+
+*Why do states care about human rights outside their borders? Why have these concerns not been more successful?*
+
+
+# Human Rights as International Institution
+### Human Rights
+
+We use "human rights" as shorthand for various Western ideals.
+
+- Primary unit of concern is individual and not the community.
+    - Think: juxtaposition to socialism and "Asian values."
+- Freedom is higher priority than other values
+- Focus on political and economic rights
+
+Treatment is heavily indebted to John Locke's notions of natural rights.
+
+### Human Rights
+
+Milestone: the Universal Declaration of Human Rights (UDHR)
+
+- Defines a "common standard of achievement for all people."
+- Heavily indebted to then-current events of the Holocaust (see also: Genocide Convention)
+
+Two separate conventions followed around 20 years later:
+
+- International Covenant on Civil and Political Rights (ICCPR)
+- International Covenant on Economic, Social, and Cultural Rights (ICESCR)
+
+Curiously: the U.S. supported but did not ratify them as treaties.
+
+- Waited to 1992 to ratify the ICCPR as "not self-executing."
+- Has still not ratified the ICESCR.
+
+### So Why Is This Controversial?
+
+States are self-interested and will promote rights they respect (and fight ones they don't).
+
+- Consider U.S. lip service to "human rights" as derivative of Cold War.
+- Non-Western states also see this as increasing Western influence.
+- Interpretations may differ on implementation (certainly on social spending on health care and education).
+
+### Why Do States Violate Human Rights?
+
+There any number of reasons for human rights abuses.
+
+- Lack of state capacity
+- External threats
+- Sovereignty concerns
+- Human rights may enfranchise regime dissidents, threaten power.
+
+No state is a saint on the human rights frontier, whether it's the U.S. or China.
+
+## Patterns of Human Rights Abuses
+###
+
+```{r human-rights-leaders-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+LHR %>%
+  filter(YEAR == max(YEAR)) %>%
+  rename(latentmean = theta_mean, latentsd = theta_sd) %>%
+  select(YEAR, COW, latentmean, latentsd) %>%
+  arrange(-latentmean) %>% 
+  mutate(Country = countrycode::countrycode(COW, "cown", "country.name")) %>% head(50) %>%
+  filter(!is.na(Country)) %>%
+  ggplot(.,aes(reorder(Country, latentmean), latentmean)) + theme_steve_web() +
+  geom_point(colour = "#619cff", size = 3) +
+  coord_flip() +
+  #geom_linerange(aes(x = Country, ymin = latentmean-(1.645*latentsd),
+  #                     ymax = latentmean+(1.645*latentsd)),
+  #                 lwd = 1, position = position_dodge(width = 1/2)) +
+  geom_pointrange(aes(x = Country, y = latentmean, 
+                      ymin = latentmean-(1.96*latentsd),
+                        ymax =  latentmean+(1.96*latentsd)),
+                    lwd = 1/2, position = position_dodge(width = 1/2),
+                     fill = "white", color="#3288BD", shape=22) +
+  xlab("") + ylab("Mean Latent Human Rights Protection in 2015") +
+  labs(title = "The World's Leaders in Human Rights Protections are in Europe or Clustered in Oceania",
+       subtitle = "Fariss' model is 'dynamic' and builds on previous years and a myriad of measures, which may explain why some of these Oceanian countries rank high but have diffuse intervals.",
+       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)")
+  
+```
+
+###
+
+```{r usa-human-rights-ranking-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+LHR %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
+    filter(YEAR == max(YEAR)) -> lhr2013
+lhr2013 <- with(density(lhr2013$latentmean), data.frame(x, y))
+
+ggplot(data = lhr2013, mapping = aes(x = x, y = y)) + theme_steve_web() +
+    geom_line()  +
+    geom_area(mapping = aes(x = ifelse(x> .373-.435 & x< .373+.435 , x, NA)), fill = "#4d8bc9", alpha=0.4) +
+  #geom_vline(xintercept = .373, linetype="solid", color="#4d8bc9") +
+  # geom_vline(xintercept = .373+.435) +
+  #geom_vline(xintercept = .373-.435) +
+  geom_vline(xintercept = .929, linetype="dashed") +
+  #geom_segment(x=.373+.435, y=0, xend=.373+.435, yend=.26, color="black", size=.5) +
+  #geom_segment(x=.373-.435, y=0, xend=.373-.435, yend=.228, color="black", size=.5) +
+  geom_segment(x=.373, y=0, xend=.373, yend=.268, color="#4d8bc9") +
+  xlab("Latent Human Rights Protection in 2015") + ylab("Density") +
+  labs(title = "Where Does the U.S. Rank on Human Rights? Below Average.",
+       subtitle = "The U.S. is a tricky country to measure for human rights abuses for a myriad of reasons. It does well in some areas and deceptively terrible in others and Amnesty International, aggressively monitor the U.S.",
+       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)
+       Note: solid blue indicates U.S. mean human rights protection score in 2015. Intervals are the standard deviation around the mean.")
+
+```
+
+###
+
+```{r  usa-can-mex-torture-allegations-comparison-itt, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+ITT %>% 
+  filter(cowccode == 2 | cowccode == 20 | cowccode == 70) %>%
+  #mutate(Actor = NA,
+  #       Actor = ifelse(aocpolice == 1, "Police", Actor),
+  #       Actor = ifelse(aocprison == 1, ""))
+  group_by(yearbegin, cowccode) %>%
+  summarize(sum = n()) %>% 
+  bind_rows(.,tibble(yearbegin=seq(1996,1999),
+                     cowccode = 20,
+                     sum = 0)) %>% 
+  mutate(Country = countrycode::countrycode(cowccode, "cown", "country.name")) %>%
+  ggplot(.,aes(as.factor(yearbegin), sum, color=Country)) + theme_steve_web() +
+  geom_bar(aes(fill = Country), position = "dodge", stat="identity", alpha = I(0.8),color = I("black")) +
+  xlab("") + ylab("Number of Amnesty International Torture Allegations") +
+  geom_text(aes(label=sum, group=Country), color="black",
+            position=position_dodge(width=.9), size=3.5, vjust = -.5, family="Open Sans") +
+  labs(title = "The U.S. Experiences About Twice the Allegations of Ill-Treatment and Torture in a Given Year Compared to Its Neighbors",
+       subtitle = "Conrad and Moore's ITT data measure Amnesty International (AI) allegations arguing that torture is unobservable but AI allegations are reliable and valid, even for comparing the U.S. to Mexico here.",
+       caption = "Data: Conrad and Moore's Ill-Treatment & Torture (ITT) Data Collection Project (v. 2.1)")
+  
+  
+```
+
+
+###
+
+```{r usa-torture-allegations-by-actor-type, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+
+ITT %>%
+  filter(cowccode == 2) %>%
+  group_by(yearbegin, aocpolice) %>%
+  summarize(policesums =n()) %>%
+  group_by(yearbegin) %>%
+  mutate(nobsyear = sum(policesums),
+         percpolice = policesums/nobsyear) %>%
+  filter(aocpolice == "Yes") %>%
+  select(yearbegin, nobsyear, percpolice) -> policesums
+
+ITT %>%
+  filter(cowccode == 2) %>%
+  group_by(yearbegin, aocprison) %>%
+  summarize(prisonsums =n()) %>%
+  group_by(yearbegin) %>%
+  mutate(nobsyear = sum(prisonsums),
+         percprison = prisonsums/nobsyear) %>%
+  filter(aocprison == "Yes") %>%
+  select(yearbegin, percprison) -> prisonsums
+
+ITT %>%
+  filter(cowccode == 2) %>%
+  group_by(yearbegin, aocmilitary) %>%
+  summarize(militarysums =n()) %>%
+  mutate(nobsyear = sum(militarysums),
+         percmilitary = militarysums/nobsyear) %>%
+  filter(aocmilitary == "Yes") %>%
+  select(yearbegin, percmilitary) -> militarysums
+
+ITT %>%
+  filter(cowccode == 2) %>%
+  group_by(yearbegin, aocimmigrationdetention) %>%
+  summarize(immigsums =n()) %>%
+  mutate(nobsyear = sum(immigsums),
+         percimmig = immigsums/nobsyear) %>%
+  filter(aocimmigrationdetention == "Yes") %>%
+  select(yearbegin, percimmig) -> immigsums
+
+ITT %>%
+  filter(cowccode == 2) %>%
+  group_by(yearbegin, aocintelligence) %>%
+  summarize(intelsums =n())  %>%
+  mutate(nobsyear = sum(intelsums),
+         percintel = intelsums/nobsyear) %>%
+  filter(aocintelligence == "Yes") %>%
+  select(yearbegin, percintel) -> intelsums
+
+ITT %>%
+  filter(cowccode == 2) %>%
+  group_by(yearbegin, aocparamilitary) %>%
+  summarize(parasums =n()) %>%
+  mutate(nobsyear = sum(parasums),
+         percpara = parasums/nobsyear) %>%
+  filter(aocparamilitary == "Yes") %>%
+  select(yearbegin, percpara) -> parasums
+
+ITT %>%
+  filter(cowccode == 2) %>%
+  group_by(yearbegin, aocunst) %>%
+  summarize(unstsums =n()) %>%
+  mutate(nobsyear = sum(unstsums),
+         percunst = unstsums/nobsyear) %>%
+  filter(aocunst == "Yes") %>%
+  select(yearbegin, percunst) -> unstsums
+
+left_join(policesums, prisonsums) %>%
+  left_join(.,militarysums) %>%
+  left_join(.,immigsums) %>%
+  left_join(.,intelsums) %>%
+  left_join(.,parasums) %>%
+  left_join(.,unstsums) -> allegdata
+
+allegdata[is.na(allegdata)] <- 0
+
+allegdata %>%
+  gather(Category, Value, percpolice:percunst) %>%
+  mutate(Category = fct_recode(Category,
+                               "Police" = "percpolice",
+                               "Prison" = "percprison",
+                               "Military" = "percmilitary",
+                               "Immigration Services" = "percimmig",
+                               "Intelligence Agency" = "percintel",
+                               "Paramilitary" = "percpara",
+                               "Unstated" = "percunst")) %>%
+  filter(Category != "Unstated" & Category != "Immigration Services" & Category != "Paramilitary") %>%
+  mutate(labs = paste0(round(Value*100),"%")) %>%
+  ggplot(.,aes(as.factor(yearbegin), Value, color=Category)) + theme_steve_web() +
+  scale_fill_brewer(palette="Set1") +
+  geom_bar(aes(fill = Category), position = "dodge", stat="identity", alpha = I(0.8),color = I("black")) +
+  xlab("") + ylab("Percentage of Amnesty International Torture Allegations in a Given Year") +
+  geom_text(aes(label=labs, group=Category), color="black",
+            position=position_dodge(width=.9), size=3.5, vjust = -.5, family="Open Sans") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Allegations of Ill-Treatment and Torture in the U.S. Used to Focus on Police and Prisons. Now They Focus on the Military.",
+       subtitle = "Allegations of torture by the police bottomed out to near zero in the 2000s but accusations against the military, nearly non-existent in the 1990s, became 3/4ths of all allegations after 9/11.",
+       caption = "Data: Conrad and Moore's Ill-Treatment & Torture (ITT) Data Collection Project (v. 2.1).
+       Note: Categories are not mutually exclusive, so an allegation can count for both the police and prisons, for example.
+       Data omit allegations against unstated actors and against immigration services. 31% of all allegations in 1997 were against immigration services and around 10-20% in a given year are against unstated actors.")
+    
+    
+
+```
+
+
+###
+
+```{r usa-human-rights-stagnation-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+LHR %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
+  filter(COW == 2) %>%
+  mutate(Country = ifelse(COW == 2, "United States", NA),
+         lwr = NA) %>%
+  ggplot(.,aes(YEAR, latentmean, 
+               ymin = latentmean - 1.96*latentsd, ymax = latentmean + 1.96*latentsd)) + 
+  theme_steve_web() +
+  geom_ribbon(fill="#619cff", alpha = I(0.2), color = "black") + geom_line() +
+  ylab("Mean Latent Human Rights Protection") + xlab("Year") +
+  annotate("text", x= 1960, y=2, label="1960s-1970s:\nPost-Civil Rights Movement gains", hjust="left", 
+           family="Open Sans", size=3.5) +
+  annotate("text", x= 1985, y=0, label="1980s-1990s:\nprison abuse scandals,\nCIA torture campaigns,\nMOVE 9 bombing,\nIncreasing politicization of incarceration", hjust="left", family="Open Sans", size=3.5) +
+    annotate("text", x= 2002, y=-1, label="2001-Present:\nWar on Terror human rights abuses", hjust="left", family="Open Sans", size=3.5) +
+  scale_x_continuous(breaks=seq(1950, 2015, by=5)) +
+  labs(title = "Human Rights Protection Scores for the U.S., 1949-2015",
+       subtitle = "The U.S. made considerable progress on human rights in the 1960s and 1970s, which turned south in the 1980s, stagnated in the 1990s, and sunk after the War on Terror.",
+       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)")
+```
+
+
+###
+
+```{r usa-chn-human-rights-comparison-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+
+LHR %>% 
+  filter(COW == 2 | COW == 710) %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
+  mutate(Country = ifelse(COW == 2, "United States", "China"),
+         lwr = NA) %>%
+  ggplot(.,aes(YEAR, latentmean, group = Country, color=Country,
+               ymin = latentmean - 1.96*latentsd, ymax = latentmean + 1.96*latentsd)) + 
+  theme_steve_web() + theme(legend.position="bottom") +
+  geom_ribbon(aes(fill = Country), alpha = I(0.2), color = "black") + geom_line() +
+  ylab("Mean Latent Human Rights Protection") + xlab("Year") +
+  scale_x_continuous(breaks = seq(1950, 2015, by = 5)) +
+  labs(title = "Human Rights Protection Scores for the U.S. and China, 1949-2015",
+       subtitle = "We oberve a clear contrast between the two starting in 1965 but observe the United States' downward trend.",
+       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)")
+
+```
+
+
+
+###
+
+```{r usa-can-mex-human-rights-comparison-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14}
+
+LHR %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
+  filter(COW == 2 |  COW == 20 | COW == 70) %>%
+  mutate(Country = ifelse(COW == 2, "United States", NA),
+         Country = ifelse(COW == 20, "Canada", Country),
+         Country = ifelse(COW == 70, "Mexico", Country),
+         lwr = NA) %>% filter(YEAR >= 1980) %>%
+  ggplot(.,aes(YEAR, latentmean, group = Country, color=Country,
+               ymin = latentmean - 1.96*latentsd, ymax = latentmean + 1.96*latentsd)) + 
+  theme_steve_web() + theme(legend.position="bottom") +
+  geom_ribbon(aes(fill = Country), alpha = I(0.2), color = "black") + geom_line() +
+  ylab("Mean Latent Human Rights Protection") + xlab("Year") +
+  scale_x_continuous(breaks = seq(1980, 2015, by = 5)) +
+  labs(title = "Human Rights Protection Scores for the U.S., Canada, and Mexico, 1980-2015",
+       subtitle = "Notice the U.S. is not exactly a world leader in human rights protections despite demonstrations to the contrary.",
+       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)")
+
+```
+
+
+## Why Sign These Treaties?
+###
+
+*If states have tenuous commitments to human rights, why do they sign these treaties?*
+
+### Why Sign Human Rights Treaties?
+
+Several reasons, but peer effects seem most persuasive.
+
+- New democracies sign them to "lock in" commitments to human rights.
+- New democracies sign them to be "like" other, more established democracies.
+- Autocracies sign them when they want some kind of respect.
+- Autocracies will also sign them as quid pro quo for other deals (e.g. trade).
+
+### Why Sign Human Rights Treaties?
+
+There are other reasons as well, largely from perspective of other states.
+
+- Security motivations and a concern for contagion.
+- "Moral" concerns and an empathy for fellow humans.
+- Domestic pressure from TANs and interest groups
+
+###
+
+```{r human-rights-stagnation-ciri, eval=T, echo=F, fig.height=8.5, fig.width=14, warning=F, message=F}
+LHR <- read_csv("~/Dropbox/data/latent-human-rights/HumanRightsProtectionScores_v2.04.csv")
+
+LHR %>%
+  group_by(YEAR) %>%
+  summarize(meanlhr = mean(latentmean),
+            sdlhr = mean(latentsd),
+            meanciri = mean(additive, na.rm=T),
+            sdciri = sd(additive, na.rm=T)) %>%
+  filter(YEAR > 1979) %>%
+  ggplot(.,aes(YEAR, meanciri,
+               ymin = meanciri - 1*sdciri, ymax = meanciri + 1*sdciri)) + 
+  theme_steve_web() + theme(legend.position="bottom") +
+  geom_ribbon(alpha = I(0.2), color = "black") + geom_line() +
+#  geom_ribbon(aes(y=meanciri, ymin = meanciri - sdciri, ymax = meanciri + sdciri), alpha = I(0.2), color = "black") + geom_line(aes(y=meanciri))  +
+  ylab("Mean Physical Integrity Index") + xlab("Year") +
+  scale_x_continuous(breaks = seq(1980, 2015, by = 5)) +
+  labs(title = "Conventional Wisdom Holds Human Rights Records Have Stagnated Over Time",
+       subtitle = "CIRI data show no real improvement in human rights records despite concerted efforts from NGOs and IGOs.",
+       caption = "Data: CIRI's Additive Physical Integrity Index via  Fariss' Latent Human Rights Protection Scores (v. 2.04)")
+
+```
+
+
+###
+
+```{r human-rights-improvement-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14, warning=F, message=F}
+LHR <- read_csv("~/Dropbox/teaching/posc1020/human-rights-1/M_2_Full_Data.csv")
+
+LHR %>%
+  group_by(YEAR) %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
+  summarize(meanlhr = mean(latentmean),
+            sdlhr = mean(latentsd)) %>%
+  ggplot(.,aes(YEAR, meanlhr,
+               ymin = meanlhr - 1*sdlhr, ymax = meanlhr + 1*sdlhr)) + 
+  theme_steve_web() + theme(legend.position="bottom") +
+  geom_ribbon(alpha = I(0.4), color = "black", fill="#619cff") + geom_line() +
+#  geom_ribbon(aes(y=meanciri, ymin = meanciri - sdciri, ymax = meanciri + sdciri), alpha = I(0.2), color = "black") + geom_line(aes(y=meanciri))  +
+  ylab("Mean Latent Human Rights Protection") + xlab("Year") +
+  scale_x_continuous(breaks = seq(1950, 2015, by = 5)) +
+  labs(title = "Human Rights Records Have Actually Improved Over Time",
+       subtitle = "Fariss argues that a ''changing standard of accountability'' can explain the difference between this graph and the conventional wisdom.",
+       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)")
+
+```
+
+## Enforcement Problems
+### Enforcement Problems
+
+Enforcement of human rights is tricky. Generally:
+
+- The benefits from cooperation are small at best
+- The costs of enforcement could be exceedingly high.
+
+How do we explain this?
+
+### Enforcement Problems
+
+A few explanations for enforcement problems:
+
+- Interests: states violating laws have little interest in handcuffing themselves.
+- Motives for enforcement may be weak.
+    - Naming and shaming may provoke target.
+    - Reduces bargaining leverage on other issues.
+    - Sanctions impose costs on target as well sanctioning state.
+
+### Enforcement Problems
+
+When are states likely to enforce human rights?
+
+- When TANs are active and persistent (see: anti-apartheid movement)
+- Actions against human rights abusers serve larger political interests
+- Actions conform to norms of sovereignty and noninterference.
+
+## Improving Human Rights
+### Will Protection Improve?
+
+Several innovations provide some promise.
+
+- Transitional justice and the problem of amnesty
+- Individual petition to supranational courts
+- The International Criminal Court (ICC)
+- Material inducements
+
+# Conclusion
+### Conclusion
+
+Why protect human rights?
+
+- Pressure from TANs and domestic interest groups
+- Empathy for common humanity
+- Material interests
+
+### Conclusion
+
+But what's the problem?
+
+- Material benefits are small relative to costs of enforcement.
+- Violators are generally highly motivated
+- Human rights might, at the most, be a secondary concern.
