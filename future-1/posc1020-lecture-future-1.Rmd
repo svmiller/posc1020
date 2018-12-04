@@ -253,7 +253,7 @@ oecd_forecasts  %>%
   filter(Country == "CHN" | Country == "USA") %>%
   mutate(Country = ifelse(Country == "CHN", "China", "United States"),
          gdp = value/1000000) %>%
-  ggplot(.,aes(year, value,  linetype=Country, color = Country)) +
+  ggplot(.,aes(year, gdp,  linetype=Country, color = Country)) +
   theme_steve_web() +
   geom_line(size=1.5) +
   theme(legend.position = "bottom") +
@@ -390,7 +390,7 @@ LTPT %>%
                breaks = seq(1996, 2016, by = 2),
                date_labels = "%Y") +
   xlab("") + ylab("") +
-  labs(title = "The Price Index For Computers and TVs Has Declined More Than 95% Since December 1997",
+  labs(title = "The Price Indices For Computers and TVs Have Declined More Than 95% Since December 1997",
        subtitle = "Most of the decline happened between 1998 and 2003 following a boom in cheaper parts and products coming from trading partners in Asia.",
        caption = "Data: Bureau of Labor and Statistics. Base: December 1997.\nSource: https://www.bls.gov/opub/ted/2015/long-term-price-trends-for-computers-tvs-and-related-items.htm")
 
@@ -427,7 +427,8 @@ fredr(series_id = "PRS30006013",
   theme_steve_web() +
   scale_x_date(date_breaks = "2 years",
                breaks = seq(1988, 2018, by = 2),
-               date_labels = "%Y") +
+               date_labels = "%Y",
+               limits = as.Date(c('1986-01-01','2019-01-01'))) +
   xlab("") + ylab("Manufacturing Employment (Seasonally Adjusted, Indexed [2012])") +
   labs(caption = "Data:  U.S. Bureau of Labor Statistics. Data are seasonally adjusted with 2012 as the index year. Shaded areas are recessions.",
        title = "U.S. Manufacturing Employment Has Declined as Globalization Has Increased",
@@ -447,8 +448,9 @@ fredr(series_id = "OUTMS",
              observation_start = as.Date("1987-01-01")) %>%
   ggplot(.,aes(date, value)) + geom_line(size=1.5, color="#00BFC4") + theme_steve_web() +
   scale_x_date(date_breaks = "2 years",
-               breaks = seq(1987, 2018, by = 2),
-               date_labels = "%Y") +
+               breaks = seq(1986, 2018, by = 2),
+               date_labels = "%Y",
+               limits = as.Date(c('1986-01-01','2019-01-01'))) +
   xlab("") + ylab("Manufacturing Output (Seasonally Adjusted, Indexed [2012])") +
   labs(caption = "Data:  U.S. Bureau of Labor Statistics. Data are seasonally adjusted with 2012 as the index year. Shaded areas are recessions.",
        title = "U.S. Manufacturing Output Has Generally Risen Despite the Drop in Manufacturing Employment",
@@ -469,7 +471,8 @@ fredr(series_id = "COMPRMS",
   ggplot(.,aes(date, value)) + geom_line(size=1.5, color="#00BFC4") + theme_steve_web() +
   scale_x_date(date_breaks = "2 years",
                breaks = seq(1986, 2018, by = 2),
-               date_labels = "%Y") +
+               date_labels = "%Y",
+               limits = as.Date(c('1986-01-01','2019-01-01'))) +
   xlab("") + ylab("Manufacturing Compensation per Hour (Seasonally Adjusted, Indexed [2012])") +
   labs(caption = "Data:  U.S. Bureau of Labor Statistics. Data are seasonally adjusted with 2012 as the index year. Shaded areas are recessions.",
        title = "Manufacturing Pays More Now Than It Did When There Was More Manufacturing Employment",
@@ -487,8 +490,9 @@ fredr(series_id = "PRS30006173",
              observation_start = as.Date("1987-01-01")) %>%
   ggplot(.,aes(date, value)) + geom_line(size=1.5, color="#00BFC4") + theme_steve_web() +
   scale_x_date(date_breaks = "2 years",
-               breaks = seq(1986, 2018, by = 2),
-               date_labels = "%Y") +
+               breaks = seq(1986, 2016, by = 2),
+               date_labels = "%Y",
+               limits = as.Date(c('1986-01-01','2016-01-01'))) +
   xlab("") + ylab("Manufacturing Compensation per Hours (Seasonally Adjusted, Indexed [2012])") +
   labs(caption = "Data:  U.S. Bureau of Labor Statistics. Data are seasonally adjusted with 2012 as the index year. Shaded areas are recessions.",
        title = "Labor Share of Income in Manufacturing Has Gone Down",
