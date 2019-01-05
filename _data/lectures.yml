@@ -1,103 +1,103 @@
-- title: "Syllabus Day (i.e. Welcome)"
-  filename: welcome
-  dirname: welcome
-  tldr: "This lecture discusses the syllabus and outlines course expectations for the rest of the semester."
-
-- title: "What Shaped Our World? A Historical Introduction"
-  filename: historical-intro
-  dirname: historical-intro
-  tldr: "Here's a history of the world, from 1492 to the present, summarizing major themes in international politics (and war) along the way."
-
-- title: "Understanding Interests, Interactions, and Institutions"
-  filename: iii
-  dirname: iii
-  tldr: "Identifying decision-makers, their strategic behavior, and their institutional frameworks, will help us understand international politics."
-
-- title: "Why Are There Wars?"
-  filename: war-1
-  dirname: war-1
-  tldr: "Wars may be mostly fought over territory, but war is conceptually a failed bargain. Here's a simple model to emphasize that."
-
-- title: "Why Bargaining Breaks Down"
-  filename: war-2
-  dirname: war-2
-  tldr: "Wars happens (i.e. bargaining breaks down) because of uncertainty, issue indivisibility, and commitment problems."
-
-- title: "Domestic Politics and War"
-  filename: domestic-politics-1
-  dirname: domestic-politics-1
-  tldr: "Leader incentives and institutions may explain bargaining failure (i.e. war) even as war is something that makes everyone worse off."
-
-- title: "Alliances and Bargaining"
-  filename: alliance-bargaining
-  dirname: alliance-bargaining
-  tldr: "Alliances are institutions to coordinate security policies and influence bargaining between two sides."
-
-- title: "Collective Security as Public Good"
-  filename: collective-security
-  dirname: collective-security
-  tldr: "Collective security organizations (e.g. UN, African Union) ideally prevent/end war, but with varying degrees of success."
-
-- title: "Why Civil Wars Happen, and What We Can Do About Them"
-  filename: civil-war
-  dirname: civil-war
-  tldr: "The same tools that explain inter-state war can explain civil war. It's just that the nature of one of the adversaries is different."
-
-- title: "The Strategic Dilemma(s) of Terrorism"
-  filename: terrorism
-  dirname: terrorism
-  tldr: "Terrorists are goal-oriented, purposive, and strategic (if weak) actors and the threat of terrorism will always exist."
-
-- title: "Why Trade? And Why Do We Put Up Barriers to Trade?"
-  filename: trade-1
-  dirname: trade-1
-  tldr: "Free trade creates abundance and is good for peace. Let's describe it and explain why we limit this good thing."
-
-- title: "Trade As Strategic Problem"
-  filename: trade-2
-  dirname: trade-2
-  tldr: "Trade resembles a prisoner's dilemma, but small numbers, information, repeated interaction, and linkage politics help it happen."
-
-- title: "Who Invests Overseas and Why?"
-  filename: finance-1
-  dirname: finance-1
-  tldr: "Overseas investment tops $5 trillion USD a year. That's a lot, and that's good. Here's why it happens, and the potential pitfalls."
-
-
-- title: "The Fundamentals of Exchange Rates"
-  filename: monetary-relations-1
-  dirname: monetary-relations-1
-  tldr: "An introduction to exchange rates/currency policy, with applications to the U.S. and Argentina's infamous currency collapse."
-
-- title: "Ebbs and Flows of International Monetary Regimes"
-  filename: monetary-relations-2
-  dirname: monetary-relations-2
-  tldr: "A discussion of the major IMRs the world has known and some major currency crises, like 'Nixon Shock' and 'Black Wednesday.'"
-
-
-- title: "Why Are Some Countries Richer Than Others?"
-  filename: development-1
-  dirname: development-1
-  tldr: "There are broad correlates for development patterns and rich countries bear some responsibility for why poor countries are poor."
-
-- title: "Development Policies and Development Politics"
-  filename: development-2
-  dirname: development-2
-  tldr: "Less-developed countries have various development policies (e.g. ISI, EOI, commodity cartels), with varying levels of success."
-
-
-- title: "The International Politics of Human Rights"
-  filename: human-rights-1
-  dirname: human-rights-1
-  tldr: "Human rights have generally improved over time even as a function of a post-WWII international interest in this issue."
-
-
-- title: "The Environment as Collective Action Problem"
-  filename: environment-1
-  dirname: environment-1
-  tldr: "The environment is a public good and a common, which helps explain why cooperating on it is so difficult."
-
-- title: "The Future of International Politics"
-  filename: future-1
-  dirname: future-1
-  tldr: "What does the future of international politics hold? Concerns for WMD proliferation, the ''rise of China'', and globalization's side effects."
+# - title: "Syllabus Day (i.e. Welcome)"
+# filename: welcome
+# dirname: welcome
+# tldr: "This lecture discusses the syllabus and outlines course expectations for the rest of the semester."
+# 
+# - title: "What Shaped Our World? A Historical Introduction"
+# filename: historical-intro
+# dirname: historical-intro
+# tldr: "Here's a history of the world, from 1492 to the present, summarizing major themes in international politics (and war) along the way."
+# 
+# - title: "Understanding Interests, Interactions, and Institutions"
+# filename: iii
+# dirname: iii
+# tldr: "Identifying decision-makers, their strategic behavior, and their institutional frameworks, will help us understand international politics."
+# 
+# - title: "Why Are There Wars?"
+# filename: war-1
+# dirname: war-1
+# tldr: "Wars may be mostly fought over territory, but war is conceptually a failed bargain. Here's a simple model to emphasize that."
+# 
+# - title: "Why Bargaining Breaks Down"
+# filename: war-2
+# dirname: war-2
+# tldr: "Wars happens (i.e. bargaining breaks down) because of uncertainty, issue indivisibility, and commitment problems."
+# 
+# - title: "Domestic Politics and War"
+# filename: domestic-politics-1
+# dirname: domestic-politics-1
+# tldr: "Leader incentives and institutions may explain bargaining failure (i.e. war) even as war is something that makes everyone worse off."
+# 
+# - title: "Alliances and Bargaining"
+# filename: alliance-bargaining
+# dirname: alliance-bargaining
+# tldr: "Alliances are institutions to coordinate security policies and influence bargaining between two sides."
+# 
+# - title: "Collective Security as Public Good"
+# filename: collective-security
+# dirname: collective-security
+# tldr: "Collective security organizations (e.g. UN, African Union) ideally prevent/end war, but with varying degrees of success."
+# 
+# - title: "Why Civil Wars Happen, and What We Can Do About Them"
+# filename: civil-war
+# dirname: civil-war
+# tldr: "The same tools that explain inter-state war can explain civil war. It's just that the nature of one of the adversaries is different."
+# 
+# - title: "The Strategic Dilemma(s) of Terrorism"
+# filename: terrorism
+# dirname: terrorism
+# tldr: "Terrorists are goal-oriented, purposive, and strategic (if weak) actors and the threat of terrorism will always exist."
+# 
+# - title: "Why Trade? And Why Do We Put Up Barriers to Trade?"
+# filename: trade-1
+# dirname: trade-1
+# tldr: "Free trade creates abundance and is good for peace. Let's describe it and explain why we limit this good thing."
+# 
+# - title: "Trade As Strategic Problem"
+# filename: trade-2
+# dirname: trade-2
+# tldr: "Trade resembles a prisoner's dilemma, but small numbers, information, repeated interaction, and linkage politics help it happen."
+# 
+# - title: "Who Invests Overseas and Why?"
+# filename: finance-1
+# dirname: finance-1
+# tldr: "Overseas investment tops $5 trillion USD a year. That's a lot, and that's good. Here's why it happens, and the potential pitfalls."
+# 
+# 
+# - title: "The Fundamentals of Exchange Rates"
+# filename: monetary-relations-1
+# dirname: monetary-relations-1
+# tldr: "An introduction to exchange rates/currency policy, with applications to the U.S. and Argentina's infamous currency collapse."
+# 
+# - title: "Ebbs and Flows of International Monetary Regimes"
+# filename: monetary-relations-2
+# dirname: monetary-relations-2
+# tldr: "A discussion of the major IMRs the world has known and some major currency crises, like 'Nixon Shock' and 'Black Wednesday.'"
+# 
+# 
+# - title: "Why Are Some Countries Richer Than Others?"
+# filename: development-1
+# dirname: development-1
+# tldr: "There are broad correlates for development patterns and rich countries bear some responsibility for why poor countries are poor."
+# 
+# - title: "Development Policies and Development Politics"
+# filename: development-2
+# dirname: development-2
+# tldr: "Less-developed countries have various development policies (e.g. ISI, EOI, commodity cartels), with varying levels of success."
+# 
+# 
+# - title: "The International Politics of Human Rights"
+# filename: human-rights-1
+# dirname: human-rights-1
+# tldr: "Human rights have generally improved over time even as a function of a post-WWII international interest in this issue."
+# 
+# 
+# - title: "The Environment as Collective Action Problem"
+# filename: environment-1
+# dirname: environment-1
+# tldr: "The environment is a public good and a common, which helps explain why cooperating on it is so difficult."
+# 
+# - title: "The Future of International Politics"
+# filename: future-1
+# dirname: future-1
+# tldr: "What does the future of international politics hold? Concerns for WMD proliferation, the ''rise of China'', and globalization's side effects."
