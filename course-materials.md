@@ -10,6 +10,16 @@ permalink: /course-materials/
 
 Frieden, Jeffry A, David A. Lake and Kenneth A. Schultz (2016). [*World Politics: Interests, Interactions, Institutions*](https://www.amazon.com/World-Politics-Interests-Interactions-Institutions/dp/0393938093). 3rd Edition. New York, NY: W.W. Norton and Company.
 
+## Short Paper Instructions
+
+10% of a student's grade for the semester will hinge on a short paper 1-2-paged *single*-spaced paper s/he will write in response to "Battle of Ideas." This was the first episode of a PBS series titled [*Commanding Heights: The Battle for the World Economy*](https://www.pbs.org/wgbh/commandingheights/).
+
+The task here is fairly straightforward. The student will watch this episode, [helpfully uploaded to YouTube](https://www.youtube.com/watch?v=DoWbm8zUG6Y) and embedded below. The student will write a 1-2-paged *single*-spaced paper that 1) summarizes the episode and 2) argues for three connections to the class material we had discussed to that point. The inspiration here is [Ann Handley](https://www.amazon.com/Everybody-Writes-Go-Creating-Ridiculously-ebook/dp/B00LMB5P0G), whose recommendation of a ["writing GPS"](http://svmiller.com/blog/2016/05/everybody-writes-academic/), in which she argues the "so what?" of any writing assignment should be able to generate three separate answers to convey the topic's importance to the reader.
+
+This short paper is due through the Turnitin module on the course website *before* **April 13, 9 a.m**. I do not accept late work. A rubric explaining how these assignments will be graded is forthcoming shortly.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DoWbm8zUG6Y" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## Additional Course Materials
 
 Students must read the following documents in the first week of class. These outline my expectations for the rest of the semester.
