@@ -18,7 +18,7 @@ The task here is fairly straightforward. The student will watch this episode, [h
 
 This short paper is due through the Turnitin module on the course website *before* **April 13, 9 a.m**. 
 
-[Here is the rubric](https://github.com/svmiller/posc1020/blob/master/short-paper/short-paper-rubric.pdf) for the assignment, which also provides further instructions for the paper's frame and formatting.
+[Here is the rubric](http://posc1020.svmiller.com/short-paper/short-paper-rubric.pdf) for the assignment, which also provides further instructions for the paper's frame and formatting.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DoWbm8zUG6Y" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
