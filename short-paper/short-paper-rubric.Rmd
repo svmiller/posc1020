@@ -1,0 +1,114 @@
+---
+title: "Short Paper Rubric"
+subtitle: "POSC 1020 - Introduction to International Relations"
+author: "Steven V. Miller"
+# date: "January 4, 2017"
+output: 
+  pdf_document:
+    citation_package: natbib
+bibliography: "`r paste0(Sys.getenv('HOME'),'/Dropbox/master.bib')`"
+biblio-style: apsr
+fontfamily: mathpazo
+citecolor: blue
+urlcolor: blue
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+---
+
+The following document will provide information about how I will evaluate your short papers. Each section is worth four points, but is weighted by the percentage you see in the section title. The set of scores include poor (1), subpar (2), adequate (3), and excellent (4). Where appropriate, I elaborate on what these scores mean for the particular section.
+
+| Section | Percentage Weight |
+|:--------|:-----------------:|
+| Writing | 10% |
+| Formatting | 10% |
+| Depth/Quality | 10% |
+| *Commanding Heights* (Episode 1) Summary | 25% |
+| First Connection to the Book | 15% |
+| Second Connection to the Book | 15% |
+| Third Connection to the Book | 15% |
+| *TOTAL* | *100%* |
+
+# Writing (10%)
+
+This section is unique. The first thing I do when I start reading your papers is scan for spelling/grammatical errors. These include everything from obvious spelling errors to even the little things, like using contractions, ending sentences in a preposition, or using prepositions in consecutive words (e.g. "turn away from"). If nothing else, you should hope to leave Clemson University with an ability to write proficiently. This *definitely* means you should avoid writing major assignments in the 11th hour. It'll show; trust me. My ["Dos and Don'ts of Writing"](http://svmiller.com/blog/2015/06/dos-and-donts-of-writing-for-students/) will capture most of these things to avoid in addition to the items just mentioned.
+
+<!-- I will also attach citation errors to this rubric. I want @apsa2006apsa citation format. Each citation error, including footnote/endnote citations, will count as an "error" here. -->
+
+My threat here is basically nuclear. Two writing mistakes will drop you from a 4 to 3. The fifth one will drop you from a 3 to a 1. There is no 2. *Proofread*.
+
+1. *Poor*. More than four spelling/grammatical errors.
+2.
+3. *Adequate*. Two-to-four spelling/grammatical errors.
+4. *Excellent*. Zero-to-two spelling/grammatical errors.
+
+# Formatting (10%)
+
+The student writing this assignment should be clear to format the document properly. I am asking for a single-spaced document in Times New Roman with one-inch margins all around. The student must also appropriately section parts of the paper. This means sectioning what is the *Commanding Heights* summary and providing a section (and ideally subsections) for connections of the episode to class material.
+
+If the student follows these instructions, minimal as they are, the student will get full credit for 10% of the paper grade.
+
+1. *Poor*. The student followed none of the formatting instructions.
+2. *Subpar*. The student took liberties with the formatting of the paper and I have reason to believe did so in order to pad the paper's length.
+3. *Adequate*. The student mostly followed instructions on formatting, but got one obvious thing wrong (e.g. did not include section and subsection titles).
+4. *Excellent*. The student followed all formatting instructions.
+
+# Depth/Quality (10%)
+
+This is an overall assessment of the paper. Think of any deduction here as a weight on what would otherwise be an overall grade from the paper's individual components.
+
+1. *Poor*.  Overall, this paper was poor in almost every respect.
+2. *Subpar*. Overall, this paper was lacking in major respects. The student may have done two sections poorly.
+3. *Adequate*. Overall, this paper was good, but my comments included a litany of little things or one big comment on something the student failed to do.
+4. *Excellent*. Overall, this paper showed considerable depth and insight.
+
+
+<!-- # Introduction (10%) -->
+
+<!-- 1. *Poor*. The introduction is random and/or completely uninformative. This score may also be reserved for when the professor can tell this section was written last and without any regard for how well it fits with the other sections. -->
+<!-- 2. *Subpar*. The introduction section is informative enough but  might have benefited from some additional context or demonstrates some major confusion in what the paper proposes to do. -->
+<!-- 3. *Adequate*. The introduction section is informative enough but might drag on too long or might demonstrate some minor confusion about what the paper proposes to do. -->
+<!-- 4. *Excellent*. The introduction section is informative and says what it needs to say in as few words. The introduction is neither too short (i.e. leaving off important details) nor too long (i.e. meanders on too long for which redundancy is a device to pad the word count). -->
+
+# *Commanding Heights* Summary (25%)
+
+The student should take one to three paragraphs to summarize episode 1 ("Battle of Ideas") of *Commanding Heights: The Battle for the World Economy.*
+
+1. *Poor*. The summary is random and/or completely uninformative. 
+2. *Subpar*. The summary of the episode meanders and is replete with some major omissions or misinterpretations.
+3. *Adequate*. The summary of the episode is good enough but a slew of minor misgivings or misinterpretations, or even one big misinterpretation, belies total confidence the student watched the full documentary and understood it.
+4. *Excellent*. The section of the paper does well to summarize the episode from beginning to end.
+
+# First Connection to the Book (15%)
+
+The student must connect some part of the episode to something from the textbook for the course. I will grant some leeway in interpretation. After all, the episode is broad in scope. However, my interest is in the student making a specific connection from the episode to a broader social scientific aspect from one of the book's chapters.
+
+This should be a good paragraph in length.
+
+1. *Poor*. The connection is random and/or completely uninformative. 
+2. *Subpar*. The argument here meanders and the application of episode to the case is rambling and unfocused. The argument of its application is incomplete.
+3. *Adequate*. The argument is done well enough but may have whiffed on one particular component or made a major omission (e.g. student has to demonstrate how the MID escalated to war).
+4. *Excellent*. The section of the paper does well to relate the episode to part of the book. Everything is clearly communicated.
+
+
+# Second Connection to the Book (15%)
+
+The student must connect some part of the episode to another topic from the textbook for the course. The goal here is identical to what I outline above.
+
+This should be a good paragraph in length.
+
+1. *Poor*. The connection is random and/or completely uninformative. 
+2. *Subpar*. The argument here meanders and the application of episode to the case is rambling and unfocused. The argument of its application is incomplete.
+3. *Adequate*. The argument is done well enough but may have whiffed on one particular component or made a major omission (e.g. student has to demonstrate how the MID escalated to war).
+4. *Excellent*. The section of the paper does well to relate the episode to part of the book. Everything is clearly communicated.
+
+# Third Connection to the Book (15%)
+
+The student must connect some part of the episode to another topic from the textbook for the course. The goal here is identical to what I outline above.
+
+This should be a good paragraph in length.
+
+1. *Poor*. The connection is random and/or completely uninformative. 
+2. *Subpar*. The argument here meanders and the application of episode to the case is rambling and unfocused. The argument of its application is incomplete.
+3. *Adequate*. The argument is done well enough but may have whiffed on one particular component or made a major omission (e.g. student has to demonstrate how the MID escalated to war).
+4. *Excellent*. The section of the paper does well to relate the episode to part of the book. Everything is clearly communicated.
