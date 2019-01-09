@@ -31,9 +31,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r loadstuff, include=FALSE}
-mon <- as.Date("2018-08-20")
-lastday <- as.Date("2018-12-07")
-finalexam <- as.Date("2018-12-12") # 8 a.m.
+mon <- as.Date("2019-01-07")
+lastday <- as.Date("2019-04-26")
+finalexam <- as.Date("2019-05-02") # 8 a.m.
 # fri <- as.Date("2016-01-08")
 
 advdate <- function(obj, adv) {
@@ -200,13 +200,11 @@ rbind(anes2012, anes2016) %>%
 
 ```{r exmus-1993-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-fredr_series(series_id = "EXMXUS",
-                      observation_start = "1993-01-01") %>% data.frame %>%
-  data.frame(Date = rownames(.), .) %>% 
-  mutate(Date = as.Date(Date)) %>% tbl_df() %>%
-  ggplot(.,aes(Date, EXMXUS)) + 
+fredr(series_id = "EXMXUS",
+                      observation_start = as.Date("1993-01-01")) %>%
+  ggplot(.,aes(date, value)) + 
     geom_line(size=1.1) + 
-    geom_ribbon(aes(ymin=-Inf, ymax=EXMXUS),
+    geom_ribbon(aes(ymin=-Inf, ymax=value),
               alpha=0.3, fill="#619CFF") +
     theme_steve_web() +
   scale_x_date(date_breaks = "2 years", date_minor_breaks = "1 year", date_labels = "%Y") +
@@ -225,21 +223,7 @@ fredr_series(series_id = "EXMXUS",
 
 
 ```{r co2-emissions-800000bc-present, eval=T, echo=F, fig.height=8.5, fig.width = 14, message=F, warning=F}
-
-co2bc <- read_csv("~/Dropbox/data/co2/co2-alltime.csv")
-co2ad <- read_csv("~/Dropbox/data/co2/mole_fraction_of_carbon_dioxide_in_air_input4MIPs_GHGConcentrations_CMIP_UoM-CMIP-1-1-0_gr3-GMNHSH_0000-2014.csv") %>%
-  rename(co2 = data_mean_global)
-NASA <- readr::read_table("~/Dropbox/data/nasa/co2.txt") %>%
-  filter(year > 2014) %>%
-  group_by(year) %>%
-  summarize(co2 = mean(interp))
-
-co2bc %>%
-  filter(year < 0) %>%
-  rename(co2 = epica) %>%
-  select(year, co2) %>%
-  bind_rows(.,co2ad) %>%
-  bind_rows(.,NASA) %>%
+co2data %>%
   ggplot(.,aes(year,co2)) + theme_steve_web() + 
   geom_ribbon(aes(ymin=-Inf, ymax=co2),
               alpha=0.3, fill="grey66") +
@@ -250,7 +234,8 @@ co2bc %>%
   geom_hline(yintercept = 400, linetype = "dashed") +
   annotate("text", x=-796562,y=405, hjust=0, label="2015: mean carbon dioxide emissions pass 400ppm for the first time in the history of the planet.",
            family = "Open Sans") +
-  scale_x_continuous(breaks=seq(-800000, 0, by= 50000)) +
+  scale_x_continuous(breaks=seq(-800000, 0, by= 50000),
+                     labels = scales::comma) +
   xlab("Year (Negative Values = BC)") + ylab("Carbon Dixode Emissions (ppm)") +
   labs(title = "Estimated Carbon Dioxide Emissions Through the History of the Planet, 800,000 BC to 2017",
        subtitle = "What's happening right now is more than just a normal ''cycle.''",
@@ -278,15 +263,25 @@ bib["friedenetal2016wp"]
 
 
 ## Course Policy
+### Teaching Assistant
+
+Ms. Temitope Arogundade (tarogun@g.clemson.edu) will serve as a graduate teaching assistant this semester. 
+
+- She will assist in proctoring exams and grading your short papers.
+
+
 ### Grading Policy
 
 | **Assignment** | **(Due) Date** | **Percent of Grade** |
 |:-----------|:----------:|:----------------:|
 | Attendance/Participation | | 10% |
-| Map Quiz | Sept. 13 | 15% | 
-| Midterm 1         | Oct. 4 | 20% |
-| Midterm 2 | Nov. 15 | 25% |
-| Final | Dec. 12, 8-10:30 a.m. | 30% |
+| Map Quiz | Jan. 31 | 10% | 
+| Midterm 1         | Feb. 21 | 20% |
+| Midterm 2 | April 11 | 20% |
+| Short Paper | April 13 | 10% |
+| Final | May 2, 8-10:30 a.m. | 30% |
+
+Check syllabus/course website for more information about the short paper and map quiz.
 
 ### Attendance/Participation Policy
 
@@ -338,7 +333,7 @@ ggplot(Attend, aes(x = perattend, y = grade)) + geom_point() +
 ###
 
 ```{r calendar, eval=T, echo=F, fig.height=8.5, fig.width = 14}
-library(ggplot2)
+# library(ggplot2)
 library(ggcal)
 library(stringr)
 
@@ -350,39 +345,38 @@ mydate <- c(mydate, finalexam)
 # Nov. 8 is PSSI
 # Thanksgiving is Nov. 19-23.
 
-remove_dates <- c(as.Date("2018-11-06"),
-                  as.Date("2018-11-08"),
-                   seq(as.Date("2018-11-19"), as.Date("2018-11-23"), by = "1 day"))
+remove_dates <- c(seq(as.Date("2019-03-18"), as.Date("2019-03-22"), by = "1 day"),
+                  seq(as.Date("2019-03-25"), as.Date("2019-03-29"), by = "1 day"))
 
 mydate <- mydate[! mydate %in% remove_dates]
 
-myfills <- ifelse(format(mydate, "%w") %in% c(0,1, 3, 5,6), "Other Day" ,"Class Day")
+myfills <- ifelse(format(mydate, "%w") %in% c(0,1, 3, 5,6), " Other Day " ," Class Day ")
 
 # Fill in exams
 
-exam_dates <- c(as.Date("2018-10-04"), as.Date("2018-11-15"), as.Date("2018-09-13"), finalexam)
-myfills <- ifelse(mydate %in% exam_dates, "Exam/Quiz" ,myfills)
+exam_dates <- c(as.Date("2019-01-31"), as.Date("2019-02-21"), as.Date("2019-04-11"), finalexam)
+myfills <- ifelse(mydate %in% exam_dates, " Exam/Quiz " ,myfills)
 
 # Fill in paper due dates
 
-# myfills <- ifelse(mydate %in% c(as.Date("2018-04-14")), "Paper Due (Turnitin)", myfills)
+myfills <- ifelse(mydate %in% c(as.Date("2019-04-13")), " Paper Due (Turnitin) ", myfills)
 
-give_me_days <- seq(as.Date("2018-08-01"), as.Date("2018-12-31"), by="1 day")
+give_me_days <- seq(as.Date("2019-01-01"), as.Date("2019-05-31"), by="1 day")
 give_me_days <- as.numeric(str_sub(give_me_days, start= -2))
 
 ggcal(mydate, myfills) +
   theme(plot.title=element_text(face="bold"),
         plot.caption=element_text(hjust=1, size=9,
                                     margin=margin(t=10), face="italic")) +
-  scale_fill_manual(values=c("Class Day"="steelblue", 
-                             "Other Day"="lightsteelblue",
-                             "Exam/Quiz"="indianred4",
-                             "Paper Due (Turnitin)" = "indianred4"),
-                    breaks=c("Class Day","Exam/Quiz","Paper Due (Turnitin)")) +
+  scale_fill_manual(values=c(" Class Day "="steelblue", 
+                             " Other Day "="lightsteelblue",
+                             " Exam/Quiz "="lightpink2",
+                             " Paper Due (Turnitin) " = "indianred4"),
+                    breaks=c(" Class Day "," Exam/Quiz "," Paper Due (Turnitin) ")) +
   theme(legend.position="bottom") +
 #  geom_point(shape=1, size=7) +
   geom_text(aes(label=give_me_days)) +
-  labs(caption = "Notable dates: Fall Break (Nov. 6), PSSI Meeting (Nov. 8), Thanksgiving Break (Nov. 19-23)")
+  labs(caption = "Notable dates: Jan. 31 (Map Quiz), Feb. 21 (Midterm 1), March 18-22 (Spring Break), March 25-29 (No Class), April 11 (Midterm 2), April 13 (Paper Due, Turnitin), May 2 (Final Exam)")
 ```
 
 
@@ -449,6 +443,8 @@ I do like making lectures publicly available, though.
 
 - Check course website at [posc1020.svmiller.com](http://posc1020.svmiller.com)
 - Check my Github repository (just in case): [github.com/svmiller/posc1020](http://github.com/svmiller/posc1020)
+
+*I encourage the student to take initiative to keep track of their grade through the semester.*
 
 ### My Expectations
 
