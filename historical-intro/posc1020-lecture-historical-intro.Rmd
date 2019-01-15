@@ -232,7 +232,7 @@ maddison %>%
            country == "France" | country == "Russia" |
            country == "Germany") %>%
   rename(Country = country) %>%
-  filter(year > "1699-01-01" & year <= "1914-01-01") %>%
+  filter(year > "1699-01-01" & year <= "1920-01-01") %>%
   mutate(year = as.numeric(stringr::str_sub(year, 1, 4))) %>%
   ggplot(.,aes(year, gdp_pc, color = Country, linetype=Country)) + theme_steve_web() + 
   annotate("rect", fill = "gray", alpha = 0.5, 
