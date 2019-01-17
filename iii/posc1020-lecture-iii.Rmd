@@ -31,6 +31,16 @@ knitr::opts_chunk$set(
                   )
 ```
 
+```{r loadstuff, include=FALSE}
+
+
+library(WDI)
+library(tidyverse)
+library(stevemisc)
+# library(maddison)
+
+```
+
 # Introduction
 ### Puzzle(s) for Today
 
@@ -171,7 +181,7 @@ The **prisoner's dilemma** is one of the most ubiquitous pedagogical games in ga
 The players (Criminal 1, Criminal 2) have just robbed a bank.
 
 - The police has insufficient evidence for a serious conviction.
-- The fuzz has only enough evidence for a minor, unrelated conviction.
+- The po-po has only enough evidence for a minor, unrelated conviction.
 
 In custody, detectives isolate the criminals and try to coerce a confession.
 
@@ -238,6 +248,52 @@ Who benefits from institutions in international politics?
 - The West
     - e.g. IMF rules give enough votes to the U.S. and Europe that allow effective vetos.
 - Powerful/rich countries (see above)
+
+###
+```{r imf-voting-power, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+IMF <- readxl::read_xlsx("~/Dropbox/teaching/posc1020/development-1/Quota_SDRs.xlsx", sheet=2) %>% 
+  slice(1:5) %>% rename(Category = 1)
+  
+
+WDI(country=c("1W", "XM", "XN", "XD"), 
+    indicator = "SP.POP.TOTL", 
+    start=1960, end=2017) %>% tbl_df() %>%
+  group_by(year) %>%
+  mutate(worldpop = max(SP.POP.TOTL)) %>%
+  filter(iso2c != "1W") %>%
+  mutate(Category = ifelse(iso2c == "XD", "High Income", "Low and Lower Middle Income")) %>%
+  group_by(Category, year, worldpop) %>%
+  summarize(pop = sum(SP.POP.TOTL)) %>%
+  mutate(perc = pop/worldpop,
+         Year = year) %>%
+  mutate(data = "Population Percentages/World Total") -> popprops
+  
+IMF %>%
+  gather(Year, Value, `1950`:`2016`) %>%
+  group_by(Year) %>%
+  mutate(perc = Value/max(Value)) %>%
+  ungroup() %>%
+  mutate( Year = as.numeric(Year)) %>%
+  filter(Category != "World") %>%
+  filter(Category == "Advanced Economies" | Category == "Emerging and Developing Countries") %>%
+  mutate(data = "IMF Vote Share") -> imfshares
+
+imfshares %>%
+  ggplot(.,aes(Year, perc, color=Category, group=Category,linetype=Category)) + theme_steve_web() +
+  geom_line(size=1.1) +
+  scale_x_continuous(breaks=seq(1950, 2015, by =5)) +
+  scale_y_continuous(labels=scales::percent,
+                     breaks = seq(.2, .8, .1)) +
+  geom_hline(yintercept = .5, linetype="dashed", color="grey66") +
+  scale_color_brewer(palette="Set1") +
+  xlab("Year") + ylab("Percentage of Voting Power") +
+  labs(title = "IMF Voting Rules Privilege the Wealthy States Over the Developing States",
+       subtitle = "Voting power is weighted by economic size/openness/reserves in the IMF, which favor countries like the U.S. despite the majority of the world's population residing in poorer countries.",
+       caption = "Data: International Monetary Fund")
+
+```
+
+### Some Quirks About Institutions
 
 When do institutions fail to promote cooperation:
 
