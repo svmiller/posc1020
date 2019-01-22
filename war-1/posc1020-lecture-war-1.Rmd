@@ -394,8 +394,14 @@ Assume you and I cannot agree how to split $100.
 
 - I want all of it. So do you.
 - For $20, we can set up a fight for $100.
-    - First one to say "matté" (a la *Bloodsport*) loses.
-- Assume *p* = .5, our EU(kumite) = (100)(.5) + (0)(.5) - 20 = 30
+    - First one to say "matté" (i.e. tap out, a la *Bloodsport*) loses.
+- Assume *p* = .5, our EU(fighting) = (100)(.5) + (0)(.5) - 20 = 30
+
+### Would You 'Kumite' for $100 in This Situation?
+
+![](bloodsport.jpg)
+
+### Yes, You Would...
 
 By itself, this is a fantastic lottery.
 
@@ -404,18 +410,21 @@ By itself, this is a fantastic lottery.
 
 ### War as an Ultimatum Game
 
-Consider that I offer you a deal in light of this. I take $70; you take $30. Would you accept this?
+Consider that I offer you a deal in light of this. I take $70; you take $30. Would you accept this? Assume:
 
-- You might decry this as unequal. It is...
+- You are risk-averse and would take a deal that matches your expected utility for fighting.
+- You are not permitted a counter-offer.
+
+You might decry this as unequal. It is...
 
 ### War as an Ultimatum Game
 
-However, if you were not permitted a counter-offer, you would accept this if you were rational.
+However, you would accept this if you were rational.
 
 - My offer to you just matched your expected utility of fighting.
 - You would accept this, per our assumptions.
 - Any offer I give to you between $30 and $70 would induce you to accept.
-    - I would not offer you $70, though, because that'd be silly of me.
+    - I would not offer you $70, though, because that reduces my payout.
     
 # Conclusion
 ### Conclusion
