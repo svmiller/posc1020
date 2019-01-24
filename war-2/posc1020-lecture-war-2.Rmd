@@ -217,6 +217,7 @@ Assume these values.
 The inequality, $p_{(first)} - k \le X \le p_{(second)} + k$,  does not hold because .5 is not greater than .6.
 
 - Alternatively, $p_{(first)}  - p_{(second)} < 2k$  is not true either.
+    - i.e. .2 is not greater than .3.
 
 Each side has a first-strike advantage and will look to use it.
 
