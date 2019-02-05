@@ -17,7 +17,20 @@ make149: true
 mainfont: "Open Sans"
 titlefont: "Titillium Web"
 ---
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+```
+
+```{r loadstuff, include=FALSE}
 knitr::opts_chunk$set(cache=FALSE)
 
 library(tidyverse)
@@ -25,6 +38,30 @@ library(lubridate)
 library(stringr)
 library(stevemisc)
 library(scales)
+
+Alliance_my <- read_csv("~/Dropbox/data/cow/alliance/4.1/alliance_v4.1_by_member_yearly.csv")
+Alliance_m <- read_csv("~/Dropbox/data/cow/alliance/4.1/alliance_v4.1_by_member.csv")
+Alliance_dy <- read_csv("~/Dropbox/data/cow/alliance/4.1/alliance_v4.1_by_dyad_yearly.csv")
+Alliance_d <- read_csv("~/Dropbox/data/cow/alliance/4.1/alliance_v4.1_by_dyad.csv")
+
+States <- read_csv("~/Dropbox/data/cow/states/states2016.csv")
+  
+  
+States %>%
+ #   mutate(endyear = ifelse(endyear == 2011, 2015, endyear)) %>%
+    rowwise() %>%
+    mutate(year = list(seq(styear, endyear))) %>%
+    ungroup() %>%
+    unnest() %>%
+    arrange(ccode, year) %>%
+    select(ccode, year) %>%
+    distinct(ccode, year) -> CYs
+
+CYs %>%
+    group_by(year) %>%
+    summarize(numstates = n()) -> Numstates
+
+
 
 ```
 
@@ -52,6 +89,136 @@ Alliances are commitments by states to cooperate on security policy.
 - Asymmetrical—a powerful state commits to defending a weaker state (for example, the United States and South Korea)
 - Offensive (e.g. Molotov-Ribbentrop)
 - Defensive (e.g. France-Russia, pre-WWI)
+
+### A Correlates of War Typology
+
+- Type I: Defense (i.e. A and B promise mutual defense)
+- Type II(a): Neutrality (A and B promise to remain neutral if A/B is in conflict with C)
+- Type II(b): Nonaggression (A and B acknowledge contentious issues, but pledge non-violence to each other)
+    - CoW acknowledges substantial overlap, but generally neutrality pacts are more specific.
+- Type III: Entente (A and B pledge cooperation/consultation in a crisis)
+
+###
+
+```{r perc-system-with-alliance-1816-2012, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+
+Alliance_my %>%
+  group_by(year, ccode) %>%
+  filter(year > 0) %>%
+  summarize(sum = n()) %>%
+  mutate(sum = ifelse(sum > 1, 1, sum)) %>%
+  group_by(year) %>%
+  summarize(sum = n()) %>%
+  left_join(Numstates, .) %>% 
+  mutate(perc = sum/numstates) %>%
+  ggplot(.,aes(year, perc)) +
+  theme_steve_web() +
+  geom_line(size=1.1) +
+  geom_ribbon(aes(ymin=0, ymax=perc),
+              alpha=0.3, fill="#619cff") +
+  scale_x_continuous(breaks = seq(1820, 2010, by = 10)) +
+  scale_y_continuous(labels = scales::percent, limits=c(0,1)) +
+  xlab("Year") + ylab("Percentage of the State System Having At Least One Alliance") +
+  labs(title = "Roughly Three-Quarters of the State System Has At Least One Active Alliance",
+       subtitle = "The percentage of the state system membership with at least one alliance plummeted after World War I and spiked during World War II.",
+       caption = "Data: Correlates of War Alliances Data (v 4.1)")
+```
+
+###
+
+```{r most-alliances-all-time-1816-2012, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+Alliance_m %>%
+  group_by(state_name) %>%
+  summarize(sum = n()) %>%
+  arrange(-sum) %>% head(12) %>%
+  mutate(state_name = ifelse(state_name == "United States of America", "United\nStates", state_name),
+         state_name = ifelse(state_name == "United Kingdom", "United\nKingdom", state_name),
+         state_name = ifelse(state_name == "Austria-Hungary", "Austria-\nHungary", state_name)) %>%
+  ggplot(.,aes(reorder(state_name, -sum), sum)) + 
+  theme_steve_web() +
+  xlab("Country") + ylab("Number of Alliances") +
+  geom_bar(stat="identity", color="black", fill="#619cff", alpha=0.8) + 
+  geom_text(aes(label=sum), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4, family = "Open Sans") +
+  labs(title = "No Country Has Signed More Alliances in the Post-Napoleon History of the World Than Russia",
+       subtitle = "Russia's 105 alliances equals the total of France and the United Kingdom combined.",
+       caption = "Data: Correlates of War Alliances Data (v. 4.1)")
+
+```
+
+###
+
+```{r usa-rus-alliances-1816-2012, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+Alliance_my %>%
+  filter(ccode == 2 | ccode == 365) %>%
+  select(version4id, state_name, year) %>%
+  rename(Country = state_name) %>%
+  group_by(year, Country) %>%
+  summarize(sum = n()) %>% 
+  ggplot(.,aes(year, sum, fill=Country, group=Country)) + theme_steve_web() +
+  scale_x_continuous(limits=c(1816, 2012), breaks = seq(1820, 2010, by = 10)) +
+    geom_bar(aes(fill=Country), stat="identity",  color="black", alpha=I(0.5)) +
+  xlab("Year") + ylab("Number of Active Alliances in a Year") +
+  #scale_fill_manual(values = pal("five38")) +
+  labs(title = "The Number of Active Alliances for the U.S. and Russia, 1816-2012",
+       subtitle = "The U.S. foray into alliance-making starts with the Root–Takahira Agreement with Japan. They've been a common part of Russian foreign policy for much longer.",
+       caption = "Data: Correlates of War Alliances Data (v. 4.1)")
+
+```
+
+
+
+###
+
+```{r alliance-type-1816-2012, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+Alliance_m %>%
+  group_by(version4id, ss_type) %>%
+  summarize(sum = n()) %>%
+  group_by(ss_type) %>%
+  summarize(sum = n()) %>%
+  mutate(Type = c("Defense", "Neutrality", "Non-Aggression", "Non-Aggression", "Entente")) %>%
+  group_by(Type) %>%
+  summarize(sum = sum(sum)) %>%
+  ggplot(.,aes(Type, sum)) + theme_steve_web() + 
+  geom_bar(stat="identity", color="black", fill="#619cff", alpha=0.8) + 
+  geom_text(aes(label=sum), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4, family = "Open Sans") +
+  xlab("Type of Alliance (via Singer and Small, 1966)") + ylab("Number of Alliances in the Data") +
+  labs(title = "Almost Half (49.5%) of Alliances Are Primarily Defensive",
+       subtitle = "An 1862-66 alliance among Hanover, Bavaria, Saxony, Wuerttemburg, Hesse Grand Ducal, and Austria-Hungary is the only primarily neutrality pact in the data.",
+       caption = "Data: Correlates of War Alliances Data (v 4.1)")
+  
+# version4id 42 = only Neutrality
+```
+
+###
+
+```{r alliance-pledges-1816-2012, eval=T, echo=F, fig.width=14, fig.height=8.5, warning=F, message=F}
+Alliance_d %>%
+  group_by(version4id) %>%
+  summarize(num_def = sum(defense),
+            num_neu = sum(neutrality),
+            num_nonagg = sum(nonaggression),
+            num_ent = sum(entente)) %>%
+  mutate(num_def = ifelse(num_def > 1, 1, num_def),
+         num_neu = ifelse(num_neu > 1, 1, num_neu),
+         num_nonagg = ifelse(num_nonagg > 1, 1, num_nonagg),
+         num_ent = ifelse(num_ent > 1, 1, num_ent)) %>%
+  summarize(`Defense` = sum(num_def),
+            `Neutrality` = sum(num_neu),
+            `Non-Aggression` = sum(num_nonagg),
+            `Entente` = sum(num_ent, na.rm=T)) %>%
+  gather(Category, Count, `Defense`:`Entente`) %>%
+  ggplot(.,aes(Category, Count)) + theme_steve_web() + 
+  geom_bar(stat="identity", color="black", fill="#619cff", alpha=0.8) +
+  geom_text(aes(label=Count), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4, family = "Open Sans") +
+  xlab("Pledge Type (via Singer and Small, 1966)") + ylab("Number of Pledges in the Data") +
+  labs(title = "Few Alliances Are Primarily Ententes or Neutrality Pacts, but Those Pledges Appear in Defense and Non-Aggression Pacts",
+       subtitle = "Only one alliance was a neutrality pact but 102 alliances contain neutrality pledges.",
+       caption = "Data: Correlates of War Alliances Data (v 4.1)")
+```
+
 
 ### The Cost of Alliances
 
@@ -152,7 +319,7 @@ tibble(x = seq(-50, 50),
            family="Open Sans", hjust="center",
            color="blue2", label="B rejects\nthese deals", fontface="bold") +
   labs(title = "The Alignment of Interests Among A-C and B",
-       subtitle = "C Supports A, but C's participation in a potential war is an open question. Both A and B are perfectly matched (i.e. p(victory) = .5) and a hypothetical bargaining space still exists.")
+       subtitle = "C supports A, but C's participation in a potential war is an open question. Both A and B are perfectly matched (i.e. p(victory) = .5) and a hypothetical bargaining space still exists.")
 ```
 
 
