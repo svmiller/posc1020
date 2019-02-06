@@ -18,7 +18,7 @@ The task here is fairly straightforward. The student will watch this episode and
 
 This short paper is due through the Turnitin module on the course website *before* **April 13, 9 a.m**. [Here is the rubric](http://posc1020.svmiller.com/short-paper/short-paper-rubric.pdf) for the assignment, which also provides further instructions for the paper's frame and formatting.
 
-**The video is available on the Canvas module for the class.**  Check the "Syllabus" tab.
+**The video is available on the Canvas module for the class.**  Check the "Syllabus" tab. The DVD is also [available at Clemson's library](http://libcat.clemson.edu/search~S1/?searchtype=c&searcharg=HD87.C66+2002) if the student wants a DVD copy in lieu of a streaming copy.
 
 
 ## Additional Course Materials
