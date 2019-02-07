@@ -40,7 +40,18 @@ library(lubridate)
 library(stringr)
 library(stevemisc)
 library(scales)
+library(artyfarty)
 library(knitr)
+
+tribble(~from, ~to,
+        1946, 2018) %>%
+  rowwise() %>%
+  # Create a list in a tibble that we're going to expand soon.
+  mutate(year = list(seq(from, to))) %>%
+  unnest() %>%
+  distinct(year) -> years
+
+unsc_vetoes <- read_csv("https://gist.githubusercontent.com/svmiller/ea81ef406440df63e48929243ca6e364/raw/4e0439b256cf737d4d3dbd73850217d7b2a01840/unsc-vetoes.csv")
 
 ```
 
@@ -149,6 +160,103 @@ It's often hard to identify aggressor in conflict.
 - The P5 have more power, so this biases decisions in a way that is consistent with their interests.
 - The extraordinary influence of the P5 increases credibility of Security Council action by communicating that powerful states agree and will back such action.
     - It's what makes UN sanctions more credible.
+
+
+###
+
+```{r unsc-vetoes-1946-present, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
+
+unsc_vetoes %>% distinct(Draft, .keep_all=T) %>%
+  mutate(year = as.numeric(stringr::str_sub(Date,-4,-1))) %>%
+  group_by(year) %>%
+  summarize(n = n()) %>%
+  left_join(years, .) %>%
+  mutate(n = ifelse(is.na(n), 0, n)) %>%
+  ggplot(.,aes(year, n)) + theme_steve_web() +
+  geom_bar(stat="identity", alpha =0.8, color="black", fill="#619cff") +
+  scale_x_continuous(breaks = seq(1945, 2020, by =5)) +
+  scale_y_continuous(breaks = seq(0, 14, by =2)) +
+  xlab("") + ylab("Number of UN Security Council Vetoes") +
+  labs(title = "The Number of UN Security Council Vetoes by Year, 1946-Present",
+       subtitle = "The formative years of the UN Security Council saw the most vetoes, largely over concerns of admission/membership.",
+       caption = "Data: United Nations. Note: instances where more than one state vetoed a vote in the UN Security Council (e.g. a joint UK-USA veto on a resolution concerning South Rhodesia in 1973) are treated as just one veto.")
+```
+
+###
+
+```{r unsc-vetoes-1946-present-by-country, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
+
+tribble(~State, ~from, ~to,
+        "China", 1946, 2018,
+        "France", 1946, 2018,
+        "UK", 1946, 2018,
+        "USA", 1946, 2018,
+        "USSR/Russia", 1946, 2018) %>%
+  rowwise() %>%
+  # Create a list in a tibble that we're going to expand soon.
+  mutate(year = list(seq(from, to))) %>%
+  unnest() %>%
+  distinct(State,year) -> state_years
+
+unsc_vetoes %>%
+  mutate(year = as.numeric(stringr::str_sub(Date,-4,-1))) %>%
+  group_by(year, State) %>%
+  summarize(n = n()) %>%
+  left_join(state_years, .) %>%
+  mutate(n = ifelse(is.na(n), 0, n)) %>%
+  fill(State) %>%
+  ggplot(.,aes(year, n, fill=State)) + 
+  theme_steve_web() + 
+  #geom_line(size=1.1) +
+  geom_bar(stat="identity", color="black") +
+  scale_x_continuous(breaks = seq(1945, 2015, by = 10)) +
+  facet_wrap(~State) +
+  scale_y_continuous(breaks = seq(0,14, by = 2)) +
+  scale_fill_manual(values = pal("d3js")) +
+  xlab("") + ylab("Number of Security Council Vetoes in a Given Year") +
+  labs(title = "The Number of UN Security Council Vetoes in a Given Year, by Country",
+       subtitle = "The Soviet Union, initially led in the Security Council by ''Mr. Veto'' Vyacheslav Molotov, is responsible for nearly half of all UN Security Council vetoes in just the first 10 years.",
+       caption = "Data: United Nations")
+
+```
+
+###
+
+```{r unsc-vetoes-1946-present-usa, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
+
+unsc_vetoes %>%
+  filter(State == "USA") %>%
+  rename(Issue = `Issue (Recoded)`) %>%
+  group_by(Issue) %>%
+  summarize(n = n()) %>%
+  bind_rows(.,tribble(~Issue, ~n,
+                       "State\nAdmission", 6)) %>%
+  slice(-1:-4) %>%
+  bind_rows(.,tribble(~Issue, ~n,
+                       "Israel", 38)) %>%
+  slice(-4:-8) %>%
+  mutate(n = ifelse(Issue == "Libya", 3, n)) %>%
+  slice(-13) %>%
+  mutate(n = ifelse(Issue == "Panama", 3, n)) %>%
+  slice(-7) %>%
+  mutate(Issue = ifelse(grepl("Situation in ",Issue),str_sub(Issue, 14),Issue)) %>%
+  mutate(Issue = ifelse(Issue == "Bosnia and Herzegovina", "Bosnia and\nHerzegovina", Issue),
+         Issue = ifelse(Issue == "South Rhodesia (Zimbabwe)", "South\nRhodesia\n(Zimbabwe)", Issue),
+         Issue = ifelse(Issue == "Falkland Islands", "Falkland\nIslands", Issue),
+         Issue = ifelse(Issue == "Angola/South Africa", "Angola/\nSouth\nAfrica", Issue)) %>%
+  ggplot(.,aes(reorder(Issue, -n), n)) + 
+  theme_steve_web() +
+  geom_bar(stat="identity", alpha=0.8, fill="#619cff", color="black") +
+  geom_text(aes(label=n), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4) +
+  xlab("Issue") + ylab("Number of U.S. Vetoes in the UN Security Council") +
+  labs(title = "The U.S. Most Often Uses its UN Security Council Veto to Protect Israel",
+       subtitle = "The UN Security Council often votes on resolutions concerning the Palestinian question and Israeli occupation of Arab territories. The U.S. routinely vetoes resolutions critical of Israel.",
+       caption = "Data: United Nations")
+  
+
+```
+
     
 ### Types of Enforcement
 
