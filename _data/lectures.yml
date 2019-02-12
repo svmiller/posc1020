@@ -37,11 +37,11 @@
   filename: collective-security
   dirname: collective-security
   tldr: "Collective security organizations (e.g. UN, African Union) ideally prevent/end war, but with varying degrees of success."
-# 
-# - title: "Why Civil Wars Happen, and What We Can Do About Them"
-# filename: civil-war
-# dirname: civil-war
-# tldr: "The same tools that explain inter-state war can explain civil war. It's just that the nature of one of the adversaries is different."
+ 
+- title: "Why Civil Wars Happen, and What We Can Do About Them"
+  filename: civil-war
+  dirname: civil-war
+  tldr: "The same tools that explain inter-state war can explain civil war. It's just that the nature of one of the adversaries is different."
 # 
 # - title: "The Strategic Dilemma(s) of Terrorism"
 # filename: terrorism
