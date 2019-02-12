@@ -133,26 +133,63 @@ numintrawars %>%
 
 ###
 
-```{r colombia-civil-conflict-deaths-1989-2016, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
+```{r colombia-civil-conflict-deaths-1989-2017, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
 
-UCDP <- WDI(country="all", indicator=c("VC.BTL.DETH"), start=1946, end=2016) %>%
-  rename(btldeath = VC.BTL.DETH)
+UCDP <- WDI(country="all", indicator=c("VC.BTL.DETH"), start=1946, end=2017) %>%
+  rename(btldeath = VC.BTL.DETH, Country = country)
 
-UCDP %>%   filter(country == "Colombia") %>%
+UCDP %>%
+  filter(Country == "Colombia") %>%
   filter(year > 1988) %>%
-ggplot(., aes(year, btldeath)) +  theme_steve_web() +
-  geom_hline(yintercept=1000, color="red", linetype = "dashed", size=1.5, alpha=0.3) +
-  geom_bar(stat="identity", alpha = .8, fill="#F8766D", color="black") +
+  mutate(# btldeath = ifelse(Country == "Colombia" & year == 2017, 0, btldeath),
+         lab = prettyNum(btldeath, big.mark=",")) %>% 
+  ggplot(., aes(year, btldeath, fill=Country)) +  theme_steve_web() +
+  geom_bar(stat="identity", position="dodge", alpha = .8,  color="black") +
+  scale_fill_manual(values = pal("five38")) +
+  geom_text(aes(label=lab), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3.5, family = "Open Sans") +
+  geom_hline(yintercept=1000, color="black", linetype = "dashed",  alpha=0.3) +
+  # geom_bar(stat="identity", alpha = .8, fill="#F8766D", color="black") +
   xlab("Year") + ylab("Battle-related Deaths") +
   scale_x_continuous(breaks = seq(1988, 2016, by = 2)) +
+  scale_y_continuous(labels = scales::comma) +
   ggtitle("Battle-related Deaths in Colombia's Civil Conflict (1989-2016)") +
-  geom_text(aes(label=btldeath), color="black",
-            position=position_dodge(width=.9), 
-            size=4, vjust = -.3, family="Open Sans") +
+  # geom_text(aes(label=btldeath), color="black",
+  #           position=position_dodge(width=.9), 
+  #           size=3.75, vjust = -.3, family="Open Sans") +
   annotate("text", x=2016, y=1050, 
            label= "Conventional cutoff for operationalizing civil war", hjust=1, family = "Open Sans") +
   labs(subtitle="Civil conflicts tend to be protracted and fluctuate in severity, like the conflict in Colombia that has been ongoing since 1964.",
-       caption="Data: UCDP, via World Bank.")
+       caption="Data: UCDP, via World Bank.") +
+    theme(legend.position ="none")
+```
+
+###
+
+```{r myanmar-civil-conflict-deaths-1989-2017, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
+
+
+
+UCDP %>%
+  filter(Country == "Myanmar") %>%
+  filter(year > 1988) %>%
+  mutate(# btldeath = ifelse(Country == "Colombia" & year == 2017, 0, btldeath),
+         lab = prettyNum(btldeath, big.mark=",")) %>% 
+  ggplot(., aes(year, btldeath, fill=Country)) +  theme_steve_web() +
+  geom_bar(stat="identity", position="dodge", alpha = .8,  color="black") +
+  scale_fill_manual(values = pal("ft")) +
+  geom_text(aes(label=lab), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3.5, family = "Open Sans") +
+  geom_hline(yintercept=1000, color="black", linetype = "dashed",  alpha=0.3) +
+  xlab("Year") + ylab("Battle-related Deaths") +
+  scale_x_continuous(breaks = seq(1988, 2016, by = 2)) +
+  scale_y_continuous(labels = scales::comma) +
+  ggtitle("Battle-related Deaths in Myanmar's Civil Conflicts (1989-2017)") +
+  annotate("text", x=2016, y=1050, 
+           label= "Conventional cutoff for operationalizing civil war", hjust=1, family = "Open Sans") +
+  labs(subtitle="Severity varies, but Myanmar has been in a near constant series of ethnic conflicts, prominently with the Karens, since independence from the UK in 1948.",
+       caption="Data: UCDP, via World Bank.") +
+    theme(legend.position ="none")
 ```
 
 # Civil Wars
@@ -237,6 +274,65 @@ Governments have a particular disadvantage gauging would-be rebels:
 However, the protracted nature of civil conflicts don't fit well with arguments of incomplete information.
 
 - That said, nature of civil war (i.e. insurgency, asymmetric warfare) magnify the information problem for central governments.
+
+###
+
+```{r intra-inter-state-war-lengths, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
+
+InterWars %>%
+  distinct(WarNum, .keep_all=T) %>%
+  mutate(sdate = lubridate::ymd(paste(StartYear1, StartMonth1, StartDay1)),
+         edate = lubridate::ymd(paste(EndYear1, EndMonth1, EndDay1))) %>%
+  select(WarNum, sdate, edate) %>%
+  mutate(duration = as.numeric(difftime(edate,
+                                      sdate, 
+                                      units="days") + 1)) %>%
+  mutate(category=cut(duration, breaks=c(-Inf, 30, 60, 120, 365, 730, 1095, Inf), 
+                       labels=c("1-30\ndays","31-60\ndays", "61-120\ndays",
+                                "121-365\ndays",
+                                "1-2 years", "2-3 years", "Longer than\n3 years"))) %>%
+  group_by(category) %>%
+  summarize(n = n()) %>%
+  ungroup() %>%
+  mutate(perc = n/sum(n)) %>%
+  mutate(Type = "Inter-State Wars") -> InterWars_durations
+  
+IntraWars %>%
+  distinct(WarNum, .keep_all=T) %>%
+  mutate(sdate = lubridate::ymd(paste(StartYear1, StartMonth1, StartDay1)),
+         edate = lubridate::ymd(paste(EndYear1, EndMonth1, EndDay1))) %>%
+  select(WarNum, sdate, edate) %>%
+  mutate(duration = as.numeric(difftime(edate,
+                                      sdate, 
+                                      units="days") + 1)) %>%
+  mutate(category=cut(duration, breaks=c(-Inf, 30, 60, 120, 365, 730, 1095, Inf), 
+                       labels=c("1-30\ndays","31-60\ndays", "61-120\ndays",
+                                "121-365\ndays",
+                                "1-2 years", "2-3 years", "Longer than\n3 years")))  %>%
+  group_by(category) %>%
+  summarize(n = n()) %>%
+  filter(!is.na(category)) %>%
+  ungroup() %>%
+  mutate(perc = n/sum(n)) %>%
+  mutate(Type = "Intra-State Wars")  -> IntraWars_durations
+
+
+bind_rows(InterWars_durations, IntraWars_durations) %>%
+  mutate(lab = paste0(mround2(perc),"%")) %>%
+  ggplot(.,aes(category, perc, fill=Type)) + theme_steve_web() +
+  geom_bar(stat="identity", position = "dodge", 
+           alpha = I(0.8),color = I("black")) +
+  xlab("Duration Category") + ylab("Percentage of Total Wars (by Type)") +
+  scale_y_continuous(labels = scales::percent) +
+  geom_text(aes(label=lab), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3.7, family = "Open Sans") +
+  scale_fill_manual(values = pal("five38")) +
+  labs(title = "The Typical War—Intra-State or Inter-State—is Going to Last 365 Days or Fewer",
+       subtitle = "...and yet plenty wars last several years, even as multi-year intra-state wars are more common than multi-year inter-state wars.",
+       caption = "Data: Correlates of War.")
+
+
+```
 
 ### Civil War from Commitment Problem
 
