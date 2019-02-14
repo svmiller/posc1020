@@ -41,6 +41,9 @@ library(scales)
 library(knitr)
 library(WDI)
 library(rvest)
+library(artyfarty)
+
+Ideo <- readxl::read_xlsx("~/Dropbox/data/gtd/globalterrorismdb_USideology_1970-2016.xlsx")
 
 # GTD16 <- readxl::read_xlsx("~/Dropbox/data/gtd/20160629-download/globalterrorismdb_0616dist.xlsx")
 GTD <- readxl::read_xlsx("~/Dropbox/data/gtd/20180730-download/globalterrorismdb_0718dist.xlsx")
@@ -130,6 +133,76 @@ GTD %>%
        caption = "Data: Global Terrorism Database")
 ```
 
+
+###
+
+```{r usa-terrorism-ideologies-2012-2016, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
+
+Ideo %>%
+  drop_na() %>%
+  mutate(year = stringr::str_sub(eventid, 1, 4),
+         year = as.numeric(year)) %>%
+  rename(Environmental = ENVIRONMENTAL,
+         `Left-Wing` = `LEFT-WING`,
+         `Right-Wing` = `RIGHT-WING`,
+         Religious = RELIGIOUS,
+         Christian = `RELIGIOUS-CHRISTIAN`,
+         Islamic = `RELIGIOUS-ISLAMIC`) %>%
+  select(year, Environmental, `Left-Wing`,
+         `Right-Wing`, `Religious`, `Christian`, `Islamic`) %>%
+  group_by(year) %>%
+  summarize_all(sum) %>%
+  gather(Category, num, Environmental:Islamic) -> Ideos
+
+Ideos %>% 
+  filter(year >= 2012 & Category != "Religious") %>%
+  group_by(Category) %>%
+  summarize(n = sum(num)) %>%
+  ggplot(.,aes(Category, n)) + 
+  theme_steve_web() +
+  geom_bar(stat = "identity", color="black", alpha = 0.8, fill="#619cff") +
+  geom_text(aes(label=n), vjust=-.5, colour="black", family="Open Sans",
+            position=position_dodge(.9), size=4) +
+  ylab("Number of Terror Attacks by U.S. Ideologues") +
+  labs(title = "Terror Attacks in the U.S. by Ideology, 2012-2016",
+       subtitle = "There were 66% more terror attacks committed by right-wing ideologues than Islamists in the five most recent years of the GTD data.",
+       caption = "Data: Ideological Motivations of Terrorism in the United States, 1970—2016, GTD Auxiliary Dataset")
+
+```
+
+###
+
+```{r usa-terrorism-ideologies-left-right-1970-2016, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
+
+Ideos %>%
+  filter(Category %in% c("Left-Wing", "Right-Wing")) %>%
+  ggplot(.,aes(year,num, color=Category, linetype=Category)) + 
+  theme_steve_web() + geom_line(size=1.1) +
+  scale_x_continuous(breaks = seq(1970, 2015, by = 5)) +
+  scale_color_manual(values = pal("five38")) +
+  xlab("Year") + ylab("Number of U.S. Terror Attacks by Ideologues") +
+  labs(title = "Terror Attacks by Left-Wing and Right-Wing Ideologues, 1970-2016",
+       subtitle = "Right-wing terrorism outnumbers left-wing terrorism 9/1 in the two most recent years (2/1 over the past 10), but left-wing terrorism dominated the early 1970s.",
+       caption = "Data: Ideological Motivations of Terrorism in the United States, 1970—2016, GTD Auxiliary Dataset")
+
+```
+
+###
+
+```{r usa-terrorism-ideologies-christian-islamic-1970-2016, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
+
+Ideos %>%
+  filter(Category %in% c("Christian", "Islamic")) %>%
+  ggplot(.,aes(year,num, color=Category, linetype=Category)) + 
+  theme_steve_web() + geom_line(size=1.1) +
+  scale_x_continuous(breaks = seq(1970, 2015, by = 5)) +
+  scale_color_manual(values = pal("five38")) +
+  xlab("Year") + ylab("Number of U.S. Terror Attacks by Ideologues") +
+  labs(title = "Terror Attacks by Christian and Islamic Ideologues, 1970-2016",
+       subtitle = "Islamic terrorism outnumbers Christian terrorism 3.5/1 since 2001, but Christian terrorists have committed more than twice as many attacks than Islamists since 1970.",
+       caption = "Data: Ideological Motivations of Terrorism in the United States, 1970—2016, GTD Auxiliary Dataset")
+
+```
 
 ###
 
