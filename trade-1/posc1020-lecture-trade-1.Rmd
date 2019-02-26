@@ -571,7 +571,7 @@ tribble(
   ylab("Value of Exports (in Billions)") + xlab("Export Category") +
   labs(caption = "Data: U.S. Census",
        title= "The U.S. Exported About $2.2 Trillion USD in Goods and Services in 2016",
-       subtitle = "Capital goods (e.g. commercial aircraft [$121 billion], industrial machines [$51 billion], semiconductors [$44 billion], and telecommunications [$41 billion]) lead the way among all export types.")
+       subtitle = "Capital goods (e.g. commercial aircraft [$121 billion], industrial machines [$51 billion], semiconductors [$44 billion], and telecommunications [$41 billion]) lead among all export types.")
 
 ```
 
@@ -620,7 +620,7 @@ ustrade %>%
               alpha=0.3, fill="#619CFF") +
   ylab("Trade as % of GDP") + xlab("Year") +
   scale_x_continuous(breaks=seq(1960, 2015, by=5)) + xlab("") +
-  labs(caption = "Data: World Bank Development Indicators (1960-2016), United States Cenus Bureau (2017-18)",
+  labs(caption = "Data: World Bank Development Indicators (1960-2016), United States Census Bureau (2017-18)",
        title="Trade as a Percentage of U.S. GDP, 1960-2018",
        subtitle="Trade has become an increasingly large part of the U.S. economy since the 1960s, but the value of trade to U.S. economic output is declining with the Trump presidency.")
 ```
