@@ -40,7 +40,7 @@ library(stevemisc)
 library(fredr)
 library(artyfarty)
 
-Data <- read.csv("~/Dropbox/projects/mid-project/gml-mid-data/2.03/gml-ndy-2.03.csv") %>% tbl_df()
+Data <- read.csv("~/Dropbox/projects/mid-project/gml-mid-data/2.1/gml-ndy-2.1.csv") %>% tbl_df()
 Cont <- read.csv("~/Dropbox/data/cow/contiguity/3.2/contdird.csv") %>% tbl_df()
 Majors <- read.csv("~/Dropbox/data/cow/states/majors2016.csv") %>% tbl_df()
 Contcd <- read.csv("~/Dropbox/data/cow/coldepcont/contcold.csv") %>% tbl_df()
@@ -186,12 +186,14 @@ fredr(series_id = "PSUGAUSAUSDM",
 
 bind_rows(SugA, SugG) %>%
   rename(`Price of Sugar` = series_id) %>%
-  ggplot(.,aes(date, value, group=`Price of Sugar`, color=`Price of Sugar`,linetype=`Price of Sugar`)) + theme_steve_web() +
+   ggplot(.,aes(date, value, color=`Price of Sugar`,linetype=`Price of Sugar`)) + theme_steve_web() +
   geom_line(size = 1.1) +
-  scale_color_manual(values = pal("xmen")) +
+  scale_color_manual(values = pal("xmen"),
+                     name = "Price of Sugar") +
+  scale_linetype_discrete(name = "Price of Sugar") +
   scale_x_date(date_breaks = "2 years",
                date_labels = "%Y") +
-  ylab("Price of Sugar (in USD, per Metric Ton)") + xlab("") +
+  ylab("Price of Sugar (in U.S. cents pound, nominal/NSA)") + xlab("") +
   labs(title = "Americans Pay More for Sugar Than the Rest of the World",
        subtitle = "This isn't a ''sweet tax.'' Rather, the culprit is sugar protectionism policies dating to the Great Depression that make sugar trade above the price for international delivery.",
        caption = "Data: International Monetary Fund, via the Federal Reserve Bank of St. Louis")
@@ -210,8 +212,10 @@ bind_rows(SugA, SugG, SugE) %>%
   geom_line(size = 1.1) +
   scale_x_date(date_breaks = "2 years",
                date_labels = "%Y") +
-  scale_color_manual(values = pal("xmen")) +
-  ylab("Price of Sugar (in USD, per Metric Ton)") + xlab("") +
+    scale_color_manual(values = pal("xmen"),
+                     name = "Price of Sugar") +
+  scale_linetype_discrete(name = "Price of Sugar") +
+  ylab("Price of Sugar (in U.S. cents pound, nominal/NSA)") + xlab("") +
    labs(title = "Americans Pay More for Sugar Than the Rest of the World (Even Europe)",
        subtitle = "Again, this isn't a ''sweet tax.'' It's sugar protectionism policies dating to the Great Depression that make sugar more expensive in the U.S.",
        caption = "Data: International Monetary Fund, via the Federal Reserve Bank of St. Louis")
@@ -293,14 +297,16 @@ PRD %>%
             rmeantrade = (meantrade - min(meantrade))/(max(meantrade) - min(meantrade))) %>%
   ggplot(.,aes(x = year)) +
   geom_line(aes(y = pmid, color = "Proportion of States in a MID"), size=1.1) +
-  geom_line(aes(y = meantrade/6, color = "Total Volume of Trade (Logged)"), size=1.1) + 
+  geom_line(aes(y = meantrade/6, color = "Total Volume of Trade (Logged)"), 
+            size=1.1) + 
   scale_y_continuous(sec.axis = sec_axis(~.*6, name = "Average Total Volume of Trade in the World (Logged)")) +
   theme_steve_web() + ylab("Proportion of States in a MID") + xlab("") +
   scale_x_continuous(breaks=seq(1870, 2010, by = 5)) +
+  scale_color_manual(values = pal("five38")) +
   labs(colour = "Category",
        title = "IR Scholars Generally See Trade as Conducive to Global Peace",
        subtitle = "The argument is intuitive; interconnected states see conflict as too costly and an unnecessary disruption of commerce.",
-       caption = "Data: Correlates of War Dyadic Trade Data (v. 4.0) and Gibler-Miller-Little MID Data (v. 2.03)")
+       caption = "Data: Correlates of War Dyadic Trade Data (v. 4.0) and Gibler-Miller-Little MID Data (v. 2.1)")
 
 ```
 
@@ -433,6 +439,8 @@ WDI(country = c("US", "CA", "MX"), indicator = c("TX.VAL.TECH.CD", "TX.VAL.MRCH.
   ggplot(.,aes(year, techexp, group = Country, color=Country, linetype = Country)) + 
   theme_steve_web() +
   geom_line(size=1.1) + 
+  scale_y_continuous(labels = scales::dollar) +
+  # scale_color_manual(values = pal("xmen")) +
   labs(caption = "Data: United Nations, Comtrade Data via World Bank Development Indicators",
        title = "The U.S. Exports About Three Times as Much in High-Technology Goods than Canada and Mexico",
        subtitle = "This would square with casual observations that the U.S. is better endowed in capital than its NAFTA neighbors.") +
@@ -522,6 +530,24 @@ left_join(PCE, Clothes) %>%
 
 ###
 
+```{r steves-clothes-2019, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+data("steves_clothes")
+
+steves_clothes %>%
+  group_by(origin, type) %>% summarize(ntype = n()) %>%
+  group_by(origin) %>% mutate(n = sum(ntype)) %>%
+  rename(Type = type) %>%
+  ggplot(.,aes(reorder(origin, -n), ntype)) + theme_steve_web() + 
+  geom_bar(stat="identity",aes(fill=Type), color="black") +
+  scale_fill_manual(values = pal("five38")) +
+  xlab("Country of Origin") + ylab("Number of Articles of Clothing in Steve's Closet") +
+  labs(title = "Where Do Steve's Clothes Come From?",
+       subtitle = "There are more than 3,000 garment manufacturers in Indonesia, a country disproportionately responsible for my professional attire (and probably yours too).",
+caption = "Data: Steve's closet as of Feb. 21, 2019. If you must know, I'm mostly shopping at prominent clothing retailers like Belk, JC Penney, and Kohl's. In that regard, I think I'm typical.")
+```
+
+###
+
 ```{r usa-exports-2016, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 tribble(
   ~type, ~value,
@@ -578,47 +604,40 @@ One such reason why the U.S. has led the charge for liberalizing trade worldwide
 
 ###
 
-```{r usa-trade-gdp-1960-2016, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r usa-trade-gdp-1960-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 WDI(country = "US", indicator = "NE.TRD.GNFS.ZS",
-    start = 1960, end = 2017, extra = FALSE, cache = NULL) %>%
-  rename(trade = `NE.TRD.GNFS.ZS`) -> wditrade
+    start = 1960, end = 2018, extra = FALSE, cache = NULL) %>%
+  rename(tradegdp = `NE.TRD.GNFS.ZS`) -> ustrade
 
-wditrade %>%
-  ggplot(.,aes(year,trade)) + theme_steve_web() +
+ustrade %>%
+  mutate(tradegdp = ifelse(year == 2017, ((1546273.0+2341962)/19485400)*100, tradegdp),
+         tradegdp = ifelse(year == 2018, ((1537148.6+2326524.5)/20513000)*100, tradegdp)) -> ustrade
+
+ustrade %>%
+  ggplot(.,aes(year,tradegdp)) + theme_steve_web() +
   geom_line(size=1.1) +
-  geom_ribbon(aes(ymin=0, ymax=trade),
+  geom_ribbon(aes(ymin=0, ymax=tradegdp),
               alpha=0.3, fill="#619CFF") +
   ylab("Trade as % of GDP") + xlab("Year") +
   scale_x_continuous(breaks=seq(1960, 2015, by=5)) + xlab("") +
-  labs(caption = "Data: World Bank Development Indicators",
-       title="Trade as a Percentage of U.S. GDP, 1960-2016",
-       subtitle="Trade has become an increasingly large part of the U.S. economy since the 1960s.")
+  labs(caption = "Data: World Bank Development Indicators (1960-2016), United States Cenus Bureau (2017-18)",
+       title="Trade as a Percentage of U.S. GDP, 1960-2018",
+       subtitle="Trade has become an increasingly large part of the U.S. economy since the 1960s, but the value of trade to U.S. economic output is declining with the Trump presidency.")
 ```
 
 
 ###
-```{r usa-trade-gdp-1790-2016, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-read_table("~/Dropbox/data/trade.txt") %>%
-  select(year_1:gdpb_1) %>%
-  magrittr::set_colnames(c("year", "impo", "expo", "bala", "gdpb")) -> y1900
+```{r usa-trade-gdp-1790-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-wditrade %>%
-  filter(year > 2006) %>%
-  rename(perc = trade) -> y2007
-
-read_table("~/Dropbox/data/trade.txt") %>%
-  select(year:gdpb) %>%
-  bind_rows(.,y1900) %>%
-  mutate(perc = ((impo+expo)/gdpb)*100) %>%
-  bind_rows(.,y2007) %>%
-  ggplot(.,aes(year,perc)) + geom_line(size = 1.1) + theme_steve_web() +
-  geom_ribbon(aes(ymin=0, ymax=perc),
+ustradegdp %>%
+  ggplot(.,aes(year,tradegdp)) + geom_line(size = 1.1) + theme_steve_web() +
+  geom_ribbon(aes(ymin=0, ymax=tradegdp),
               alpha=0.3, fill="#619CFF") +
   scale_x_continuous(breaks=seq(1790, 2020, by = 10)) +
   xlab("") + ylab("Trade as % of GDP") +
-  labs(title = "The Volume of Trade as Percentage of GDP in the United States, 1790-2016",
+  labs(title = "The Volume of Trade as Percentage of GDP in the United States, 1790-2018",
        subtitle = "Trade's importance to the U.S. economy has major variation over time, especially early into the country's independence from Great Britain.",
-       caption = "Data: Various sources (see especially: http://www.econdataus.com/tradeall.html). Post-2006 data come from the World Bank.")
+       caption = "Data: Various sources (see especially: http://www.econdataus.com/tradeall.html).\nPost-1960 data come from the World Bank. 2017 and 2018 observations are armchair calculations from U.S. Census Bureau (trade) and IMF (GDP).")
 
 ```
 
