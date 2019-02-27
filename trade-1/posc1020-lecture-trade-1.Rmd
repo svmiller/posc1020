@@ -604,14 +604,14 @@ One such reason why the U.S. has led the charge for liberalizing trade worldwide
 
 ###
 
-```{r usa-trade-gdp-1960-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r usa-trade-gdp-1960-2016, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 WDI(country = "US", indicator = "NE.TRD.GNFS.ZS",
     start = 1960, end = 2018, extra = FALSE, cache = NULL) %>%
   rename(tradegdp = `NE.TRD.GNFS.ZS`) -> ustrade
 
-ustrade %>%
-  mutate(tradegdp = ifelse(year == 2017, ((1546273.0+2341962)/19485400)*100, tradegdp),
-         tradegdp = ifelse(year == 2018, ((1537148.6+2326524.5)/20513000)*100, tradegdp)) -> ustrade
+# ustrade %>%
+#   mutate(tradegdp = ifelse(year == 2017, ((1546273.0+2341962)/19485400)*100, tradegdp),
+#          tradegdp = ifelse(year == 2018, ((1537148.6+2326524.5)/20513000)*100, tradegdp)) -> ustrade
 
 ustrade %>%
   ggplot(.,aes(year,tradegdp)) + theme_steve_web() +
@@ -619,10 +619,10 @@ ustrade %>%
   geom_ribbon(aes(ymin=0, ymax=tradegdp),
               alpha=0.3, fill="#619CFF") +
   ylab("Trade as % of GDP") + xlab("Year") +
-  scale_x_continuous(breaks=seq(1960, 2015, by=5)) + xlab("") +
-  labs(caption = "Data: World Bank Development Indicators (1960-2016), United States Census Bureau (2017-18)",
-       title="Trade as a Percentage of U.S. GDP, 1960-2018",
-       subtitle="Trade has become an increasingly large part of the U.S. economy since the 1960s, but the value of trade to U.S. economic output is declining with the Trump presidency.")
+  scale_x_continuous(breaks=seq(1960, 2016, by=5)) + xlab("") +
+  labs(caption = "Data: World Bank Development Indicators (1960-2016).",
+       title="Trade as a Percentage of U.S. GDP, 1960-2016",
+       subtitle="Trade has become an increasingly large part of the U.S. economy since the 1960s.")
 ```
 
 
@@ -630,10 +630,12 @@ ustrade %>%
 ```{r usa-trade-gdp-1790-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
 ustradegdp %>%
+  mutate(tradegdp = (impo + expo)/gdpb) %>%
   ggplot(.,aes(year,tradegdp)) + geom_line(size = 1.1) + theme_steve_web() +
   geom_ribbon(aes(ymin=0, ymax=tradegdp),
               alpha=0.3, fill="#619CFF") +
   scale_x_continuous(breaks=seq(1790, 2020, by = 10)) +
+  scale_y_continuous(labels = scales::percent) +
   xlab("") + ylab("Trade as % of GDP") +
   labs(title = "The Volume of Trade as Percentage of GDP in the United States, 1790-2018",
        subtitle = "Trade's importance to the U.S. economy has major variation over time, especially early into the country's independence from Great Britain.",
