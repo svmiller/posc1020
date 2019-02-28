@@ -42,8 +42,53 @@ library(car)
 library(artyfarty)
 library(fredr)
 library(lubridate)
+library(blscrapeR)
 
-Alumfutures <- readxl::read_xlsx("~/Dropbox/teaching/posc1020/trade-2/aluminum-futures.xlsx")  %>% mutate(date = mdy(date))
+# Alumfutures <- readxl::read_xlsx("~/Dropbox/teaching/posc1020/trade-2/aluminum-futures.xlsx")  %>% mutate(date = mdy(date))
+
+DJI1 <- readxl::read_xlsx("~/Dropbox/data/measuring-worth/DJA.xlsx", sheet=1) %>%
+  mutate(Date = as_date(Date))
+
+
+library(quantmod)
+
+getSymbols("WHR", src="yahoo",
+           from= as.Date("2018-01-01"),
+           to = as.Date("2018-12-31"))
+
+getSymbols("STEEL", src="yahoo",
+           from= as.Date("2018-01-01"),
+           to = as.Date("2018-12-31"))
+
+getSymbols("^DJI", src="yahoo",
+           from= as.Date("2018-01-01"),
+           to = as.Date("2018-12-31"))
+
+WHR %>% data.frame %>%
+  rownames_to_column() %>% tbl_df() %>%
+  mutate(date = lubridate::as_date(rowname),
+         year = lubridate::year(date),
+         close = WHR.Close) %>%
+  filter(year != 2019) -> WHR
+
+DJI %>% data.frame %>%
+  rownames_to_column() %>% tbl_df() %>%
+  mutate(date = lubridate::as_date(rowname),
+         year = lubridate::year(date),
+         close = DJI.Close) %>%
+  mutate(Category = "Dow Jones Industrial Average") %>%
+  select(date, Category, close) -> DJIY
+
+
+STEEL %>% data.frame %>%
+  rownames_to_column() %>% tbl_df() %>%
+  mutate(date = lubridate::as_date(rowname),
+         year = lubridate::year(date),
+         close = STEEL.Close) %>%
+  mutate(Category = "NYSE Arca Steel Index") %>%
+  select(date, Category, close) -> Arca
+
+
 ```
 
 
@@ -59,18 +104,6 @@ Alumfutures <- readxl::read_xlsx("~/Dropbox/teaching/posc1020/trade-2/aluminum-f
 ###
 
 ![Ugh...](picard-facepalm.jpg)
-
-###
-
-![UGH](aluminum-premiums.jpg)
-
-```{r aluminum-futures-2018, echo=F, eval=F, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-Alumfutures %>%
-  ggplot(.,aes(date, price)) + theme_steve_web() +
-  scale_x_date(date_labels = "%b", date_breaks = "1 month") +
-  geom_line(size=1.1)
- 
-```
 
 ###
 
@@ -117,13 +150,307 @@ bind_rows(Steel, Alum) %>%
 
 ![UGHGHSJDFHKLDSJFLKSD:FKLJDDS](trump-tariff.png)
 
-###
-
-![FSDKFJDS:FJKLSD:F:FJSD](stock-market-tank.png)
 
 ###
 
-![DSFSDKLJFKLSD:FKDSJFKDSJFDSKLF:JKLSDFJKL:!!!!!!](arthur-fist.jpeg)
+
+```{r manufacturing-employment-earnings-2008-present, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+
+fredr(series_id = "CEU3000000001",
+                      observation_start = as.Date("2008-01-01")) %>%
+  mutate(Category = "Manufacturing Employment") -> Manemp
+
+Manemp %>%
+  filter(lubridate::year(date) == "2012") %>%
+  summarize(meanearnings2012 = mean(value)) %>%
+  slice(1) %>% data.frame %>% distinct() -> meanemploy2012
+
+Manemp %>%
+  mutate(meanvalue2012 = meanemploy2012[1,1],
+         index = 100*(value/meanvalue2012)) -> Manemp
+
+fredr(series_id = "AHEMAN",
+                      observation_start = as.Date("2008-01-01")) %>%
+  mutate(Category = "Average Hourly Earnings in Manufacturing") -> Aheman
+
+Aheman %>%
+  filter(lubridate::year(date) == "2012") %>%
+  summarize(meanearnings2012 = mean(value)) %>%
+  slice(1) %>% data.frame %>% distinct() -> meanearnings2012
+
+Aheman %>%
+  mutate(meanvalue2012 = meanearnings2012[1,1],
+         index = 100*(value/meanvalue2012)) -> Aheman
+
+
+bind_rows(Manemp, Aheman) %>%
+  ggplot(.,aes(date, index, color=Category, linetype=Category)) + 
+  theme_steve_web() +
+  geom_line(size=1.1) +
+  scale_color_manual(values = pal("five38")) +
+  ylab("Index (2012 average=100)") +
+  xlab("") +
+  annotate("text",
+           x = as.Date("2016-12-25"), y = 112, 
+           size = 3,
+           hjust = "center",
+           label = "Trump complains\nabout 'decimation' of aluminum/steel;\nannounces tariffs\n(March 1, 2018)",
+           family="Open Sans") +
+    geom_vline(xintercept = as.Date("2018-03-01"),
+             linetype = "dashed") +
+  annotate("rect", xmin=as.Date("2008-01-01"), xmax=as.Date("2009-05-01"),
+           ymin=-Inf, ymax=Inf, alpha=0.4)  +
+   labs(title = "Trump's Aluminum and Steel Tariffs Haven't Had a Measurable Effect on Manufacturing Employment or Earnings",
+       subtitle = "If the goal was to stop the 'decimation' of these industries, we can't discern a signal from the noise.",
+       caption = "Data: U.S. Bureau of Labor Statistics, via the Board of Governors of the Federal Reserve System. Shaded areas indicate months in a recession.")
+
+
+# fredr(series_id = "MANEMP",
+#                       observation_start = as.Date("2008-01-01")) %>%
+#   ggplot(.,aes(date, value)) + theme_steve_web() +
+#   geom_line(size=1.1) +
+#   scale_color_manual(values = pal("five38")) +
+#    scale_x_date(date_labels = "%Y", 
+#                 breaks = seq(as.Date("1972-01-01"), as.Date("2018-12-31"), by="2 years")) +
+#   ylab("Employment in Thousands of Persons") +
+#   xlab("") +
+#   scale_y_continuous(labels = scales::comma) +
+#     geom_ribbon(aes(ymin=0, ymax=value),
+#               alpha=0.3, fill="blue") +
+#   annotate("rect", xmin=as.Date("2008-01-01"), xmax=as.Date("2009-05-01"),
+#            ymin=0, ymax=Inf, alpha=0.4)  +
+#     annotate("text",
+#            x = as.Date("2016-12-25"), y = 13500, 
+#            size = 3,
+#            hjust = "center",
+#            label = "Trump complains\nabout 'decimation' of aluminum/steel;\nannounces tariffs\n(March 1, 2018)",
+#            family="Open Sans") +
+#     geom_vline(xintercept = as.Date("2018-03-01"),
+#              linetype = "dashed") +
+#   labs(title = "Trump's Aluminum and Steel Tariffs Haven't Had a Measurable Effect on Manufacturing Employment",
+#        subtitle = "If the goal was to stop the 'decimation' of these industries, we can't discern a signal from the noise.",
+#        caption = "Data: U.S. Bureau of Labor Statistics, via the Board of Governors of the Federal Reserve System. Shaded areas indicate months in a recession.")
+
+  
+
+```
+
+
+###
+
+```{r lme-aluminum-premiums-2018-2019, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+aluminum_premiums %>%
+  ungroup() %>%
+  filter(group == "United States" & date == "2018-03-01") %>%
+  distinct(price) -> tariff_announce
+
+aluminum_premiums %>%
+  ungroup() %>%
+  filter(group == "United States") %>%
+  arrange(-price) %>% distinct(price) %>%
+  slice(1) -> max_price
+
+paste0(mround2((max_price - tariff_announce)/tariff_announce),"%") -> perc_increase
+
+aluminum_premiums %>%
+  filter(group == "United States") %>%
+  ggplot(.,aes(date,price)) +
+  theme_steve_web() +
+  geom_line(size=1.1) +
+  geom_ribbon(aes(ymin=-Inf, ymax=price),
+              alpha=0.3, fill="blue") +
+  scale_x_date(date_breaks = "1 month",
+#               date_minor_breaks = "1 week", 
+               date_labels = "%b\n%Y") +
+  geom_vline(xintercept = as.Date("2018-03-01"),
+             linetype = "dashed") +
+  ylab("Aluminum premiums in nominal USD/MT") +
+  xlab("") +
+  annotate("text",
+           x = as.Date("2018-01-25"), y = 300, 
+           size = 3.5,
+           hjust = "center",
+           label = "Trump complains\nabout 'decimation'\nof aluminum;\nannounces 10% tariff\n(March 1, 2018)",
+           family="Open Sans") +
+  labs(caption = "Data: LME. LME aluminum premiums (monthly contracts going out to 15 months) work alongside LME aluminum contracts to allow market participants to hedge the all-in price and physically deliver or receive\npremium aluminium warrants in non-queued LME premium warehouses. The data may not be perfect for this exercise but they're available.",
+       title = paste0("LME Aluminum Premiums in the U.S. Increased ", perc_increase, " after Trump's March 2018 Tariff Announcement"),
+       subtitle = "Tariffs haven't helped the industry as much as they've created a supply shock that's making aluminum more expensive.")
+
+
+
+```
+
+###
+
+```{r cpi-laundry-equipment-2016-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+df1 <- bls_api(c("CUUR0000SS30021"),
+               startyear = 1978, endyear = 2018, Sys.getenv("BLS_KEY"))
+
+df2 <- bls_api(c("CUUR0000SS30021"),
+               startyear = 1998, endyear = 2018, Sys.getenv("BLS_KEY"))
+
+df3 <- bls_api(c("CUUR0000SS30021"),
+               startyear = 2018, endyear = 2018, Sys.getenv("BLS_KEY"))
+
+bind_rows(df1, df2, df3) %>%
+  dateCast() %>% arrange(date) %>% distinct(date, .keep_all=TRUE) %>%
+  mutate(month = lubridate::month(date)) %>%
+  select(seriesID, date, year, month, period, periodName, value, footnotes) %>%
+  mutate(seriesID = "Laundry Equipment") %>%
+  mutate(lag3 = lag(value, 3),
+         percdiff = round(((value - lag3)/lag3)*100,1),
+         lab = paste0(percdiff,"%")) %>%
+  filter(year >= 2016) %>%
+  ggplot(.,aes(date, percdiff)) + theme_steve_web()  +
+  geom_vline(xintercept = as.Date("2018-03-01"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2018-01-22"),
+             linetype = "dashed") +
+  geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
+  geom_text(aes(label=lab), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=2.75,
+            family = "Open Sans") +
+  scale_x_date(date_breaks = "1 year",
+               date_minor_breaks = "1 month",
+               date_labels = "%b\n%Y") +
+  annotate("text",
+           x = as.Date("2017-09-25"), y = 15,
+           size = 3,
+           hjust = "center",
+           label = "Jan. 22, 2018: Trump announces tariffs\non washing machines.\n\nMar. 1, 2018: Trump announces\naluminum/steel tariffs.",
+           family="Open Sans") +
+  labs(title = "Trump's Tariffs on Aluminum/Washing Machines Were An Own Goal",
+       subtitle = "Tariffs on washing machines (and aluminum, a critical component) substantially raised the price of this important household appliance.",
+       caption = "Data: Bureau of Labor Statistics") +
+  xlab("") +
+  ylab("Three-Month Increase in the CPI for Laundry Equipment")
+
+```
+
+###
+
+```{r march-2018-dow-jones, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+DJI1 %>%
+  mutate(Month = lubridate::month(Date),
+         Year = year(Date)) %>%
+  filter(Month == 3 & Year == 2018) %>%
+  ggplot(.,aes(Date, DJIA)) + theme_steve_web() +
+  geom_line(size=1.1) +
+  ylab("Dow Jones Industrial Average at Daily Close") +
+  scale_y_continuous(labels = scales::comma) +
+  xlab("") +
+  geom_ribbon(aes(ymin=-Inf, ymax=DJIA),
+              alpha=0.3, fill="blue") +
+  scale_x_date(date_breaks = "2 days",
+#               date_minor_breaks = "1 week", 
+               date_labels = "%b\n%d") +
+  labs(title = "Tariff Fears Made March 2018 an Unwelcome 'March Madness' for the Stock Market",
+       subtitle = "A late rally at the end of the month prevented what was looking like the worst March in the stock market since 1980. It was still the worst March since 1997.",
+       caption = "Data:  S&P Dow Jones Indices LLC")
+
+
+
+```
+
+###
+
+```{r whirlpool-stock-market-data-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+
+WHR %>%
+  mutate(first = first(close),
+         last = last(close),
+         diff = abs(((last - first)/first)*100)) %>%
+  distinct(diff) %>% data.frame -> whr_yd
+
+whrdiff =round(whr_yd[1,1],2)
+
+WHR %>%
+  mutate(whrdiff = round(whr_yd[1,1],2)) %>%
+  select(date, close, whrdiff) %>%
+  ggplot(.,aes(date, close)) +
+  theme_steve_web() +
+  geom_vline(xintercept = as.Date("2018-03-01"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2018-01-22"),
+             linetype = "dashed") +
+  geom_line(size=1.1) +
+  geom_ribbon(aes(ymin=-Inf, ymax=close),
+              alpha=0.3, fill="blue") +
+  scale_x_date(date_breaks = "1 month",
+               date_minor_breaks = "1 month",
+               date_labels = "%b") +
+  xlab("") +
+  ylab("Closing Price for Whirlpool Corporation (WHR)") +
+  annotate("text",
+           x = as.Date("2018-12-25"), y = 175,
+           size = 3,
+           hjust = "right",
+           label = "Jan. 22, 2018: Trump announces tariffs\non washing machines.\n\nMar. 1, 2018: Trump announces\naluminum/steel tariffs.",
+           family="Open Sans") +
+  labs(title = paste0("The Joke's on Whirlpool Too: Its Stock Fell ", whrdiff,"% in 2018"),
+       subtitle = "Whirlpool's CEO lauded Trump's tariffs as ''without any doubt, a positive catalyst for Whirlpool.'' It ended up disrupting the supply chain and squeezing profit margins.",
+       caption = "Data: New York Stock Exchange")
+
+```
+
+
+
+###
+
+```{r steel-stock-market-data-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+###
+
+Arca %>%
+  bind_rows(., DJIY) %>%
+  group_by(Category) %>%
+  mutate(diff = close - lag(close,1),
+         percdiff = round(diff/lag(close, 1)*100, 1),
+         lab = paste0(percdiff,"%"),
+         first = first(close),
+         index = 100*(close/first)) %>%
+  ggplot(.,aes(date, index, color=Category, linetype=Category)) + 
+    theme_steve_web() + geom_line(size=1.1) +
+    scale_x_date(date_breaks = "1 month",
+#               date_minor_breaks = "1 week", 
+               date_labels = "%b\n%Y") +
+  geom_vline(xintercept = as.Date("2018-03-01"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2018-01-22"),
+             linetype = "dashed") +
+  annotate("text",
+           x = as.Date("2018-03-05"), y = 84.1,
+           size = 2.9,
+           hjust = "left",
+           label = "Jan. 22, 2018: Trump announces tariffs\non washing machines.\n\nMar. 1, 2018: Trump announces\naluminum/steel tariffs.",
+           family="Open Sans") +
+  xlab("") +
+#  ylab("Percentage Difference in Closing Value from Previous Day of Trading") +
+  ylab("Index = (Jan. 1, 2018 = 100)") +
+  scale_color_manual(values=pal("five38")) +
+#  geom_bar(stat="identity", position = "dodge") +
+  labs(title = "The Whole Steel Industry Got Crunched in 2018 Because of Trump's Tariffs",
+       subtitle = "Bad days for the market were even worse for steel, which lost 24.5% of its value from the beginning to the end of 2018.",
+       caption = "Data: Yahoo Finance")
+```
+
+<!-- ![FSDKFJDS:FJKLSD:F:FJSD](stock-market-tank.png) -->
+
+
+
+<!-- ### Bruh... -->
+
+<!-- ![DSFSDKLJFKLSD:FKDSJFKDSJFDSKLF:JKLSDFJKL:!!!!!!](arthur-fist.jpeg) -->
+
+<!-- ![](tough-spongebob.png) -->
+
+### 
+
+<!-- ![DSFSDKLJFKLSD:FKDSJFKDSJFDSKLF:JKLSDFJKL:!!!!!!](arthur-fist.jpeg) -->
+
+![](thats-not-how-this-works.jpg)
 
 
 ### "They Keep Coming to the Table, Always Bitching and Complaining"
