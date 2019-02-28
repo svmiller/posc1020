@@ -376,6 +376,10 @@ WHR %>%
              linetype = "dashed") +
   geom_vline(xintercept = as.Date("2018-01-22"),
              linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2018-06-15"),
+             linetype = "dashed") +
+    geom_vline(xintercept = as.Date("2018-08-07"),
+             linetype = "dashed") +
   geom_line(size=1.1) +
   geom_ribbon(aes(ymin=-Inf, ymax=close),
               alpha=0.3, fill="blue") +
@@ -385,10 +389,10 @@ WHR %>%
   xlab("") +
   ylab("Closing Price for Whirlpool Corporation (WHR)") +
   annotate("text",
-           x = as.Date("2018-12-25"), y = 175,
+           x = as.Date("2018-12-25"), y = 170,
            size = 3,
            hjust = "right",
-           label = "Jan. 22, 2018: Trump announces tariffs\non washing machines.\n\nMar. 1, 2018: Trump announces\naluminum/steel tariffs.",
+           label = "Jan. 22, 2018: Trump announces tariffs\non washing machines.\n\nMar. 1, 2018: Trump announces\naluminum/steel tariffs.\n\nJun. 15, 2018: USTR finalizes first\ntranche of China tariffs.\n\nAug. 7, 2018: USTR finalizes second\ntranche of China tariffs.",
            family="Open Sans") +
   labs(title = paste0("The Joke's on Whirlpool Too: Its Stock Fell ", whrdiff,"% in 2018"),
        subtitle = "Whirlpool's CEO lauded Trump's tariffs as ''without any doubt, a positive catalyst for Whirlpool.'' It ended up disrupting the supply chain and squeezing profit margins.",
@@ -420,11 +424,15 @@ Arca %>%
              linetype = "dashed") +
   geom_vline(xintercept = as.Date("2018-01-22"),
              linetype = "dashed") +
+    geom_vline(xintercept = as.Date("2018-06-15"),
+             linetype = "dashed") +
+    geom_vline(xintercept = as.Date("2018-08-07"),
+             linetype = "dashed") +
   annotate("text",
-           x = as.Date("2018-03-05"), y = 84.1,
+           x = as.Date("2018-03-05"), y = 82.1,
            size = 2.9,
            hjust = "left",
-           label = "Jan. 22, 2018: Trump announces tariffs\non washing machines.\n\nMar. 1, 2018: Trump announces\naluminum/steel tariffs.",
+           label = "Jan. 22, 2018: Trump announces tariffs\non washing machines.\n\nMar. 1, 2018: Trump announces\naluminum/steel tariffs.\n\nJun. 15, 2018: USTR finalizes first\ntranche of China tariffs.\n\nAug. 7, 2018: USTR finalizes second\ntranche of China tariffs.",
            family="Open Sans") +
   xlab("") +
 #  ylab("Percentage Difference in Closing Value from Previous Day of Trading") +
