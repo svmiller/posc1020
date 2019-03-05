@@ -102,13 +102,13 @@ WDI(country=c("GR", "US", "IE", "PT", "ES"), indicator = "NY.GDP.PCAP.KD.ZG", st
 
 ```{r unemployment-rate-financial-crisis, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-WDI(country=c("GR", "US", "IE", "PT", "ES"), indicator = "SL.UEM.TOTL.ZS", start=2000, end=2017) %>%
+WDI(country=c("GR", "US", "IE", "PT", "ES"), indicator = "SL.UEM.TOTL.ZS", start=2000, end=2018) %>%
   rename(unemp = "SL.UEM.TOTL.ZS", Country = country) %>%
   ggplot(.,aes(year, unemp,linetype = Country, group=Country, color=Country)) + 
   theme_steve_web() +
   geom_line(size=1.5) +
   scale_color_manual(values = pal("google")) +
-  scale_x_continuous(breaks = seq(2000, 2016, by =2)) +
+  scale_x_continuous(breaks = seq(2000, 2018, by =2)) +
   scale_y_continuous(breaks = seq(0, 30, by= 5)) +
   xlab("Year") + ylab("Unemployment Rate (% of Total Labor Force)") +
   labs(caption = "Data: International Labour Organization via World Bank API",
@@ -151,7 +151,7 @@ Simple: profit, and a higher rate of return.
 
 ```{r fdi-high-lowmid-income, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-WDI(country=c("XD", "XO"), indicator = "BX.KLT.DINV.CD.WD", start=1970, end=2017) %>%
+WDI(country=c("XD", "XO"), indicator = "BX.KLT.DINV.CD.WD", start=1970, end=2018) %>%
   rename(fdi = "BX.KLT.DINV.CD.WD", Country = country) %>%
   mutate(fdi = fdi/1000000000000) %>%
   ggplot(.,aes(year, fdi,linetype = Country, group=Country, color=Country)) + theme_steve_web() +
@@ -296,59 +296,44 @@ WDI(country=c("US"), indicator = c("SM.POP.TOTL", "SP.POP.TOTL"), start=1960, en
 ###
 
 ```{r migrant-pop-usa-by-country, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-Migra <- read.csv("~/Dropbox/teaching/posc1020/finance-1/usmigration2017.csv") %>%
-  gather(Country, Count, 1:ncol(.))
-  
-Migra %>%
-  arrange(-Count) %>%
-  mutate(sum = sum(Count, na.rm=T),
-         perc = Count/sum,
-         narr = paste0(round(perc*100, 2),"%")) %>%
+migrants_usa %>%
+  filter(category == "Inbound" & year == 2017) %>%
+  mutate(propn = count/max(count, na.rm=T),
+         labl = paste0(round(propn*100, 2),"%")) %>%
+  filter(!is.na(ccode)) %>%
+  arrange(-count) %>%
   head(10) %>%
-  ggplot(.,aes(reorder(Country, -perc), perc)) + theme_steve_web() +
+  ggplot(.,aes(reorder(area, -propn), propn)) + theme_steve_web() +
   geom_bar(stat="identity", alpha=0.8, color="black", fill="#619cff") +
-  geom_text(aes(label=narr), vjust=-.5, colour="black",
+  geom_text(aes(label=labl), vjust=-.5, colour="black",
             position=position_dodge(.9), size=4) +
-  xlab("Country") + ylab("Migrant Population as Share of all Migrants of all Origins") +
+  xlab("Country") + ylab("U.S. Migrant Population as Share of all Migrants of all Origins") +
   scale_y_continuous(labels=scales::percent) +
-  scale_x_discrete(labels = c("Mexico", "Puerto Rico", "Philippines", "China",
-                              "Canada", "Cuba", "Germany", "United Kingdom",
-                              "Italy", "South Korea")) +
-  labs(title = "U.S. Migration is Mostly Regional and Mexico Accounts for Just Under a Quarter of It",
-       subtitle = "Mexico, Puerto Rico, Canada, and Cuba combine for about 33% of the U.S.' mid-year migrant population in 2017.",
+  labs(title = "Mexico Accounts for More Than a Quarter of U.S. Inbound Migration in 2017",
+       subtitle = "Migration into the U.S. is still largely regional, though Asian countries are well-represented in this list.",
        caption = "Data: United Nations Population Division (DESA)")
 ```
 
 ###
 
 ```{r outbound-migrant-pop-usa-by-country, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-Out <- read.csv("~/Dropbox/teaching/posc1020/finance-1/usmigration-out-2017.csv") %>%
-  filter(year == 2017) %>%
-  mutate(popn = as.numeric(gsub(",","",.$pop)),
-         ccode = countrycode::countrycode(country, "country.name", "cown"))
-
-Out %>%
-  arrange(-popn) %>%
-  select(country, pop, popn) %>%
-  slice(-1:-9) %>%
-  slice(-2:-4) %>%
-  slice(-3:-5) %>%
-  slice(-4:-5) %>%
-  slice(-5) %>%
-  slice(-5) %>%
-  slice(-6:-7) %>%
-  slice(-9) %>%
-  slice(-10) %>%
-  head(11) %>%
-  ggplot(.,aes(reorder(country, -popn), popn)) + theme_steve_web() +
+migrants_usa %>%
+  filter(category == "Outbound" & year == 2017) %>%
+  mutate(propn = count/max(count, na.rm=T),
+         labl = paste0(round(propn*100, 2),"%")) %>%
+  filter(!is.na(ccode)) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot(.,aes(reorder(area, -propn), propn)) + theme_steve_web() +
   geom_bar(stat="identity", alpha=0.8, color="black", fill="#619cff") +
-  geom_text(aes(label=pop), vjust=-.5, colour="black",
-            position=position_dodge(.9), size=3.5) +
-  scale_y_continuous(labels = scales::comma) +
-  xlab("Country") + ylab("Size of Population Born in the U.S.") +
-  labs(title = "Likewise: Most U.S. Migration is Local or to Familiar/Friendly Countries",
-       subtitle = "Generally, U.S. migration follows to places where FDI is abundant.",
+  geom_text(aes(label=labl), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4) +
+  xlab("Country") + ylab("U.S. Migrant Population as Share of all Migrants of all Expat Americans") +
+  scale_y_continuous(labels=scales::percent) +
+  labs(title = "Likewise: Almost 30% of All American Expats are Residing in Mexico",
+       subtitle = "Generally, U.S. outbound migration follows to places where FDI is abundant, which may explain why Europe is well-represented on this list.",
        caption = "Data: United Nations Population Division (DESA)")
+
   
 
 ```
