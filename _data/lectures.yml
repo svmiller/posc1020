@@ -62,12 +62,12 @@
   filename: finance-1
   dirname: finance-1
   tldr: "Overseas investment tops $5 trillion USD a year. That's a lot, and that's good. Here's why it happens, and the potential pitfalls."
-# 
-# 
-# - title: "The Fundamentals of Exchange Rates"
-# filename: monetary-relations-1
-# dirname: monetary-relations-1
-# tldr: "An introduction to exchange rates/currency policy, with applications to the U.S. and Argentina's infamous currency collapse."
+
+ 
+- title: "The Fundamentals of Exchange Rates"
+  filename: monetary-relations-1
+  dirname: monetary-relations-1
+  tldr: "An introduction to exchange rates/currency policy, with applications to the U.S. and Argentina's infamous currency collapse."
 # 
 # - title: "Ebbs and Flows of International Monetary Regimes"
 # filename: monetary-relations-2
