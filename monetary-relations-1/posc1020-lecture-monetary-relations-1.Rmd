@@ -40,51 +40,13 @@ library(stringr)
 library(stevemisc)
 library(scales)
 library(WDI)
+library(artyfarty)
 
 # Arg <- read_csv("~/Dropbox/teaching/posc1020/monetary-relations-1/RBARBIS.csv")
 # Mex <- read_csv("~/Dropbox/teaching/posc1020/monetary-relations-1/EXMXUS.csv", na = c("."))
 # EU <- read_csv("~/Dropbox/teaching/posc1020/monetary-relations-1/EXUSEU.csv")
 
 library(fredr)
-
-
-
-recessions = read.table(textConnection(
-"Peak, Trough
-1857-06-01, 1858-12-01
-1860-10-01, 1861-06-01
-1865-04-01, 1867-12-01
-1869-06-01, 1870-12-01
-1873-10-01, 1879-03-01
-1882-03-01, 1885-05-01
-1887-03-01, 1888-04-01
-1890-07-01, 1891-05-01
-1893-01-01, 1894-06-01
-1895-12-01, 1897-06-01
-1899-06-01, 1900-12-01
-1902-09-01, 1904-08-01
-1907-05-01, 1908-06-01
-1910-01-01, 1912-01-01
-1913-01-01, 1914-12-01
-1918-08-01, 1919-03-01
-1920-01-01, 1921-07-01
-1923-05-01, 1924-07-01
-1926-10-01, 1927-11-01
-1929-08-01, 1933-03-01
-1937-05-01, 1938-06-01
-1945-02-01, 1945-10-01
-1948-11-01, 1949-10-01
-1953-07-01, 1954-05-01
-1957-08-01, 1958-04-01
-1960-04-01, 1961-02-01
-1969-12-01, 1970-11-01
-1973-11-01, 1975-03-01
-1980-01-01, 1980-07-01
-1981-07-01, 1982-11-01
-1990-07-01, 1991-03-01
-2001-03-01, 2001-11-01
-2007-12-01, 2009-06-01"), sep=',',
-colClasses=c('Date', 'Date'), header=TRUE) 
 
 
 ```
@@ -182,10 +144,10 @@ WDI(country=c("AR"), indicator = "NY.GDP.MKTP.KD.ZG", start=1990, end=2002) %>%
   mutate(gdpgrowth = round(gdpgrowth, 2),
          lab = paste0(gdpgrowth,"%")) %>%
   ggplot(.,aes(year, gdpgrowth)) + theme_steve_web() +
+  geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
   geom_text(aes(label=lab), vjust=-.5, colour="black",
             position=position_dodge(.9), size=3.5,
             family = "Open Sans") +
-  geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
   scale_x_continuous(breaks = seq(1990, 2002, by =1)) +
   xlab("") + ylab("GDP Growth (Annual %)") +
   labs(caption = "Data: OECD National Accounts Data via World Bank API.",
@@ -208,7 +170,7 @@ WDI(country=c("AR"), indicator = "SL.UEM.TOTL.ZS", start=1990, end=year(today())
             position=position_dodge(.9), size=3.5,
             family = "Open Sans") +
   geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
-  scale_x_continuous(breaks = seq(1980, 2016, by =2)) +
+  scale_x_continuous(breaks = seq(1980, 2018, by =2)) +
   xlab("") + ylab("Modeled Unemployment Rate") +
   labs(caption = "Data: International Labour Organization via World Bank API.",
        title = "Argentina's Unemployment Rate Surged to 20% During its 2001 Depression",
@@ -271,7 +233,7 @@ fredr(series_id = "RBARBIS",
   ggplot(.,aes(date, value)) + geom_line(size=1.1) + theme_steve_web() +
   geom_ribbon(aes(ymin=-Inf, ymax=value),
               alpha=0.3, fill="#619CFF") +
-  xlab("") + ylab("Real Effective Exchange Rate Index") +
+  xlab("") + ylab("Real Effective Exchange Rate Index (Index, 2010=100)") +
   scale_x_date(date_breaks = "2 years",
                date_labels = "%Y") +
   labs(caption = "Data: Bank for International Settlements via Federal Reserve Bank of St. Louis",
@@ -319,7 +281,7 @@ fredr(series_id = "EXMXUS",
     geom_ribbon(aes(ymin=-Inf, ymax=value),
               alpha=0.3, fill="#619CFF") +
     theme_steve_web() +
-  geom_rect(data=filter(recessions, year(Peak) > 1993), inherit.aes=F, aes(xmin=Peak, xmax=Trough, ymin=-Inf, ymax=+Inf),  alpha=0.4) + 
+  geom_rect(data=filter(recessions, year(peak) > 1993), inherit.aes=F, aes(xmin=peak, xmax=trough, ymin=-Inf, ymax=+Inf),  alpha=0.4) + 
   scale_x_date(date_breaks = "2 years", date_minor_breaks = "1 year", date_labels = "%Y") +
   xlab("") + ylab("The Number of Pesos Required to Obtain a Dollar") +
   labs(caption = "Data: Board of Governors of the Federal Reserve System (US). Shaded areas indicate U.S. recessions.",
@@ -339,11 +301,13 @@ fredr(series_id = "EXUSEU",
               alpha=0.3, fill="#619CFF") +
   xlab("") + ylab("The Number of U.S. Dollars Required to Obtain a Euro") +
   geom_hline(yintercept = 1, linetype = "dashed", color="gray66") +
-  geom_rect(data=filter(recessions, year(Peak) > 1999), inherit.aes=F, aes(xmin=Peak, xmax=Trough, ymin=-Inf, ymax=+Inf), alpha=0.4) + 
+  geom_rect(data=filter(recessions, year(peak) > 1999), 
+            inherit.aes=F, aes(xmin=peak, xmax=trough, ymin=-Inf, ymax=+Inf), 
+            alpha=0.4) + 
   scale_x_date(date_breaks = "2 years", date_minor_breaks = "1 year", date_labels = "%Y") +
   labs(caption = "Data: Board of Governors of the Federal Reserve System (US). Shaded areas indicate U.S. recessions.",
        title = "The Euro is Usually Worth More Than the Dollar",
-       subtitle = "A dollar and 15 cents bought one Euro to open 1999 and, despite obvious fluctuation, that's about the exchange rate now.")
+       subtitle = "A dollar and 16 cents bought one Euro to open 1999 and, despite obvious fluctuation, that's about the exchange rate now.")
 
 ```
 
@@ -430,14 +394,16 @@ In China: export-oriented economic planning led to overall renmibi devaluation t
 
 ###
 
-```{r usa-chn-reer-1980-2017, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r usa-chn-reer-1980-present, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-WDI(country=c("CN", "US"), indicator = "PX.REX.REER", start=1980, end=2017) %>%
+WDI(country=c("CN", "US"), indicator = "PX.REX.REER", start=1980, end=year(today())) %>%
   rename(rer = "PX.REX.REER", Country = country) %>%
   ggplot(.,aes(year, rer,linetype = Country, group=Country, color=Country)) +
   theme_steve_web() +
   geom_line(size=1.5) +
   scale_x_continuous(breaks = seq(1980, 2015, by =5)) +
+  scale_color_brewer(palette="Set1") +
+  # scale_color_manual(values = pal("dataroots")) +
   xlab("") + ylab("Real Effective Exchange Rate Index") +
   labs(caption = "Data: IMF via World Bank API. Base year: 2010.",
        title = "The Real Effective Exchange Rates for the Chinese Renmibi and the U.S. Dollar (1980-2017)",
@@ -452,8 +418,8 @@ WDI(country=c("CN", "US"), indicator = "PX.REX.REER", start=1980, end=2017) %>%
 
 # recessions %>% filter(year(Peak) > 1980) -> recessions
 
-fredr(series_id = "USRECD",
-                      observation_start = as.Date("1981-01-01")) -> recession
+#fredr(series_id = "USRECD",
+#                      observation_start = as.Date("1981-01-01")) -> recession
 
 fredr(series_id = "EXCHUS",
                       observation_start = as.Date("1981-01-01")) %>%
@@ -462,7 +428,7 @@ fredr(series_id = "EXCHUS",
     geom_ribbon(aes(ymin=-Inf, ymax=value),
               alpha=0.3, fill="#619CFF") +
     theme_steve_web() + 
-  geom_rect(data=filter(recessions, year(Peak) > 1980), inherit.aes=F, aes(xmin=Peak, xmax=Trough, ymin=-Inf, ymax=+Inf),  alpha=0.4) + 
+  geom_rect(data=filter(recessions, year(peak) > 1980), inherit.aes=F, aes(xmin=peak, xmax=trough, ymin=-Inf, ymax=+Inf),  alpha=0.4) + 
   scale_x_date(date_breaks = "2 years", date_minor_breaks = "1 year", date_labels = "%Y") +
   xlab("") + ylab("The Number of Renmibi Required to Obtain a Dollar") +
   labs(caption = "Data: Board of Governors of the Federal Reserve System (US). Shaded areas indicate U.S. recessions.",
