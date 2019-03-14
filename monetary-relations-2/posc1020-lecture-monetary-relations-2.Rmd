@@ -54,44 +54,6 @@ ukgeer <- read_csv("~/Dropbox/teaching/posc1020/monetary-relations-2/ukg-reer-re
 library(fredr)
 library(PBSmapping)
 
-
-recessions = read.table(textConnection(
-"Peak, Trough
-1857-06-01, 1858-12-01
-1860-10-01, 1861-06-01
-1865-04-01, 1867-12-01
-1869-06-01, 1870-12-01
-1873-10-01, 1879-03-01
-1882-03-01, 1885-05-01
-1887-03-01, 1888-04-01
-1890-07-01, 1891-05-01
-1893-01-01, 1894-06-01
-1895-12-01, 1897-06-01
-1899-06-01, 1900-12-01
-1902-09-01, 1904-08-01
-1907-05-01, 1908-06-01
-1910-01-01, 1912-01-01
-1913-01-01, 1914-12-01
-1918-08-01, 1919-03-01
-1920-01-01, 1921-07-01
-1923-05-01, 1924-07-01
-1926-10-01, 1927-11-01
-1929-08-01, 1933-03-01
-1937-05-01, 1938-06-01
-1945-02-01, 1945-10-01
-1948-11-01, 1949-10-01
-1953-07-01, 1954-05-01
-1957-08-01, 1958-04-01
-1960-04-01, 1961-02-01
-1969-12-01, 1970-11-01
-1973-11-01, 1975-03-01
-1980-01-01, 1980-07-01
-1981-07-01, 1982-11-01
-1990-07-01, 1991-03-01
-2001-03-01, 2001-11-01
-2007-12-01, 2009-06-01"), sep=',',
-colClasses=c('Date', 'Date'), header=TRUE) 
-
 ```
 
 
@@ -199,14 +161,18 @@ WDI(country="all", indicator = c("FI.RES.TOTL.CD","FI.RES.XGLD.CD"), start=1960,
   mutate(goldrev = totreserves - totreservesmingold) %>% filter(totreserves > 0) %>%
   group_by(year) %>%
   mutate(usgoldreserves = goldrev[iso2c == "US"]) %>%
-  group_by(year) %>%
+  ungroup() %>% 
+  group_by(year) %>% 
   summarize(usreservesperc = unique(usgoldreserves)/sum(goldrev, na.rm=T)) %>%
   mutate(lab = paste0(mround2(usreservesperc),"%")) %>%
   ggplot(.,aes(as.factor(year), usreservesperc)) + theme_steve_web() +
-  geom_bar(stat="identity", position = "dodge", alpha = I(0.6),color = I("black"), fill="gold4") +
+  geom_bar(stat="identity",
+           position = "dodge", alpha = I(0.6),
+           color = I("black"), fill="gold4") +
   scale_y_continuous(labels = scales::percent) +
   geom_text(aes(label=lab), vjust=-.5, colour="black",
-            position=position_dodge(.9), size=4) +
+            position=position_dodge(.9), size=4,
+            family="Open Sans") +
   xlab("Year") + ylab("U.S. Gold Reserves as Percent of World Reserves") +
   labs(title = "U.S. Estimated Gold Reserves Fell Over 37% From 1960 to 1970",
        subtitle = "This created major problems the extent to which the Bretton Woods monetary system was anchored to the volume of gold reserves the U.S. had in supply.",
@@ -236,15 +202,16 @@ fredr(series_id = "CPALTT01USM659N",
     geom_ribbon(aes(ymin=-Inf, ymax=value),
               alpha=0.3, fill="#619CFF") +
     theme_steve_web() +
-  geom_rect(data=filter(recessions, year(Peak) > 1967 & year(Peak) < 1981), inherit.aes=F, aes(xmin=Peak, xmax=Trough, ymin=-Inf, ymax=+Inf),  alpha=0.4) + 
+  geom_rect(data=filter(recessions, year(peak) > 1967 & year(peak) < 1981), inherit.aes=F, aes(xmin=peak, xmax=trough, ymin=-Inf, ymax=+Inf),  alpha=0.4) + 
   geom_vline(xintercept = as.Date("1971-08-13")) +
   scale_x_date(date_breaks = "1 year", 
                date_minor_breaks = "2 months", 
                date_labels = "%Y") +
   annotate("text", 
            label = "'Nixon Shock'\n(Aug. 13, 1971)",
+           family = "Open Sans",
            x=as.Date("1971-09-13"), y=10, hjust=0) +
-  xlab("") + ylab("Growth Rate Same Period (Previous Year)") +
+  xlab("") + ylab("Growth Rate of CPI (Total, All Items) to Same Period, Previous Year") +
   labs(caption = "Data: Organization for Economic Co-operation and Development, via FRED API. Shaded areas indicate recessions.",
        title = "The 'Stagflation' of the 1970s Was a Legacy of 'Nixon Shock'",
        subtitle = "The decisions Nixon announced on Aug. 13, 1971 were a short-term success but led to the 1973-5 recession and resonated into the Carter presidency.")
@@ -607,10 +574,12 @@ Europe recovered and the crisis did not ultimately jeopardize the Euro to come.
 
 ```{r ukg-reer-1992-1993-black-wednesday, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-ukgeer %>%
-  filter(Date > "1992-01-01" & Date < "1993-01-01") %>%
-  ggplot(.,aes(Date,XUDLBK67)) + theme_steve_web() + 
-  geom_ribbon(aes(ymin=-Inf, ymax=XUDLBK67),
+# ukgeer
+  
+ukg_eeri %>%
+  filter(date > "1992-01-01" & date < "1993-01-01") %>%
+  ggplot(.,aes(date,eeri)) + theme_steve_web() + 
+  geom_ribbon(aes(ymin=-Inf, ymax=eeri),
               alpha=0.3, fill="#619CFF") +
   geom_line(size=1.1) +
   scale_x_date(date_breaks = "1 month", date_minor_breaks = "1 month", date_labels = "%b\n%Y") + 
