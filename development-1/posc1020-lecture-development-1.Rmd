@@ -143,20 +143,38 @@ Recall our previous example of Rhodesia/Zimbabwe and South Korea.
 ###
 
 ```{r top-ten-oil-states, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-WDI(country = "all", indicator = c("NY.GDP.PCAP.CD", "NY.GDP.PETR.RT.ZS"),
-    start = 2015, end = 2015, extra = FALSE, cache = NULL) %>%
+WDI(country = "all", indicator = c("NY.GDP.PCAP.CD", 
+                                   "NY.GDP.PETR.RT.ZS",
+                                   "NY.GDP.MKTP.CD"),
+    start = 2016, end = 2016, extra = FALSE, cache = NULL) %>%
   rename(gdppc = `NY.GDP.PCAP.CD`,
-         oilrent = `NY.GDP.PETR.RT.ZS`) %>%
+         oilrent = `NY.GDP.PETR.RT.ZS`,
+         gdp = `NY.GDP.MKTP.CD`) %>%
   arrange(-oilrent) %>%
   filter(iso2c != "1A" & iso2c != "ZQ") %>%
   head(10) %>%
   mutate(oilround = mround2(oilrent/100),
-         mediangdp = median(gdppc)) %>%
+         mediangdppc = median(gdppc),
+         mediangdpb = median(gdp)/1000000000) -> top10_oilstates
+
+# mediangdppc <- prettyNum(round(median(top10_oilstates$gdppc), 2),",")
+mediangdppc <- median(top10_oilstates$gdppc)
+mediangdpb = round(median(top10_oilstates$gdp)/1000000000,2)
+maxgdppc = max(top10_oilstates$gdppc)
+maxgdp = round(max(top10_oilstates$gdp)/1000000000, 2)
+
+scgdpb = 183873000000/1000000000 # https://www.deptofnumbers.com/gdp/south-carolina/
+scgdppc = 37063
+
+
+my_subtitle = paste0("There are some conspicuous states in here, but: the median GDP per capita is ", prettyNum(round(mediangdppc, 2),",")," USD and the median GDP (", mediangdpb," billion USD) is less than half the GDP of South Carolina.")
+
+top10_oilstates %>%
   ggplot(.,aes(reorder(country, -oilrent), oilrent)) + theme_steve_web() +
   geom_bar(stat="identity", alpha=0.8, color="black") +
   xlab("Country") + ylab("Oil Rents as Percentage of GDP") +
-  labs(title = "These Are the Ten Countries Whose Economies Are Most Indebted to Selling Oil Abroad (2015)",
-       subtitle = "There are some conspicuous states in here, but: the median GDP per capita is 8,108 USD and the median GDP (87 billion USD) is half the GDP of South Carolina (the 10th poorest U.S. state).",
+  labs(title = "These Are the Ten Countries Whose Economies Are Most Indebted to Selling Oil Abroad (2016)",
+       subtitle = my_subtitle,
        caption = "Data: World Bank") +
   geom_text(aes(label=oilround), vjust=-.5, colour="black",
             position=position_dodge(.9), size=4, family = "Open Sans")
@@ -168,19 +186,23 @@ WDI(country = "all", indicator = c("NY.GDP.PCAP.CD", "NY.GDP.PETR.RT.ZS"),
 
 tribble(
   ~Country, ~Metric, ~Value,
-  "South Carolina", "GDP per Capita\n(in thousands USD)", 37.1,
-  "Top Ten Oil Rent States (Median)",  "GDP per Capita\n(in thousands USD)", 8.1,
-  "South Carolina", "GDP\n(in billions USD)", 152.8,
-  "Top Ten Oil Rent States (Median)",  "GDP\n(in billions USD)", 87.8
+  "South Carolina", "GDP per Capita\n(in thousands USD)", scgdppc/1000,
+  "Top Ten Oil Rent States (Median)",  "GDP per Capita\n(in thousands USD)", round(mediangdppc/1000, 2),
+#  "Top Ten Oil Rent States (Maximum)",  "GDP per Capita\n(in thousands USD)", maxgdppc/1000, # Qatar. UAE is higher too. That's it.
+  
+  "South Carolina", "GDP\n(in billions USD)", round(scgdpb, 2),
+  "Top Ten Oil Rent States (Median)",  "GDP\n(in billions USD)", mediangdpb,
+#  "Top Ten Oil Rent States (Maximum)",  "GDP\n(in billions USD)", maxgdp, # Saudi Arabia. UAE is higher too. That's it.
 ) %>%
+
   ggplot(.,aes(Metric, Value, color=Metric)) + theme_steve_web() +
   geom_bar(aes(fill = Country), position = "dodge", stat="identity", alpha = I(0.8),color = I("black")) +
   theme(legend.title=element_blank()) +
   scale_fill_brewer(palette="Set1") +
   geom_text(aes(label=Value, group=Country), color="black",
             position=position_dodge(width=.9), size=4, vjust = -.5, family="Open Sans") +
-  labs(title = "The Typical Economy and Quality of Life in These Countries Are Well Below Even South Carolina (the 10th Poorest State)",
-       subtitle = "The wealthiest per capita country in that list (Kuwait) would still be the poorest state in the U.S. by around 2,000 USD a head.")
+  labs(title = "The Typical Economy and Quality of Life in These Countries Are Well Below Even South Carolina (the 5th Poorest State)",
+       subtitle = "Saudi Arabia and UAE have bigger economies and Qatar is wealthier per head, but these oil-exporting countries are much poorer than a poor U.S. state.")
 
 ```
 
@@ -273,6 +295,10 @@ WDI(country = "all", indicator = c("NY.GDP.PCAP.KD"),
 
 ###
 
+Obligatory trigger-warning for next slide...
+
+### The Consequence for Not Meeting a Daily Rubber Quota in Belgian Congo
+
 ![The consequences of failing to meet a daily rubber quota in Belgian Congo, 1904](cong_hands_1904.jpg)
 
 ### Is the International Economy Biased Against LDCs?
@@ -359,25 +385,48 @@ fredr(series_id = "PCOFFROBUSDM",
              observation_start = as.Date("1980-01-01")) %>%
   rename(Robustas = value) -> Robustas 
 
-left_join(Price, Arabica, by="date") %>%
-  left_join(., Robustas, by="date") %>%
-  select(date, CPI, Arabica, Robustas) %>%
+imf_coffee_data %>%
+  right_join(.,Price) %>%
   mutate(last = last(CPI),
          index = (CPI/last)*100,
-         Arabica = (Arabica/index)*100,
-         Robustas = (Robustas/index)*100) %>%
-  gather(`Type of Bean`, Value, Arabica:Robustas) %>%
+         Arabica = (arabica/index)*100,
+         Robustas = (robustas/index)*100) %>%
+  gather(`Type of Bean`, Value, Arabica:Robustas) %>% 
   filter(!is.na(Value)) %>%
   ggplot(.,aes(date, Value, linetype=`Type of Bean`, color=`Type of Bean`)) + 
   geom_line(size=1.1) + theme_steve_web() +
   scale_color_brewer(palette="Set1") +
   scale_x_date(date_breaks = "2 years",
                date_labels = "%Y") +
-  ylab("Inflation Adjusted Price in Aug. 2018 USD Dollars per Metric Ton") + xlab("") +
+  ylab("Inflation Adjusted Price in Jan. 2019 USD Dollars per Metric Ton") + xlab("") +
   labs(title = "The World is Drinking More Coffee, but Coffee is Fetching Lower Prices in the Global Market",
        subtitle = "Coffee markets are far more competitive than the markets for the machinery necessary to mass produce coffee beans, which forms a kind of trade bias against LDCs.",
        caption = "Data:  International Monetary Fund via Federal Reserve Bank of St. Louis. 
-       Note: prices are manually converted from nominal to real prices with a Aug. 2018 index.")
+       Note: prices are manually converted from nominal to real prices with a Jan. 2019 index.",
+       color = "Type of Bean",
+       linetype = "Type of Bean")
+
+# left_join(Price, Arabica, by="date") %>%
+#   left_join(., Robustas, by="date") %>%
+#   select(date, CPI, Arabica, Robustas) %>%
+#   mutate(last = last(CPI),
+#          index = (CPI/last)*100,
+#          Arabica = (Arabica/index)*100,
+#          Robustas = (Robustas/index)*100) %>%
+#   gather(`Type of Bean`, Value, Arabica:Robustas) %>%
+#   filter(!is.na(Value)) %>%
+#   ggplot(.,aes(date, Value, linetype=`Type of Bean`, color=`Type of Bean`)) + 
+#   geom_line(size=1.1) + theme_steve_web() +
+#   scale_color_brewer(palette="Set1") +
+#   scale_x_date(date_breaks = "2 years",
+#                date_labels = "%Y") +
+#   ylab("Inflation Adjusted Price in Aug. 2018 USD Dollars per Metric Ton") + xlab("") +
+#   labs(title = "The World is Drinking More Coffee, but Coffee is Fetching Lower Prices in the Global Market",
+#        subtitle = "Coffee markets are far more competitive than the markets for the machinery necessary to mass produce coffee beans, which forms a kind of trade bias against LDCs.",
+#        caption = "Data:  International Monetary Fund via Federal Reserve Bank of St. Louis. 
+#        Note: prices are manually converted from nominal to real prices with a Aug. 2018 index.",
+#        color = "Type of Bean",
+#        linetype = "Type of Bean")
   
 
 ```
@@ -404,7 +453,7 @@ IMF %>%
   group_by(Year) %>%
   mutate(perc = Value/max(Value)) %>%
   ungroup() %>%
-  rename(Category = X__1) %>%
+  rename(Category = 1) %>%
   mutate( Year = as.numeric(Year)) %>%
   filter(Category != "World") %>%
   ggplot(.,aes(Year, perc, color=Category, group=Category,linetype=Category)) + theme_steve_web() +
