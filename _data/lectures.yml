@@ -79,11 +79,11 @@
   filename: development-1
   dirname: development-1
   tldr: "There are broad correlates for development patterns and rich countries bear some responsibility for why poor countries are poor."
-# 
-# - title: "Development Policies and Development Politics"
-# filename: development-2
-# dirname: development-2
-# tldr: "Less-developed countries have various development policies (e.g. ISI, EOI, commodity cartels), with varying levels of success."
+ 
+- title: "Development Policies and Development Politics"
+  filename: development-2
+  dirname: development-2
+  tldr: "Less-developed countries have various development policies (e.g. ISI, EOI, commodity cartels), with varying levels of success."
 # 
 # 
 # - title: "The International Politics of Human Rights"
