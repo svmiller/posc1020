@@ -94,6 +94,7 @@ Trade <- read_csv("~/Dropbox/data/cow/trade/National_COW_4.0.csv")
 
 pwt %>%
   filter(country == "Argentina" | country == "Brazil" | country == "Mexico" | 
+           country == "Singapore" |
            country == "Japan" | country == "Taiwan" | country == "Republic of Korea") %>%
   mutate(Type = ifelse(country == "Argentina" | country == "Brazil" | country == "Mexico",
                        "Import Substitution Industrialization", "Export-Oriented Industrialization")) %>%
