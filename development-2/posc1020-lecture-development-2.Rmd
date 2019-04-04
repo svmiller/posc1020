@@ -52,17 +52,17 @@ Argdebt <- readxl::read_xls("~/Dropbox/data/reinhart-rogoff/7_data.xls", sheet=3
 Bradebt <- readxl::read_xls("~/Dropbox/data/reinhart-rogoff/7_data.xls", sheet=8, skip=19) %>% slice(-1)
 
 Mexdebt %>%
-  rename(year = X__1, debt = `debt/GDP`) %>%
+  rename(year = 1, debt = `debt/GDP`) %>%
   select(year, debt) %>%
   mutate(Country = "Mexico") -> Mexdebt
 
 Argdebt %>%
-  rename(year = X__1, debt = `debt/GDP`) %>%
+  rename(year = 1, debt = `debt/GDP`) %>%
   select(year, debt) %>%
   mutate(Country = "Argentina") -> Argdebt
 
 Bradebt %>%
-  rename(year = X__1, debt = `debt/GDP`) %>%
+  rename(year = 1, debt = `debt/GDP`) %>%
   select(year, debt) %>%
   mutate(Country = "Brazil") -> Bradebt
 
@@ -251,9 +251,13 @@ tribble(
   2014, "Argentina", 12.58,
   2015, "Argentina", 12.48,
   2016, "Argentina", 12.58
-) %>% mutate(tariffp = tariff/100) %>%
+) %>% 
+  mutate(tariffp = tariff/100,
+         lab = paste0(round(tariff, 1),"%")) %>%
   ggplot(.,aes(Year, tariffp)) + theme_steve_web() + 
   scale_y_continuous(labels=scales::percent) + 
+  geom_text(aes(label=lab), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=3, family = "Open Sans") +
   scale_x_continuous(breaks = seq(1980, 2015, by = 5)) +
   geom_bar(stat="identity", alpha=0.8, fill="#619cff", color="black") +
   xlab("Year") + ylab("Tariff Rate (Simple Mean)") +
@@ -325,15 +329,13 @@ Latin America generally turned inward. The "Asian Tigers" looked outward.
 
 ###
 
-```{r bra-rok-auto-export-quality, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-IMF <- readxl::read_xlsx("~/Dropbox/teaching/posc1020/development-2/Export_Quality_Index_7321_Passenger.xlsx", sheet=2) %>% slice(1:5)
-
-IMF %>% slice(1:2) %>%
-  gather(Year, Value, `1963`:`2014`) %>%
-  rename(Country = X__1) %>%
-  mutate(Country = ifelse(Country == "Brazil", "Brazil", "South Korea")) %>%
-  mutate(Year = as.numeric(Year)) %>%
-  ggplot(.,aes(Year, Value, color=Country, group=Country,linetype=Country)) + 
+```{r bra-rok-auto-export-quality-passenger-cars, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+  
+eq_passengercars %>%
+  filter(ccode %in% c(140, 732)) %>%
+  filter(category == "Export Quality Index") %>%
+  rename(Country = country) %>%
+  ggplot(.,aes(year, value, color=Country, group=Country,linetype=Country)) + 
   theme_steve_web() +
   geom_line(size=1.1) +
   scale_x_continuous(breaks=seq(1964, 2014, by =2)) +
@@ -348,48 +350,20 @@ IMF %>% slice(1:2) %>%
 
 ###
 
-```{r bra-rok-auto-production-1950-2016, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r bra-rok-auto-production-1950-2017, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-tribble(
-  ~Country, ~Year, ~Value,
-  "South Korea", 1950, 0,
-  "South Korea", 1960, 0,
-  "South Korea", 1970, 28819,
-  "South Korea", 1980, 123135,
-  "South Korea", 1990, 1321630,
-  "South Korea", 1995, 2526400,
-  "South Korea", 2000, 3114988,
-  "South Korea", 2005, 3699350,
-  "South Korea", 2010, 4271741,
-  "South Korea", 2011, 4657094,
-  "South Korea", 2012, 4561766,
-  "South Korea", 2013, 4521429,
-  "South Korea", 2014, 4524932,
-  "South Korea", 2015, 4555957,
-  "South Korea", 2016, 4228509,
-  "Brazil", 1950, 0,
-  "Brazil", 1960, 133041, 
-  "Brazil", 1970, 416089,
-  "Brazil", 1980, 1165714,
-  "Brazil", 1990, 914466,
-  "Brazil", 1995, 1629008,
-  "Brazil", 2000, 1681517,
-  "Brazil", 2005, 2530840,
-  "Brazil", 2010, 3381728,
-  "Brazil", 2011, 3407861,
-  "Brazil", 2012, 3402508,
-  "Brazil", 2013, 3712380,
-  "Brazil", 2014, 3364890,
-  "Brazil", 2015, 2429463,
-  "Brazil", 2016, 2156356
-) %>%
-  mutate(Value = Value/1000,
-         labs = prettyNum(round(Value), ",")) %>%
-  ggplot(.,aes(as.factor(Year), Value, fill=Country)) + theme_steve_web() +
+
+mvprod %>%
+  filter(country %in% c("South Korea", "Brazil")) %>%
+  rename(Country = country) %>%
+  mutate(value = mvprod/1000,
+         lbl = prettyNum(round(value), ",")) %>%
+  ggplot(.,aes(as.factor(year), value, fill=Country)) + 
+  theme_steve_web() +
   geom_bar(stat="identity", position = "dodge", color="black") +
   scale_y_continuous(labels = scales::comma) +
   xlab("Year") + ylab("Motor Vehicle Production (in Thousands)") +
-  geom_text(aes(label=labs, group=Country), color="black",
+  geom_text(aes(label=lbl, group=Country), color="black",
             position=position_dodge(width=.9), size=3, vjust = -.5, family="Open Sans") +
   labs(title = "It Didn't Take That Long For South Korea's Motor Vehicle Production to Outpace Brazil",
        subtitle = "South Korea's model found an audience abroad, producing products for foreign consumption in contrast to Brazil's domestic focus.",
@@ -478,6 +452,7 @@ Oil %>%
   theme_steve_web() +
   geom_line() + 
   xlab("") +
+  ylab("Crude Oil Production, Total OPEC") +
   scale_x_datetime(breaks = seq(as.POSIXct("1972-01-01"), 
                             as.POSIXct("2018-01-01"), by = "2 years"),
     # date_breaks = "2 years",
