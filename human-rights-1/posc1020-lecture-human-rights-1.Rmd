@@ -41,13 +41,99 @@ library(stringr)
 library(stevemisc)
 library(scales)
 library(knitr)
+library(grid)
+library(gridExtra)
+library(artyfarty)
+library(drlib)
 
-LHR <- read_csv("~/Dropbox/data/latent-human-rights/HumanRightsProtectionScores_v2.04.csv")
+# LHR <- read_csv("~/Dropbox/data/latent-human-rights/HumanRightsProtectionScores_v2.04.csv")
 ITT <- foreign::read.dta("~/Dropbox/data/itt/RevisedSAFINAL_11Mar2013.dta") %>% tbl_df()
 
-LHR <- read_csv("~/Dropbox/teaching/posc1020/human-rights-1/cache/M_2_Full_Data.csv")
+# LHR <- read_csv("~/Dropbox/teaching/posc1020/human-rights-1/cache/M_2_Full_Data.csv")
+LHR <- read_csv("~/Dropbox/data/latent-human-rights/M_2_Full_Data.csv") %>%
+  rename_all(tolower) # changing standard model
 
-Vdem <- read_csv("~/Dropbox/data/v-dem/8/V-Dem-CY+Others-v8.csv")
+# Vdem <- read_csv("~/Dropbox/data/v-dem/8/V-Dem-CY+Others-v8.csv")
+Vdem <- readRDS("~/Dropbox/data/v-dem/9/V-Dem-CY-Core-v9.rds") %>% tbl_df()
+
+Polity <- readxl::read_excel("~/Dropbox/data/polity/p4v2017.xls")
+
+Vdem %>% 
+  filter(year == 2018) %>% 
+  select(country_name, country_text_id, year, v2x_polyarchy,
+         v2x_civlib, v2x_civlib_sd, v2x_civlib_codehigh, v2x_civlib_codelow, 
+         v2x_clphy, v2x_clphy_sd, v2x_clphy_codehigh, v2x_clphy_codelow, 
+         v2x_clpol, v2x_clpol_sd, v2x_clpol_codehigh, v2x_clpol_codelow, 
+         v2x_clpriv, v2x_clpriv_sd,  v2x_clpriv_codehigh, v2x_clpriv_codelow, 
+         v2clrelig, v2clrelig_sd, v2clrelig_codehigh, v2clrelig_codelow, 
+         v2clacfree, v2clacfree_sd, v2clacfree_codehigh, v2clacfree_codelow, 
+         v2cltort, v2cltort_sd, v2cltort_codehigh, v2cltort_codelow, 
+         v2clkill, v2clkill_sd, v2clkill_codehigh, v2clkill_codelow, 
+         v2clfmove, v2clfmove_sd, v2clfmove_codehigh, v2clfmove_codelow, 
+         v2cltrnslw, v2cltrnslw_sd, v2cltrnslw_codehigh, v2cltrnslw_codelow, 
+         v2clrspct, v2clrspct_sd, v2clrspct_codehigh, v2clrspct_codelow, 
+         ) %>%
+  mutate(ccode = countrycode::countrycode(country_name, "country.name", "cown")) %>%
+  mutate(ccode = ifelse(country_name == "Serbia", 345, ccode)) %>%
+  rename(Country = country_name,
+         iso3c = country_text_id) %>%
+  mutate(EU = ifelse(ccode %in% c(200, 205, 210, 211, 212, 220, 225, 230, 235, 255, 290, 305,
+                                  310, 316, 317, 325, 338, 344, 349, 350, 352, 355, 360, 366,
+                                  367, 368, 375, 380, 390), 1, 0),
+         USA = ifelse(iso3c == "USA", 1, 0),
+         World = 1) %>%
+  select(Country, USA, EU, World, iso3c, ccode, year, everything()) -> Vdemcivillibs2018
+
+#
+multiplot <- function(..., plotlist = NULL, file, cols = 1, layout = NULL, title="", 
+                      fontsize = 12, fontfamily = "Helvetica") {
+  require(grid)
+ 
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+ 
+  numPlots = length(plots)
+ 
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+ 
+  if (nchar(title)>0){
+    layout <- rbind(rep(0, ncol(layout)), layout)
+  }
+ 
+  if (numPlots==1) {
+    print(plots[[1]])
+ 
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), 
+                          ncol(layout), 
+                          heights = if (nchar(title)>0) {unit(c(0.5, rep(5,nrow(layout)-1)), "null")}
+                          else {unit(c(rep(5, nrow(layout))), "null")})))
+ 
+    # Make each plot, in the correct location
+    if (nchar(title)>0) {
+      grid.text(title, 
+                vp = viewport(layout.pos.row = 1, layout.pos.col = 1:ncol(layout)),
+                gp = gpar(fontsize = fontsize, fontfamily = fontfamily))
+    }
+ 
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+ 
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
 
 ```
 
@@ -107,15 +193,15 @@ There any number of reasons for human rights abuses.
 No state is a saint on the human rights frontier, whether it's the U.S. or China.
 
 ## Patterns of Human Rights Abuses
-###
+<!-- ### -->
 
-```{r human-rights-leaders-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+```{r human-rights-leaders-fariss, eval=F, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
 LHR %>%
-  filter(YEAR == max(YEAR)) %>%
+  filter(year == max(year)) %>%
   rename(latentmean = theta_mean, latentsd = theta_sd) %>%
-  select(YEAR, COW, latentmean, latentsd) %>%
+  select(year, cow, latentmean, latentsd) %>%
   arrange(-latentmean) %>% 
-  mutate(Country = countrycode::countrycode(COW, "cown", "country.name")) %>% head(50) %>%
+  mutate(Country = countrycode::countrycode(cow, "cown", "country.name")) %>% head(50) %>%
   filter(!is.na(Country)) %>%
   ggplot(.,aes(reorder(Country, latentmean), latentmean)) + theme_steve_web() +
   geom_point(colour = "#619cff", size = 3) +
@@ -131,34 +217,430 @@ LHR %>%
   xlab("") + ylab("Mean Latent Human Rights Protection in 2015") +
   labs(title = "The World's Leaders in Human Rights Protections are in Europe or Clustered in Oceania",
        subtitle = "Fariss' model is 'dynamic' and builds on previous years and a myriad of measures, which may explain why some of these Oceanian countries rank high but have diffuse intervals.",
-       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)")
+       caption = "Data: Fariss' (2019) Latent Human Rights Protection Scores (v. forthcoming)")
   
 ```
 
 ###
 
 ```{r usa-human-rights-ranking-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
-LHR %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
-    filter(YEAR == max(YEAR)) -> lhr2013
-lhr2013 <- with(density(lhr2013$latentmean), data.frame(x, y))
+# LHR %>%  -> lhr2015
 
-ggplot(data = lhr2013, mapping = aes(x = x, y = y)) + theme_steve_web() +
-    geom_line()  +
-    geom_area(mapping = aes(x = ifelse(x> .373-.435 & x< .373+.435 , x, NA)), fill = "#4d8bc9", alpha=0.4) +
-  #geom_vline(xintercept = .373, linetype="solid", color="#4d8bc9") +
-  # geom_vline(xintercept = .373+.435) +
-  #geom_vline(xintercept = .373-.435) +
-  geom_vline(xintercept = .929, linetype="dashed") +
-  #geom_segment(x=.373+.435, y=0, xend=.373+.435, yend=.26, color="black", size=.5) +
-  #geom_segment(x=.373-.435, y=0, xend=.373-.435, yend=.228, color="black", size=.5) +
-  geom_segment(x=.373, y=0, xend=.373, yend=.268, color="#4d8bc9") +
-  xlab("Latent Human Rights Protection in 2015") + ylab("Density") +
-  labs(title = "Where Does the U.S. Rank on Human Rights? Below Average.",
-       subtitle = "The U.S. is a tricky country to measure for human rights abuses for a myriad of reasons. It does well in some areas and deceptively terrible in others and Amnesty International, aggressively monitor the U.S.",
-       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)
-       Note: solid blue indicates U.S. mean human rights protection score in 2015. Intervals are the standard deviation around the mean.")
+LHR %>%
+  rename(value = theta_mean, sd = theta_sd) %>%
+    filter(year == max(year)) %>%
+  mutate(Country = countrycode::countrycode(cow, "cown", "country.name"),
+         Country = ifelse(cow == 816, "Vietnam", Country))  %>%
+  select(Country, cow, value, sd) %>%
+  rename(ccode = cow) %>%
+  mutate(USA = ifelse(Country == "United States", 1, 0),
+         upr = value + .5*(sd),
+         lwr = value - .5*(sd),
+         Indicator = "Human Rights Protections (2015)") %>%
+  arrange(-value) %>%
+  mutate(rank = seq(1,nrow(.))) -> lhr2015
+
+Vdemcivillibs2018 %>%
+  select(ccode, v2x_civlib, v2x_civlib_codehigh, v2x_civlib_codelow) %>%
+  rename(value = v2x_civlib,
+         upr = v2x_civlib_codehigh,
+         lwr = v2x_civlib_codelow) %>% 
+  filter(!is.na(ccode)) %>%
+  mutate(Indicator = "Civil Liberties Index (2018)",
+         USA = ifelse(ccode == 2, 1, 0)) %>%
+  arrange(-value) %>%
+  mutate(rank = seq(1,nrow(.))) %>%
+  bind_rows(lhr2015, .) %>%
+  mutate(Country2 = countrycode::countrycode(ccode, "cown", "country.name"),
+         Country2 = ifelse(ccode == 816, "Vietnam", Country2)) %>% 
+  filter(rank < 40) %>%
+  ggplot(.,aes(reorder_within(Country2, value, Indicator), value, color=as.factor(USA), shape=as.factor(USA))) + 
+  theme_steve_web() +
+    geom_pointrange(aes(ymin = lwr,
+                        ymax =  upr),
+                    lwd = 1/2, position = position_dodge(width = 1/2)) +
+  scale_shape_manual(values = c(19, 17)) +
+  scale_color_manual(values = pal("retro")) +
+  scale_x_reordered() +
+  facet_wrap(~Indicator, scales="free") +
+  xlab("") + ylab("") +
+  coord_flip() +
+  theme(legend.position="none") +
+  labs(title = "The World's Leaders in Human Rights Protections are in Europe or Clustered in Oceania",
+       subtitle = "The U.S. is conspicuous by how low it scores in both data sets, though there are important explanations for this.",
+       caption = "Data: Varieties of Democracy (v. 9); Fariss' (2019) Latent Human Rights Protection Scores (v. forthcoming).")
+
+# 
+# lhr2015 <- with(density(lhr2015$latentmean), data.frame(x, y))
+# 
+# ggplot(data = lhr2015, mapping = aes(x = x, y = y)) + theme_steve_web() +
+#     geom_line()  +
+#     geom_area(mapping = aes(x = ifelse(x> .373-.435 & x< .373+.435 , x, NA)), fill = "#4d8bc9", alpha=0.4) +
+#   #geom_vline(xintercept = .373, linetype="solid", color="#4d8bc9") +
+#   # geom_vline(xintercept = .373+.435) +
+#   #geom_vline(xintercept = .373-.435) +
+#   geom_vline(xintercept = .929, linetype="dashed") +
+#   #geom_segment(x=.373+.435, y=0, xend=.373+.435, yend=.26, color="black", size=.5) +
+#   #geom_segment(x=.373-.435, y=0, xend=.373-.435, yend=.228, color="black", size=.5) +
+#   geom_segment(x=.373, y=0, xend=.373, yend=.268, color="#4d8bc9") +
+#   xlab("Latent Human Rights Protection in 2015") + ylab("Density") +
+#   labs(title = "Where Does the U.S. Rank on Human Rights? Below Average.",
+#        subtitle = "The U.S. is a tricky country to measure for human rights abuses for a myriad of reasons. It does well in some areas and deceptively terrible in others and Amnesty International, aggressively monitor the U.S.",
+#        caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)
+#        Note: solid blue indicates U.S. mean human rights protection score in 2015. Intervals are the standard deviation around the mean.")
 
 ```
+
+###
+
+```{r usa-human-rights-ranking-vdem, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+
+# Vdem %>% 
+#   filter(year == 2017) %>%
+#   select(country_text_id, year, v2x_polyarchy) -> v2polyarchy2017
+# 
+# Polity %>% filter(year == 2017) %>%
+#   select(scode, year, polity2) %>%
+#   rename(country_text_id = scode) %>%
+#   left_join(p2017, .)
+
+
+
+
+
+Vdemcivillibs2018 %>%
+  arrange(-v2x_civlib) %>%
+  mutate(`Civil Liberties Index` = seq(1, nrow(.))) %>%
+  arrange(-v2x_clphy) %>%
+  mutate(`Physical Violence Index` = seq(1, nrow(.))) %>%
+  arrange(-v2x_clpol) %>%
+  mutate(`Political Civil Liberties Index` = seq(1, nrow(.))) %>%
+  arrange(-v2x_clpriv) %>%
+  mutate(`Private Civil Liberties Index` = seq(1, nrow(.))) %>%
+  arrange(-v2clrelig) %>%
+  mutate(`Freedom of Religion` = seq(1, nrow(.))) %>%
+  arrange(-v2clacfree) %>%
+  mutate(`Freedom of Academic/Cultural Expression` = seq(1, nrow(.))) %>%
+  arrange(-v2cltort) %>%
+  mutate(`Freedom from Torture` = seq(1, nrow(.))) %>%
+  arrange(-v2clkill) %>%
+  mutate(`Freedom from Political Killings` = seq(1, nrow(.))) %>%
+  arrange(-v2clfmove) %>%
+  mutate(`Freedom of Foreign Movement` = seq(1, nrow(.))) %>%
+  arrange(-v2cltrnslw) %>%
+  mutate(`Transparent Laws/Predictable Enforcement` = seq(1, nrow(.))) %>%
+  arrange(-v2clrspct) %>%
+  mutate(`Impartial Public Administration` = seq(1, nrow(.))) %>%
+  filter(iso3c == "USA") %>% 
+  select(Country, `Civil Liberties Index` :ncol(.)) %>%
+  gather(Category, Rank, 2:ncol(.)) %>%
+  select(-Country) %>%
+  rename(`**Category**` = Category,
+         `**Rank**` = Rank) %>%
+  kable(., align=c("l","c"),
+        caption = "U.S. Human Rights Ranks Across Various Vdem Metrics, 2018")
+
+
+#vec_fontface <- ifelse(Vdemcivillibs2018$Country=="United States of America","bold","plain")
+# vec_color <- ifelse(Vdemcivillibs2018$Country=="United States of America","red","black")
+
+```
+
+### 
+
+```{r usa-human-rights-ranking-vdem-other-democracies, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+
+Vdemcivillibs2018 %>%
+  filter(EU == 1 | USA == 1 | ccode %in% c(20, 155, 165, 385, 395, 900, 920, 666, 732, 740)) %>%
+  mutate(Category = "Civil Liberties Index") %>% 
+  ggplot(.,aes(reorder(Country, v2x_civlib), v2x_civlib, color=as.factor(USA), shape=as.factor(USA))) + 
+  theme_steve_web() +
+  scale_shape_manual(values = c(19, 17)) +
+  scale_color_manual(values = pal("retro")) +
+  facet_wrap(~Category) +
+  geom_pointrange(aes(ymin = v2x_civlib_codelow,
+                        ymax =  v2x_civlib_codehigh),
+                    lwd = 1/2, position = position_dodge(width = 1/2)) +
+  xlab("") + ylab("") +
+  coord_flip() +
+  theme(legend.position="none") -> civlibp
+
+Vdemcivillibs2018 %>%
+  filter(EU == 1 | USA == 1 | ccode %in% c(20, 155, 165, 385, 395, 900, 920, 666, 732, 740)) %>%
+  mutate(Category = "Physical Violence Index") %>% 
+  ggplot(.,aes(reorder(Country, v2x_clphy), v2x_clphy, color=as.factor(USA), shape=as.factor(USA))) + 
+  theme_steve_web() +
+  scale_shape_manual(values = c(19, 17)) +
+  scale_color_manual(values = pal("retro")) +
+  facet_wrap(~Category) +
+  geom_pointrange(aes(ymin = v2x_clphy_codelow,
+                        ymax =  v2x_clphy_codehigh),
+                    lwd = 1/2, position = position_dodge(width = 1/2)) +
+  xlab("") + ylab("") +
+  coord_flip() +
+  theme(legend.position="none") -> physviop
+
+
+Vdemcivillibs2018 %>%
+  filter(EU == 1 | USA == 1 | ccode %in% c(20, 155, 165, 385, 395, 900, 920, 666, 732, 740)) %>%
+  mutate(Category = "Political Civil Liberties Index") %>% 
+  ggplot(.,aes(reorder(Country, v2x_clpol), v2x_clpol, color=as.factor(USA), shape=as.factor(USA))) + 
+  theme_steve_web() +
+  scale_shape_manual(values = c(19, 17)) +
+  scale_color_manual(values = pal("retro")) +
+  facet_wrap(~Category) +
+  geom_pointrange(aes(ymin = v2x_clpol_codelow,
+                        ymax =  v2x_clpol_codehigh),
+                    lwd = 1/2, position = position_dodge(width = 1/2)) +
+  xlab("") + ylab("") +
+  coord_flip() +
+  theme(legend.position="none") -> polcivlibp
+
+Vdemcivillibs2018 %>%
+  filter(EU == 1 | USA == 1 | ccode %in% c(20, 155, 165, 385, 395, 900, 920, 666, 732, 740)) %>%
+  mutate(Category = "Private Civil Liberties Index") %>% 
+  ggplot(.,aes(reorder(Country, v2x_clpriv), v2x_clpriv, color=as.factor(USA), shape=as.factor(USA))) + 
+  theme_steve_web() +
+  scale_shape_manual(values = c(19, 17)) +
+  scale_color_manual(values = pal("retro")) +
+  facet_wrap(~Category) +
+  geom_pointrange(aes(ymin = v2x_clpriv_codelow,
+                        ymax =  v2x_clpriv_codehigh),
+                    lwd = 1/2, position = position_dodge(width = 1/2)) +
+  xlab("") + ylab("") +
+  coord_flip() +
+  theme(legend.position="none") -> privcivlibp
+
+
+# Vdemcivillibs2018 %>%
+#   filter(EU == 1 | USA == 1 | ccode %in% c(20, 155, 165, 385, 395, 900, 920, 666, 732, 740)) %>%
+#   select(Country, v2x_civlib, v2x_civlib_codehigh, v2x_civlib_codelow, 
+#          v2x_clphy,v2x_clphy_codehigh, v2x_clphy_codelow, 
+#          v2x_clpol, v2x_clpol_codehigh, v2x_clpol_codelow, 
+#          v2x_clpriv, v2x_clpriv_codehigh, v2x_clpriv_codelow)
+
+Vdemcivillibs2018 %>%
+  filter(EU == 1 | USA == 1 | ccode %in% c(20, 155, 165, 385, 395, 900, 920, 666, 732, 740)) %>%
+  select(Country, v2x_civlib,
+         v2x_clphy,
+         v2x_clpol, 
+         v2x_clpriv) %>%
+  gather(Indicator, value, 2:ncol(.)) %>%
+  mutate(Indicator = forcats::fct_recode(Indicator,
+                                          "Civil Liberties Index" = "v2x_civlib",
+                                         "Physical Violence Index" = "v2x_clphy",
+                                         "Political Liberties Index" = "v2x_clpol",
+                                         "Private Civil Liberties Index" = "v2x_clpriv")) -> humanrights_democracies
+
+Vdemcivillibs2018 %>%
+  filter(EU == 1 | USA == 1 | ccode %in% c(20, 155, 165, 385, 395, 900, 920, 666, 732, 740)) %>%
+  select(Country, v2x_civlib_codehigh,
+         v2x_clphy_codehigh,
+         v2x_clpol_codehigh, 
+         v2x_clpriv_codehigh) %>%
+  gather(Indicator, upr, 2:ncol(.)) %>%
+  mutate(Indicator = forcats::fct_recode(Indicator,
+                                          "Civil Liberties Index" = "v2x_civlib_codehigh",
+                                         "Physical Violence Index" = "v2x_clphy_codehigh",
+                                         "Political Liberties Index" = "v2x_clpol_codehigh",
+                                         "Private Civil Liberties Index" = "v2x_clpriv_codehigh")) %>%
+  left_join(humanrights_democracies, .) -> humanrights_democracies
+
+
+Vdemcivillibs2018 %>%
+  filter(EU == 1 | USA == 1 | ccode %in% c(20, 155, 165, 385, 395, 900, 920, 666, 732, 740)) %>%
+  select(Country, v2x_civlib_codelow,
+         v2x_clphy_codelow,
+         v2x_clpol_codelow, 
+         v2x_clpriv_codelow) %>%
+  gather(Indicator, lwr, 2:ncol(.)) %>%
+  mutate(Indicator = forcats::fct_recode(Indicator,
+                                          "Civil Liberties Index" = "v2x_civlib_codelow",
+                                         "Physical Violence Index" = "v2x_clphy_codelow",
+                                         "Political Liberties Index" = "v2x_clpol_codelow",
+                                         "Private Civil Liberties Index" = "v2x_clpriv_codelow")) %>%
+  left_join(humanrights_democracies, .) -> humanrights_democracies
+
+# library(drlib)
+humanrights_democracies %>%
+  mutate(USA = ifelse(Country == "United States of America", 1, 0)) %>%
+  ggplot(.,aes(reorder_within(Country, value, Indicator), value, color=as.factor(USA), shape=as.factor(USA))) + 
+  theme_steve_web() +
+    geom_pointrange(aes(ymin = lwr,
+                        ymax =  upr),
+                    lwd = 1/2, position = position_dodge(width = 1/2)) +
+  scale_shape_manual(values = c(19, 17)) +
+  scale_color_manual(values = pal("retro")) +
+  scale_x_reordered() +
+  facet_wrap(~Indicator, scales="free_y") +
+  xlab("") + ylab("") +
+  coord_flip() +
+  theme(legend.position="none") +
+  labs(title = "U.S. Human Rights Performances Against Select Democracies, 2018",
+       subtitle = "The U.S. ranks above the median worldwide on all human rights indices, but ranks below average among peer democracies.",
+       caption = "Varieties of Democracy, v. 9.")
+
+
+# library(gridExtra)
+# grid.arrange(civlibp, physviop,polcivlibp, privcivlibp,
+#              # vp=viewport(width=0.1, height=0.1),
+#              padding = unit(1.5, "line"),
+#              top = textGrob("     U.S. Human Rights Performances Against Select Democracies, 2018",
+#                             gp= gpar(fontsize = 18, fontface=2,fontfamily="Titillium Web"),
+#                             hjust = 0, x=0,
+#              ),
+#              bottom = textGrob("Data: Varieties of Democracy, v. 9      ",
+#     gp = gpar(fontface = 3, fontsize = 9),
+#     hjust = 1,
+#     x = 1
+#   ),
+#              layout_matrix = matrix(c(1,2, 3, 4), ncol=2, byrow=TRUE))
+
+
+```
+
+
+
+
+
+
+
+
+
+```{r usa-human-rights-ranking-vdem-dross, eval=F, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+
+Vdemcivillibs2018 %>%
+  group_by(EU, USA) %>%
+  # filter(iso3c == "USA") %>%
+  # select(v2x_civlib, v2x_civlib_sd)
+  summarize(meancivlib = mean(v2x_civlib),
+            sdcivlib = sqrt(mean(v2x_civlib_sd*v2x_civlib_sd)),
+            civlib_upper = mean(v2x_civlib_codehigh),
+            civlib_lower = mean(v2x_civlib_codelow),
+            meanclphy = mean(v2x_clphy),
+            sdclphy = sqrt(mean(v2x_clphy_sd*v2x_clphy_sd)),
+            clphy_upper = mean(v2x_clphy_codehigh),
+            clphy_lower = mean(v2x_clphy_codelow),
+            meanclpol = mean(v2x_clpol),
+            sdclpol = sqrt(mean(v2x_clpol_sd*v2x_clpol_sd)),
+            clpol_upper = mean(v2x_clpol_codehigh),
+            clpol_lower = mean(v2x_clpol_codelow),
+            meanclpriv = mean(v2x_clpriv),
+            sdclpriv = sqrt(mean(v2x_clpriv_sd*v2x_clpriv_sd)),
+            clpriv_upper = mean(v2x_clpriv_codehigh),
+            clpriv_lower = mean(v2x_clpriv_codelow),
+            meanclrelig = mean(v2clrelig),
+            sdclrelig = sqrt(mean(v2clrelig_sd*v2clrelig_sd)),
+            clrelig_upper = mean(v2clrelig_codehigh),
+            clrelig_lower = mean(v2clrelig_codelow),
+            meanclacfree = mean(v2clacfree),
+            sdclacfree = sqrt(mean(v2clacfree_sd*v2clacfree_sd)),
+            clacfree_upper = mean(v2clacfree_codehigh),
+            clacfree_lower = mean(v2clacfree_codelow),
+            meancltort = mean(v2cltort),
+            sdcltort = sqrt(mean(v2cltort_sd*v2cltort_sd)),
+            cltort_upper = mean(v2cltort_codehigh),
+            cltort_lower = mean(v2cltort_codelow),
+            meanclkill = mean(v2clkill),
+            sdclkill = sqrt(mean(v2clkill_sd*v2clkill_sd)),
+            clkill_upper = mean(v2clkill_codehigh),
+            clkill_lower = mean(v2clkill_codelow),
+            meanclfmove = mean(v2clfmove),
+            sdclfmove = sqrt(mean(v2clfmove_sd*v2clfmove_sd)),
+            clfmove_upper = mean(v2clfmove_codehigh),
+            clfmove_lower = mean(v2clfmove_codelow),
+            meancltrnslw = mean(v2cltrnslw),
+            sdcltrnslw = sqrt(mean(v2cltrnslw_sd*v2cltrnslw_sd)),
+            cltrnslw_upper = mean(v2cltrnslw_codehigh),
+            cltrnslw_lower = mean(v2cltrnslw_codelow),
+            meanclrspct = mean(v2clrspct),
+            sdclrspct = sqrt(mean(v2clrspct_sd*v2clrspct_sd)),
+            clrspct_upper = mean(v2clrspct_codehigh),
+            clrspct_lower = mean(v2clrspct_codelow),) %>%
+  filter(!(EU == 0 & USA == 0)) %>%
+  ungroup() %>%
+  mutate(Category = c("United States", "European Union")) %>%
+  select(Category, everything(), -EU, -USA) -> usa_eu_civlibs2018
+  
+  
+Vdemcivillibs2018 %>%
+  # filter(iso3c == "USA") %>%
+  # select(v2x_civlib, v2x_civlib_sd)
+  summarize(meancivlib = mean(v2x_civlib),
+            sdcivlib = sqrt(mean(v2x_civlib_sd*v2x_civlib_sd)),
+            civlib_upper = mean(v2x_civlib_codehigh),
+            civlib_lower = mean(v2x_civlib_codelow),
+            meanclphy = mean(v2x_clphy),
+            sdclphy = sqrt(mean(v2x_clphy_sd*v2x_clphy_sd)),
+            clphy_upper = mean(v2x_clphy_codehigh),
+            clphy_lower = mean(v2x_clphy_codelow),
+            meanclpol = mean(v2x_clpol),
+            sdclpol = sqrt(mean(v2x_clpol_sd*v2x_clpol_sd)),
+            clpol_upper = mean(v2x_clpol_codehigh),
+            clpol_lower = mean(v2x_clpol_codelow),
+            meanclpriv = mean(v2x_clpriv),
+            sdclpriv = sqrt(mean(v2x_clpriv_sd*v2x_clpriv_sd)),
+            clpriv_upper = mean(v2x_clpriv_codehigh),
+            clpriv_lower = mean(v2x_clpriv_codelow),
+            meanclrelig = mean(v2clrelig),
+            sdclrelig = sqrt(mean(v2clrelig_sd*v2clrelig_sd)),
+            clrelig_upper = mean(v2clrelig_codehigh),
+            clrelig_lower = mean(v2clrelig_codelow),
+            meanclacfree = mean(v2clacfree),
+            sdclacfree = sqrt(mean(v2clacfree_sd*v2clacfree_sd)),
+            clacfree_upper = mean(v2clacfree_codehigh),
+            clacfree_lower = mean(v2clacfree_codelow),
+            meancltort = mean(v2cltort),
+            sdcltort = sqrt(mean(v2cltort_sd*v2cltort_sd)),
+            cltort_upper = mean(v2cltort_codehigh),
+            cltort_lower = mean(v2cltort_codelow),
+            meanclkill = mean(v2clkill),
+            sdclkill = sqrt(mean(v2clkill_sd*v2clkill_sd)),
+            clkill_upper = mean(v2clkill_codehigh),
+            clkill_lower = mean(v2clkill_codelow),
+            meanclfmove = mean(v2clfmove),
+            sdclfmove = sqrt(mean(v2clfmove_sd*v2clfmove_sd)),
+            clfmove_upper = mean(v2clfmove_codehigh),
+            clfmove_lower = mean(v2clfmove_codelow),
+            meancltrnslw = mean(v2cltrnslw),
+            sdcltrnslw = sqrt(mean(v2cltrnslw_sd*v2cltrnslw_sd)),
+            cltrnslw_upper = mean(v2cltrnslw_codehigh),
+            cltrnslw_lower = mean(v2cltrnslw_codelow),
+            meanclrspct = mean(v2clrspct),
+            sdclrspct = sqrt(mean(v2clrspct_sd*v2clrspct_sd)),
+            clrspct_upper = mean(v2clrspct_codehigh),
+            clrspct_lower = mean(v2clrspct_codelow),) %>%
+  ungroup() %>%
+  mutate(Category = c("World Average")) %>%
+  select(Category, everything()) -> world_civlibs2018
+
+bind_rows(world_civlibs2018, usa_eu_civlibs2018) %>%
+  group_by(Category) %>% data.frame
+
+
+
+  group_by(Country, iso3c, year) %>% 
+  arrange(-v2x_civlib) %>% 
+  head(50) %>%
+   ggplot(.,aes(reorder(Country, v2x_civlib), v2x_civlib)) + 
+  theme_steve_web() +
+  geom_point(colour = "#619cff", size = 3) +
+  # coord_flip() +
+  geom_pointrange(aes(x = Country, y = v2x_civlib, 
+                      ymin = v2x_civlib_codelow,
+                        ymax =  v2x_civlib_codehigh),
+                    lwd = 1/2, position = position_dodge(width = 1/2),
+                     fill = "white", color="#3288BD", shape=22) +
+  xlab("") + ylab("Mean Latent Human Rights Protection in 2015") +
+  theme(axis.text.x=
+          element_text(face=ifelse(levels(Vdemcivillibs2018$Country)=="United States of America","bold","italic"))) +
+  coord_flip()
+
+  gather(Category, value, 4:ncol(.)) %>%
+  ggplot(.,aes())
+
+```
+
 
 ###
 
@@ -180,7 +662,7 @@ ITT %>%
   geom_text(aes(label=sum, group=Country), color="black",
             position=position_dodge(width=.9), size=3.5, vjust = -.5, family="Open Sans") +
   labs(title = "The U.S. Experiences About Twice the Allegations of Ill-Treatment and Torture in a Given Year Compared to Its Neighbors",
-       subtitle = "Conrad and Moore's ITT data measure Amnesty International (AI) allegations arguing that torture is unobservable but AI allegations are reliable and valid, even for comparing the U.S. to Mexico here.",
+       subtitle = "Conrad and Moore argue that torture is unobservable but Amnesty International allegations are reliable and valid, even for comparing the U.S. to Mexico here.",
        caption = "Data: Conrad and Moore's Ill-Treatment & Torture (ITT) Data Collection Project (v. 2.1)")
   
   
@@ -285,7 +767,7 @@ allegdata %>%
             position=position_dodge(width=.9), size=3.5, vjust = -.5, family="Open Sans") +
   scale_y_continuous(labels = scales::percent) +
   labs(title = "Allegations of Ill-Treatment and Torture in the U.S. Used to Focus on Police and Prisons. Now They Focus on the Military.",
-       subtitle = "Allegations of torture by the police bottomed out to near zero in the 2000s but accusations against the military, nearly non-existent in the 1990s, became 3/4ths of all allegations after 9/11.",
+       subtitle = "Allegations of torture by the police bottomed out to near zero in the 2000s but accusations against the military became 3/4ths of all allegations after 9/11.",
        caption = "Data: Conrad and Moore's Ill-Treatment & Torture (ITT) Data Collection Project (v. 2.1).
        Note: Categories are not mutually exclusive, so an allegation can count for both the police and prisons, for example.
        Data omit allegations against unstated actors and against immigration services. 31% of all allegations in 1997 were against immigration services and around 10-20% in a given year are against unstated actors.")
@@ -298,35 +780,131 @@ allegdata %>%
 ###
 
 ```{r usa-human-rights-stagnation-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
-LHR %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
-  filter(COW == 2) %>%
-  mutate(Country = ifelse(COW == 2, "United States", NA),
-         lwr = NA) %>%
-  ggplot(.,aes(YEAR, latentmean, 
-               ymin = latentmean - 1.96*latentsd, ymax = latentmean + 1.96*latentsd)) + 
+Vdem %>%
+    filter(country_text_id == "USA") %>%
+#    filter(year >= 1945) %>% 
+  select(year, v2x_civlib, v2x_civlib_codelow, v2x_civlib_codehigh,
+         v2x_clphy, v2x_clphy_codehigh, v2x_clphy_codelow,
+         v2cltort_codelow, v2cltort_codehigh, v2cltort) -> usa_over_time
+
+
+Vdem %>%
+    filter(country_text_id == "USA") %>%
+  select(year, v2x_civlib, v2x_clphy, v2cltort) %>%
+  gather(Indicator, value, 2:ncol(.)) %>%
+  mutate(Indicator = forcats::fct_recode(Indicator,
+                                         "Civil Liberties Index" = "v2x_civlib",
+                                         "Physical Violence Index" = "v2x_clphy",
+                                         "Freedom From Torture" = "v2cltort")) -> usa_over_time
+
+
+Vdem %>%
+  filter(country_text_id == "USA") %>%
+  select(year, v2x_civlib_codehigh, v2x_clphy_codehigh, v2cltort_codehigh) %>%
+  gather(Indicator, upr, 2:ncol(.)) %>%
+  mutate(Indicator = forcats::fct_recode(Indicator,
+                                         "Civil Liberties Index" = "v2x_civlib_codehigh",
+                                         "Physical Violence Index" = "v2x_clphy_codehigh",
+                                         "Freedom From Torture" = "v2cltort_codehigh")) %>%
+  left_join(usa_over_time, .) -> usa_over_time
+
+Vdem %>%
+  filter(country_text_id == "USA") %>%
+  select(year, v2x_civlib_codelow, v2x_clphy_codelow, v2cltort_codelow) %>%
+  gather(Indicator, lwr, 2:ncol(.)) %>%
+  mutate(Indicator = forcats::fct_recode(Indicator,
+                                         "Civil Liberties Index" = "v2x_civlib_codelow",
+                                         "Physical Violence Index" = "v2x_clphy_codelow",
+                                         "Freedom From Torture" = "v2cltort_codelow")) %>%
+  left_join(usa_over_time, .) -> usa_over_time
+
+
+usa_over_time %>%
+  filter(Indicator == "Physical Violence Index") %>%
+  filter(year >= 1945) %>%
+  ggplot(.,aes(year, value,
+               ymin = lwr,
+               ymax = upr)) +
   theme_steve_web() +
   geom_ribbon(fill="#619cff", alpha = I(0.2), color = "black") + geom_line() +
-  ylab("Mean Latent Human Rights Protection") + xlab("Year") +
-  annotate("text", x= 1960, y=2, label="1960s-1970s:\nPost-Civil Rights Movement gains", hjust="left", 
-           family="Open Sans", size=3.5) +
-  annotate("text", x= 1985, y=0, label="1980s-1990s:\nprison abuse scandals,\nCIA torture campaigns,\nMOVE 9 bombing,\nIncreasing politicization of incarceration", hjust="left", family="Open Sans", size=3.5) +
-    annotate("text", x= 2002, y=-1, label="2001-Present:\nWar on Terror human rights abuses", hjust="left", family="Open Sans", size=3.5) +
-  scale_x_continuous(breaks=seq(1950, 2015, by=5)) +
-  labs(title = "Human Rights Protection Scores for the U.S., 1949-2015",
-       subtitle = "The U.S. made considerable progress on human rights in the 1960s and 1970s, which turned south in the 1980s, stagnated in the 1990s, and sunk after the War on Terror.",
-       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)")
+  xlab("Year") + ylab("Physical Violence Index (Vdem)") +
+  annotate("text", x= 1960, y=.94, label="1960s-1970s:\nPost-Civil Rights Movement gains", hjust="left", 
+           family="Open Sans", size=3.5)  +
+  annotate("text", x= 1985, y=.85, label="1980s-1990s:\nprison abuse scandals,\nCIA torture campaigns,\nMOVE 9 bombing,\nIncreasing politicization of incarceration", hjust="left", family="Open Sans", size=3.5) +
+    annotate("text", x= 2002, y=.79, label="2001-Present:\nWar on Terror human rights abuses", 
+             hjust="left", family="Open Sans", size=3.5) +
+  scale_x_continuous(breaks=seq(1945, 2020, by=5)) +
+  labs(title = "The Physical Violence Index of the United States, 1945-2018",
+       subtitle = "The U.S. made considerable progress on human rights in the 1960s and 1970s. Stagnation started in the 1980s and sunk after the War on Terror started.",
+       caption = "Data: Varieties of Democracy (v. 9). Note: 1980s human rights abuses annotated to explain downward turns in the Fariss (2019) data (and FH/AI reports).")
+
+# usa_over_time %>%
+#   ggplot(.,aes(year, v2x_civlib,
+#                ymin = v2x_civlib_codelow,
+#                ymax = v2x_civlib_codehigh)) +
+#   theme_steve_web() +
+#   geom_ribbon(fill="#619cff", alpha = I(0.2), color = "black") + geom_line()
+# 
+# Vdem %>%
+#     filter(country_text_id == "USA") %>%
+#   #  filter(year >= 1945) %>% 
+#   select(year, v2x_civlib, v2x_civlib_codelow, v2x_civlib_codehigh,
+#          v2x_clphy, v2x_clphy_codehigh, v2x_clphy_codelow,
+#          v2cltort_codelow, v2cltort_codehigh, v2cltort) %>%
+#   ggplot(.,aes(year, v2x_clphy,
+#                ymin = v2x_clphy_codelow,
+#                ymax = v2x_clphy_codehigh)) +
+#   theme_steve_web() +
+#   geom_ribbon(fill="#619cff", alpha = I(0.2), color = "black") + geom_line()
+# 
+# Vdemcivillibs2018 %>%
+#   filter(EU == 1 | USA == 1 | ccode %in% c(20, 155, 165, 385, 395, 900, 920, 666, 732, 740)) %>%
+#   select(Country, v2x_civlib_codehigh,
+#          v2x_clphy_codehigh,
+#          v2x_clpol_codehigh, 
+#          v2x_clpriv_codehigh) %>%
+#   gather(Indicator, upr, 2:ncol(.)) %>%
+#   mutate(Indicator = forcats::fct_recode(Indicator,
+#                                           "Civil Liberties Index" = "v2x_civlib_codehigh",
+#                                          "Physical Violence Index" = "v2x_clphy_codehigh",
+#                                          "Political Liberties Index" = "v2x_clpol_codehigh",
+#                                          "Private Civil Liberties Index" = "v2x_clpriv_codehigh")) %>%
+#   left_join(humanrights_democracies, .) -> humanrights_democracies
+# 
+#   
+# 
+# 
+# 
+# LHR %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
+#   filter(cow == 2) %>%
+#   mutate(Country = ifelse(cow == 2, "United States", NA),
+#          lwr = NA) %>%
+#   ggplot(.,aes(year, latentmean, 
+#                ymin = latentmean - 1.96*latentsd, ymax = latentmean + 1.96*latentsd)) + 
+#   theme_steve_web() +
+#   geom_ribbon(fill="#619cff", alpha = I(0.2), color = "black") + geom_line() +
+#   ylab("Mean Latent Human Rights Protection") + xlab("Year") +
+#   annotate("text", x= 1960, y=2, label="1960s-1970s:\nPost-Civil Rights Movement gains", hjust="left", 
+#            family="Open Sans", size=3.5) +
+#   annotate("text", x= 1985, y=0, label="1980s-1990s:\nprison abuse scandals,\nCIA torture campaigns,\nMOVE 9 bombing,\nIncreasing politicization of incarceration", hjust="left", family="Open Sans", size=3.5) +
+#     annotate("text", x= 2002, y=-1, label="2001-Present:\nWar on Terror human rights abuses", hjust="left", family="Open Sans", size=3.5) +
+#   scale_x_continuous(breaks=seq(1950, 2015, by=5)) +
+#   labs(title = "Human Rights Protection Scores for the U.S., 1949-2015",
+#        subtitle = "The U.S. made considerable progress on human rights in the 1960s and 1970s, which turned south in the 1980s, stagnated in the 1990s, and sunk after the War on Terror.",
+#        caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)")
 ```
 
 
-###
 
-```{r usa-chn-human-rights-comparison-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+```{r usa-chn-human-rights-comparison-fariss, eval=F, echo=F, fig.height=8.5, fig.width=14, message=F, warning=F}
+
+
 
 LHR %>% 
-  filter(COW == 2 | COW == 710) %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
-  mutate(Country = ifelse(COW == 2, "United States", "China"),
+  filter(cow == 2 | cow == 710) %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
+  mutate(Country = ifelse(cow == 2, "United States", "China"),
          lwr = NA) %>%
-  ggplot(.,aes(YEAR, latentmean, group = Country, color=Country,
+  ggplot(.,aes(year, latentmean, group = Country, color=Country,
                ymin = latentmean - 1.96*latentsd, ymax = latentmean + 1.96*latentsd)) + 
   theme_steve_web() + theme(legend.position="bottom") +
   geom_ribbon(aes(fill = Country), alpha = I(0.2), color = "black") + geom_line() +
@@ -340,17 +918,16 @@ LHR %>%
 
 
 
-###
 
-```{r usa-can-mex-human-rights-comparison-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14}
+```{r usa-can-mex-human-rights-comparison-fariss, eval=F, echo=F, fig.height=8.5, fig.width=14}
 
 LHR %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
-  filter(COW == 2 |  COW == 20 | COW == 70) %>%
-  mutate(Country = ifelse(COW == 2, "United States", NA),
-         Country = ifelse(COW == 20, "Canada", Country),
-         Country = ifelse(COW == 70, "Mexico", Country),
-         lwr = NA) %>% filter(YEAR >= 1980) %>%
-  ggplot(.,aes(YEAR, latentmean, group = Country, color=Country,
+  filter(cow == 2 |  cow == 20 | cow == 70) %>%
+  mutate(Country = ifelse(cow == 2, "United States", NA),
+         Country = ifelse(cow == 20, "Canada", Country),
+         Country = ifelse(cow == 70, "Mexico", Country),
+         lwr = NA) %>% filter(year >= 1980) %>%
+  ggplot(.,aes(year, latentmean, group = Country, color=Country,
                ymin = latentmean - 1.96*latentsd, ymax = latentmean + 1.96*latentsd)) + 
   theme_steve_web() + theme(legend.position="bottom") +
   geom_ribbon(aes(fill = Country), alpha = I(0.2), color = "black") + geom_line() +
@@ -388,17 +965,20 @@ There are other reasons as well, largely from perspective of other states.
 ###
 
 ```{r human-rights-stagnation-ciri, eval=T, echo=F, fig.height=8.5, fig.width=14, warning=F, message=F}
-LHR <- read_csv("~/Dropbox/data/latent-human-rights/HumanRightsProtectionScores_v2.04.csv")
+LHR204 <- read_csv("~/Dropbox/data/latent-human-rights/HumanRightsProtectionScores_v2.04.csv") %>% rename_all(tolower) 
 
-LHR %>%
-  group_by(YEAR) %>%
+# se=sd(.)/sqrt(n())
+
+LHR204 %>% 
+  group_by(year) %>%
   summarize(meanlhr = mean(latentmean),
             sdlhr = mean(latentsd),
             meanciri = mean(additive, na.rm=T),
-            sdciri = sd(additive, na.rm=T)) %>%
-  filter(YEAR > 1979) %>%
-  ggplot(.,aes(YEAR, meanciri,
-               ymin = meanciri - 1*sdciri, ymax = meanciri + 1*sdciri)) + 
+            sdciri = sd(additive, na.rm=T),
+            seciri = sd(additive, na.rm=T)/sqrt(n())) %>%
+  filter(year > 1979) %>%
+  ggplot(.,aes(year, meanciri,
+               ymin = meanciri - 1.96*seciri, ymax = meanciri + 1.96*seciri)) + 
   theme_steve_web() + theme(legend.position="bottom") +
   geom_ribbon(alpha = I(0.2), color = "black") + geom_line() +
 #  geom_ribbon(aes(y=meanciri, ymin = meanciri - sdciri, ymax = meanciri + sdciri), alpha = I(0.2), color = "black") + geom_line(aes(y=meanciri))  +
@@ -414,22 +994,39 @@ LHR %>%
 ###
 
 ```{r human-rights-improvement-fariss, eval=T, echo=F, fig.height=8.5, fig.width=14, warning=F, message=F}
-LHR <- read_csv("~/Dropbox/teaching/posc1020/human-rights-1/M_2_Full_Data.csv")
+# LHR <- read_csv("~/Dropbox/teaching/posc1020/human-rights-1/M_2_Full_Data.csv")
+#LHR <- read_csv("~/Dropbox/data/latent-human-rights/M_2_Full_Data.csv") %>%
+#  rename_all(tolower) # changing standard model
 
 LHR %>%
-  group_by(YEAR) %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
-  summarize(meanlhr = mean(latentmean),
-            sdlhr = mean(latentsd)) %>%
-  ggplot(.,aes(YEAR, meanlhr,
-               ymin = meanlhr - 1*sdlhr, ymax = meanlhr + 1*sdlhr)) + 
+  group_by(year) %>% rename(latentmean = theta_mean, latentsd = theta_sd) %>%
+  summarize(meanval = mean(latentmean),
+           # sdlhr = mean(latentsd),
+            se = sd(latentmean, na.rm=T)/sqrt(n()),
+           Category = "Human Rights Protections") -> improving_human_rights
+Vdem %>%
+  select(year, v2x_clphy) %>%
+  group_by(year) %>%
+  filter(year > 1945) %>%
+  summarize(meanval = mean(v2x_clphy, na.rm=T),
+            se = sd(v2x_clphy,na.rm=T)/sqrt(n()),
+            Category = "Physical Violence Index (Vdem)") %>%
+  bind_rows(improving_human_rights, .) %>%
+  ggplot(.,aes(year, meanval,
+               ymin = meanval - 1.96*se, ymax = meanval + 1.96*se)) + 
+  facet_wrap(~Category, scales = "free_y") +
   theme_steve_web() + theme(legend.position="bottom") +
   geom_ribbon(alpha = I(0.4), color = "black", fill="#619cff") + geom_line() +
 #  geom_ribbon(aes(y=meanciri, ymin = meanciri - sdciri, ymax = meanciri + sdciri), alpha = I(0.2), color = "black") + geom_line(aes(y=meanciri))  +
-  ylab("Mean Latent Human Rights Protection") + xlab("Year") +
+  ylab("Mean Human Rights Score (Higher Values = Better Human Rights)") + xlab("Year") +
   scale_x_continuous(breaks = seq(1950, 2015, by = 5)) +
   labs(title = "Human Rights Records Have Actually Improved Over Time",
        subtitle = "Fariss argues that a ''changing standard of accountability'' can explain the difference between this graph and the conventional wisdom.",
-       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming)")
+       caption = "Data: Fariss' Latent Human Rights Protection Scores (v. forthcoming), Varieties of Democracy (v. 9).
+       Note: One possible interpretation for these trends, in light of conventional wisdom, is how rare mass killings are.
+       Mass killings play a large role in Fariss' ''changing standard'' model while political killings are a big component of the physical violence index.")
+
+
 
 ```
 
