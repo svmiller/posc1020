@@ -39,6 +39,8 @@ library(stevemisc)
 library(scales)
 library(knitr)
 library(weathermetrics)
+library(WDI)
+library(artyfarty)
 data(co2data)
 data(sealevels)
 data(odgi)
@@ -466,6 +468,79 @@ It's useful to bundle public goods with private benefits.
 Prisoner's dilemmas become tractable with the emergence of "privileged groups."
 
 - i.e. why the U.S. and China are key actors on the future of environmental politics.
+
+###
+
+```{r co2_emissions_country, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
+
+WDI(country = "all", indicator = c("en.atm.co2e.pc","EN.ATM.CO2E.KT"),
+    start = 1960, end = 2014, extra = FALSE, cache = NULL) %>% tbl_df() %>%
+  rename(co2epc = en.atm.co2e.pc,
+         co2e = EN.ATM.CO2E.KT) %>%
+  mutate(ccode = countrycode::countrycode(iso2c, "iso2c", "cown"),
+         ccode2 = countrycode::countrycode(country, "country.name","cown")) %>%
+  mutate(ccode = ifelse(is.na(ccode), ccode2, ccode)) %>%
+  # filter(!is.na(ccode)) %>%
+  group_by(year) %>%
+  mutate(worldco2e = max(co2e, na.rm=T)) %>%
+  filter(!is.na(ccode)) %>%
+  mutate(sumco2ey = sum(co2e, na.rm=T),
+         co2epert = co2e/worldco2e,
+         co2epertlab = paste0(round(co2epert*10),"%")) -> co2emissionscountry
+
+co2emissionscountry %>%
+  arrange(-year, -co2epert) %>%
+  filter(year == 2014) %>%
+  head(10) %>%
+  mutate(labl = paste0(mround2(co2epert),"%")) %>% 
+  ggplot(.,aes(reorder(country, -co2epert), co2epert)) + theme_steve_web() +
+  geom_bar(stat="identity", alpha=0.8, color="black", fill="#619cff") +
+  geom_text(aes(label=labl), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4) +
+  xlab("Country") + ylab("Country % of World Carbon Dioxide Emissions, 2014") +
+  labs(title = "Country Percentage of Carbon Dioxide Emissions, 2014",
+       subtitle = "China is the biggest volume emmiter of carbon dioxide and India, if you can believe it, is just eight-tenths of a percent from being the median.",
+       caption = "Data: Carbon Dioxide Information Analysis Center, Environmental Sciences Division, Oak Ridge National Laboratory.")
+
+
+```
+
+###
+
+```{r co2_emissions_countrypc, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
+co2emissionscountry %>%
+  arrange(-year, -co2epc) %>%
+  filter(year == 2014) %>%
+  head(10) %>%
+  mutate(labl = round(co2epc, 2)) %>% 
+  ggplot(.,aes(reorder(country, -co2epc), co2epc)) + theme_steve_web() +
+  geom_bar(stat="identity", alpha=0.8, color="black", fill="#619cff") +
+  geom_text(aes(label=labl), vjust=-.5, colour="black",
+            position=position_dodge(.9), size=4) +
+  xlab("Country") + ylab("Country Carbon Dioxide Emissions, 2014 (Kilotons per Capita)") +
+  labs(title = "Country Carbon Dioxide Emissions per Capita, 2014",
+       subtitle = "China might be the biggest emitter, but it's the Gulf states (and the United States) that dominate this list of per capita emitters.",
+       caption = "Data: Carbon Dioxide Information Analysis Center, Environmental Sciences Division, Oak Ridge National Laboratory.")
+
+```
+
+
+###
+
+```{r co2_emissions_select, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
+co2emissionscountry %>%
+  arrange(-year, -co2e) %>% 
+  filter(iso2c %in% c("CN","US","IN","GB","JP","DE","RU")) %>%
+  rename(Country = country) %>%
+  ggplot(.,aes(year,co2epc, color=Country,linetype=Country)) +
+  theme_steve_web() + geom_line(size=1.1) +
+  scale_color_manual(values = pal("google")) +
+  scale_x_continuous(breaks = seq(1960, 2015, by = 5)) +
+  xlab("Year") + ylab("Country Carbon Dioxide Emissions, 2014 (Kilotons per Capita)") +
+  labs(title = "Carbon Dioxide Emissions per Capita for Select Countries, 1960-2014",
+       subtitle = "The U.S. has always been a high-volume emitter and large per capita emitter as well. The emissions for China, always a large-population country, have risen concurrent with its development.",
+       caption = "Data: Carbon Dioxide Information Analysis Center, Environmental Sciences Division, Oak Ridge National Laboratory.")
+```
 
 # Conclusion
 ### Conclusion
