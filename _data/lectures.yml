@@ -90,12 +90,11 @@
   filename: human-rights-1
   dirname: human-rights-1
   tldr: "Human rights have generally improved over time even as a function of a post-WWII international interest in this issue."
-# 
-# 
-# - title: "The Environment as Collective Action Problem"
-# filename: environment-1
-# dirname: environment-1
-# tldr: "The environment is a public good and a common, which helps explain why cooperating on it is so difficult."
+
+- title: "The Environment as Collective Action Problem"
+  filename: environment-1
+  dirname: environment-1
+  tldr: "The environment is a public good and a common, which helps explain why cooperating on it is so difficult."
 # 
 # - title: "The Future of International Politics"
 # filename: future-1
