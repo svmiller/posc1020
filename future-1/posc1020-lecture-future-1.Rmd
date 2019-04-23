@@ -41,6 +41,8 @@ library(scales)
 library(WDI)
 library(rvest)
 library(ggrepel)
+library(OECD)
+library(forecast)
 
 FAS <- read_csv("~/Dropbox/data/fas-nukes/number-of-nuclear-warheads-in-the-inventory-of-the-nuclear-powers-1945-2014.csv") %>%
   rename(nukes = `Nuclear weapons inventory by country`)
@@ -248,24 +250,56 @@ One final option: threat and use of military force. However, this is fraught wit
 
 ```{r gdp-forecasts-usa-chn, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-oecd_forecasts  %>%
-  rename(Country = country) %>%
-  filter(Country == "CHN" | Country == "USA") %>%
-  mutate(Country = ifelse(Country == "CHN", "China", "United States"),
-         gdp = value/1000000) %>%
-  ggplot(.,aes(year, gdp,  linetype=Country, color = Country)) +
+# You could also do E095_LTB instead of EO103_LTB
+# get_dataset("EO103_LTB",
+#             filter = list(c("USA","CHN"),
+#                           c("GDP")),
+#             start_time = 2018, end_time = 2060) %>%
+#   rename(year = obsTime) %>%
+#   mutate(Country = ifelse(LOCATION == "CHN", "China", "United States"),
+#          gdp = obsValue/1000000,
+#          year = as.integer(year))
+
+usa_chn_gdp_forecasts %>% 
+  mutate(gdp = ifelse(is.na(gdp), f_gdp, gdp)) %>%
+  mutate(gdp = gdp/1000000000000,
+         f_lo80 = f_lo80/1000000000000,
+         f_hi80 = f_hi80/1000000000000) %>%
+  # filter(year == 2037)
+  ggplot(.,aes(year, gdp,  linetype=Country, color = Country, fill=Country)) +
   theme_steve_web() +
+  geom_ribbon(aes(ymin = f_lo80, ymax = f_hi80), alpha = 0.4) +
   geom_line(size=1.5) +
-  theme(legend.position = "bottom") +
-  scale_x_continuous(breaks = seq(1990, 2060, by = 5)) +
-  xlab("Year") + ylab("Gross Domestic Product (Observed and Forecasted, in Millions and in PPPs)") +
-  geom_vline(xintercept = 2021,linetype = "dashed") +
   scale_color_brewer(palette = "Set1") +
-  annotate("text", x=2021.5, y = 35, 
-           label = "China surpasses the U.S. in GDP", hjust = 0, family = "Open Sans") +
-  labs(title = "The OECD Forecasts China Will Surpass the U.S. in GDP in 2021",
-       subtitle = "China's yearly growth in economic activity to date is far greater than the growth we observe in U.S. economic output.",
-       caption = "Data: OECD Outlook No 95 - May 2014 - Long-term baseline projections provided by  Organisation for Economic Co-operation and Development (OECD)")
+  scale_x_continuous(breaks = seq(1960, 2050, by = 10)) +
+  xlab("") + ylab("Gross Domestic Product (Observed and Forecasted) in Trillions Constant 2010 US$") +
+  geom_vline(xintercept = 2037,linetype = "dashed") +
+  scale_color_brewer(palette = "Set1") +
+  annotate("text", x=2036, y = 35, 
+           label = "China surpasses the U.S. in GDP\n(2037)", 
+           hjust = 1, family = "Open Sans")  +
+  labs(title = "China Should Surpass the U.S. in GDP by 2037",
+       subtitle = "China's yearly growth in economic activity to date is greater than the growth we observe in U.S. economic output even as (reasonable) worries about China's economic trajectory persist.",
+       caption = "Data: World Bank national accounts data, and OECD National Accounts data files. Forecast based on last year in World Bank data (2017).")
+
+# oecd_forecasts  %>%
+#   rename(Country = country) %>%
+#   filter(Country == "CHN" | Country == "USA") %>%
+#   mutate(Country = ifelse(Country == "CHN", "China", "United States"),
+#          gdp = value/1000000) %>%
+#   ggplot(.,aes(year, gdp,  linetype=Country, color = Country)) +
+#   theme_steve_web() +
+#   geom_line(size=1.5) +
+#   theme(legend.position = "bottom") +
+#   scale_x_continuous(breaks = seq(1990, 2060, by = 5)) +
+#   xlab("Year") + ylab("Gross Domestic Product (Observed and Forecasted, in Millions and in PPPs)") +
+#   geom_vline(xintercept = 2021,linetype = "dashed") +
+#   scale_color_brewer(palette = "Set1") +
+#   annotate("text", x=2021.5, y = 35,
+#            label = "China surpasses the U.S. in GDP", hjust = 0, family = "Open Sans") +
+#   labs(title = "In 2014, the OECD Forecasted China Will Surpass the U.S. in GDP in 2021",
+#        subtitle = "China's yearly growth in economic activity to date is greater than the growth we observe in U.S. economic output even as (reasonable) worries about China persist.",
+#        caption = "Data: OECD Outlook No 95 - May 2014 - Long-term baseline projections provided by  Organisation for Economic Co-operation and Development (OECD)")
 
 ```
 
@@ -353,18 +387,20 @@ WDI(country=c("US", "GB", "DE", "CA", "FR"), indicator = "IT.CEL.SETS.P2", start
 
 ```{r usa-household-computers-1984-2015, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-tibble(year = c(1984, 1989, 1993, 1997, 2000, 2001, 2003, 2007, 2009, 2010, 2011, 2012, 2013, 2014, 2015),
-       perc = c(8.2, 15, 22.9, 36.6, 51, 56.3, 61.8, 69.7, 74.1, 76.7, 75.6, 78.9, 83.8, 85.1, 86.8)) %>%
+tibble(year = c(1984, 1989, 1993, 1997, 2000, 2001, 2003, 2007, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016),
+       perc = c(8.2, 15, 22.9, 36.6, 51, 56.3, 61.8, 69.7, 74.1, 76.7, 75.6, 78.9, 83.8, 85.1, 86.8, 89.3)) %>%
+  mutate(lab = paste0(perc,"%")) %>%
   ggplot(.,aes(as.factor(year),perc)) + theme_steve_web() + 
   geom_bar(stat="identity", position = "dodge", alpha=0.8, color = "black", fill="#00BFC4") +
-  geom_text(aes(label=perc), vjust = -.5, colour = "black",
+  geom_text(aes(label=lab), vjust = -.5, colour = "black",
             position = position_dodge(.9), family="Open Sans") +
   ylim(0, 100) +
   xlab("Year") + ylab("Percentage of Households") +
   labs(caption = "Data: Current Population Survey Estimates",
        title = "Almost Every Household Has a Computer These Days, Thanks to Globalization",
        subtitle = "Household computers used to be a luxury item before parts could be cheaply made/imported from Asia. In fact, the old Apple Macintosh from 1984 cost more than $6,000 in 2017 USD.")
-  
+
+# https://www.census.gov/content/dam/Census/library/publications/2018/acs/ACS-39.pdf
   
 
 ```
@@ -398,14 +434,49 @@ LTPT %>%
 
 ###
 
-```{r usa-rok-trade-balance-1949-2017, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r let-them-watch-tv, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+ggplot() + 
+  geom_line(data = cpi_various_items, aes(date, cpi, color = Category), size=1.1) +
+  theme_steve_web() + 
+  guides(color = FALSE) +
+  geom_hline(yintercept = 100, linetype = "dashed") +
+  scale_x_date(limits = as.Date(c("2000-01-01","2020-01-01")),
+               date_labels = "%Y",
+               date_breaks = "2 year") +
+  scale_colour_brewer(palette = "RdBu") +
+  # scale_x_date(#date_breaks = "1 year",
+  #              breaks = seq(as.Date("2000-01-01"),
+  #                           as.Date("2022-12-31"), by="1 year"),
+  #              #date_minor_breaks = "3 months", 
+  #              date_labels = "%Y") +
+#  geom_line(size=1.1) +
+  geom_text(data = cpi_various_items %>% filter(date == "2018-12-01"), aes(label = Category, 
+                                                          x = as.Date("2019-01-01"), 
+                                                          y = cpi, 
+                                                          hjust = 0,
+                                                          color = Category,
+                                                          fontface = "bold",
+                                                          family = "Open Sans"),
+            size = 3) +
+  xlab("Date") + ylab("Consumer Price Index for Urban Consumers") +
+  labs(title = "''Let Them Watch TV''",
+       caption = "Data: Bureau of Labor Statistics. Base period = Jan. 1, 2000.",
+       subtitle = "Liberalized trade has made consumer electronics (like TVs) fractions of their past prices. Yet, young adults face mounting costs for college, child-raising,\nand health care that government policy has failed to address.")
+  # geom_label_repel(aes(label = Category),
+  #                  nudge_x = 1,
+  #                  na.rm = TRUE)
+```
+
+###
+
+```{r usa-rok-trade-balance-1949-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
 
 Trade %>% filter(ccode1 == 2  & ccode2 == 732) %>%
   mutate(deficit = flow2 - flow1) %>%
   select(year, deficit) %>%
-  bind_rows(., tibble(year = c(2015, 2016, 2017),
-                      deficit = c(-28273.2, -27571.8, -22887.4 ))) %>% 
+  bind_rows(., tibble(year = c(2015, 2016, 2017, 2018),
+                      deficit = c(-28273.2, -27571.8, -22887.4,-17946.4 ))) %>% 
   ggplot(.,aes(year, deficit)) + theme_steve_web() +
   geom_bar(stat="identity", position = "dodge", alpha=0.8, color = "black", fill="#F8766D") +
   scale_x_continuous(breaks=seq(1950, 2015, by = 5)) +
@@ -413,7 +484,7 @@ Trade %>% filter(ccode1 == 2  & ccode2 == 732) %>%
   xlab("Year") + ylab("Balance of Trade, in Millions (Negative Values = ''Deficits'')") +
   labs(title = "The Boom in Cheap Household Computers Followed a Surge of Imports from South Korea (Among Others)",
        subtitle = "South Korea specializes in cheaply producing high-quality consumer electronics for consumption in the U.S.",
-       caption = "Data: Correlates of War Dyadic Trade Data (v. 4.0, 1949-2014). U.S. Census Bureau: 2015-2017.")
+       caption = "Data: Correlates of War Dyadic Trade Data (v. 4.0, 1949-2014). U.S. Census Bureau: 2015-2018.")
 
 ```
 
