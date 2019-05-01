@@ -87,7 +87,7 @@ This should be a good paragraph in length.
 
 1. *Poor*. The connection is random and/or completely uninformative. 
 2. *Subpar*. The argument here meanders and the application of episode to the case is rambling and unfocused. The argument of its application is incomplete.
-3. *Adequate*. The argument is done well enough but may have whiffed on one particular component or made a major omission (e.g. student has to demonstrate how the MID escalated to war).
+3. *Adequate*. The argument is done well enough but may have whiffed on one particular component or made a major omission.
 4. *Excellent*. The section of the paper does well to relate the episode to part of the book. Everything is clearly communicated.
 
 
@@ -99,7 +99,7 @@ This should be a good paragraph in length.
 
 1. *Poor*. The connection is random and/or completely uninformative. 
 2. *Subpar*. The argument here meanders and the application of episode to the case is rambling and unfocused. The argument of its application is incomplete.
-3. *Adequate*. The argument is done well enough but may have whiffed on one particular component or made a major omission (e.g. student has to demonstrate how the MID escalated to war).
+3. *Adequate*. The argument is done well enough but may have whiffed on one particular component or made a major omission.
 4. *Excellent*. The section of the paper does well to relate the episode to part of the book. Everything is clearly communicated.
 
 # Third Connection to the Book (15%)
@@ -110,5 +110,5 @@ This should be a good paragraph in length.
 
 1. *Poor*. The connection is random and/or completely uninformative. 
 2. *Subpar*. The argument here meanders and the application of episode to the case is rambling and unfocused. The argument of its application is incomplete.
-3. *Adequate*. The argument is done well enough but may have whiffed on one particular component or made a major omission (e.g. student has to demonstrate how the MID escalated to war).
+3. *Adequate*. The argument is done well enough but may have whiffed on one particular component or made a major omission.
 4. *Excellent*. The section of the paper does well to relate the episode to part of the book. Everything is clearly communicated.
