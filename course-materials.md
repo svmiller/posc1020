@@ -16,7 +16,7 @@ Frieden, Jeffry A, David A. Lake and Kenneth A. Schultz (2016). [*World Politics
 
 The task here is fairly straightforward. The student will watch this episode and write a 1-2-paged *single*-spaced paper that 1) summarizes the episode and 2) argues for three connections to the class material we had discussed to that point. The inspiration here is [Ann Handley](https://www.amazon.com/Everybody-Writes-Go-Creating-Ridiculously-ebook/dp/B00LMB5P0G) and her recommendation of a ["writing GPS"](http://svmiller.com/blog/2016/05/everybody-writes-academic/). Therein, she argues the author of any text (in her case: web content) should be able to generate three separate answers to the question of "so what?" in order to convey the topic's importance to the reader.
 
-This short paper is due through the Turnitin module on the course website *before* **April 13, 9 a.m**. [Here is the rubric](http://posc1020.svmiller.com/short-paper/short-paper-rubric.pdf) for the assignment, which also provides further instructions for the paper's frame and formatting.
+This short paper is due through the Turnitin module on the course website *before* **Nov. 30, 9 a.m**. [Here is the rubric](http://posc1020.svmiller.com/short-paper/short-paper-rubric.pdf) for the assignment, which also provides further instructions for the paper's frame and formatting.
 
 **The video is available on the Canvas module for the class.**  Check the "Syllabus" tab. The DVD is also [available at Clemson's library](http://libcat.clemson.edu/search~S1/?searchtype=c&searcharg=HD87.C66+2002) if the student wants a DVD copy in lieu of a streaming copy.
 
