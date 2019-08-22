@@ -30,7 +30,7 @@ This page contains link to the lectures I give throughout the semester. Clicking
         <span><a href="{{ site.url }}/{{ lectures.dirname }}/posc1020-lecture-{{ lectures.filename }}.pdf">{{ lectures.title }}</a></span><br>
 <span class = "postlower">
 <strong>tl;dr:</strong> {{ lectures.tldr }}</span>
-<strong style="font-size:100%; font-family: 'Titillium Web', sans-serif; float:right">
+<strong style="font-size:100%; font-family: 'Titillium Web', sans-serif; float:right; padding-right: .5em">
 	<a href="{{ site.githublink}}/tree/master/{{ lectures.dirname }}"><i class="fab fa-github"></i></a>&nbsp;&nbsp;
 <a href="{{ site.githublink}}/tree/master/{{ lectures.dirname }}/posc1020-lecture-{{ lectures.filename}}.Rmd"><i class="fab fa-r-project"></i></a>&nbsp;&nbsp;
 <a href="{{ site.githublink}}/blob/master/{{ lectures.dirname }}/posc1020-lecture-{{ lectures.filename}}.pdf"><i class="fas fa-file-pdf"></i></a>
