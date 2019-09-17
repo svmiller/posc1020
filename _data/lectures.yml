@@ -28,10 +28,10 @@
   dirname: domestic-politics-1
   tldr: "Leader incentives and institutions may explain bargaining failure (i.e. war) even as war is something that makes everyone worse off."
 
-# - title: "Alliances and Bargaining"
-#   filename: alliance-bargaining
-#   dirname: alliance-bargaining
-#   tldr: "Alliances are institutions to coordinate security policies and influence bargaining between two sides."
+- title: "Alliances and Bargaining"
+  filename: alliance-bargaining
+  dirname: alliance-bargaining
+  tldr: "Alliances are institutions to coordinate security policies and influence bargaining between two sides."
 
 # - title: "Collective Security as Public Good"
 #   filename: collective-security
