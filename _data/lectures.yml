@@ -43,10 +43,10 @@
   dirname: civil-war
   tldr: "The same tools that explain inter-state war can explain civil war. It's just that the nature of one of the adversaries is different."
  
-# - title: "The Strategic Dilemma(s) of Terrorism"
-#   filename: terrorism
-#   dirname: terrorism
-#   tldr: "Terrorists are goal-oriented, purposive, and strategic (if weak) actors and the threat of terrorism will always exist."
+- title: "The Strategic Dilemma(s) of Terrorism"
+  filename: terrorism
+  dirname: terrorism
+  tldr: "Terrorists are goal-oriented, purposive, and strategic (if weak) actors and the threat of terrorism will always exist."
  
 # - title: "Why Trade? And Why Do We Put Up Barriers to Trade?"
 #   filename: trade-1
