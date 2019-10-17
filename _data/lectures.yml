@@ -48,10 +48,10 @@
   dirname: terrorism
   tldr: "Terrorists are goal-oriented, purposive, and strategic (if weak) actors and the threat of terrorism will always exist."
  
-# - title: "Why Trade? And Why Do We Put Up Barriers to Trade?"
-#   filename: trade-1
-#   dirname: trade-1
-#   tldr: "Free trade creates abundance and is good for peace. Let's describe it and explain why we limit this good thing."
+- title: "Why Trade? And Why Do We Put Up Barriers to Trade?"
+  filename: trade-1
+  dirname: trade-1
+  tldr: "Free trade creates abundance and is good for peace. Let's describe it and explain why we limit this good thing."
  
 # - title: "Trade As Strategic Problem"
 #   filename: trade-2
