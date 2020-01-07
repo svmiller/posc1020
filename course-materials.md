@@ -10,6 +10,8 @@ permalink: /course-materials/
 
 Frieden, Jeffry A, David A. Lake and Kenneth A. Schultz (2016). [*World Politics: Interests, Interactions, Institutions*](https://www.amazon.com/World-Politics-Interests-Interactions-Institutions/dp/0393938093). 3rd Edition. New York, NY: W.W. Norton and Company.
 
+<!--
+
 ## Short Paper Instructions
 
 10% of a student's grade for the semester will hinge on a short paper 1-2-paged *single*-spaced paper s/he will write in response to "Battle of Ideas." This was the first episode of a PBS series titled [*Commanding Heights: The Battle for the World Economy*](https://www.pbs.org/wgbh/commandingheights/).
@@ -19,6 +21,8 @@ The task here is fairly straightforward. The student will watch this episode and
 This short paper is due through the Turnitin module on the course website *before* **Nov. 23, 9 a.m**. [Here is the rubric](http://posc1020.svmiller.com/short-paper/short-paper-rubric.pdf) for the assignment, which also provides further instructions for the paper's frame and formatting.
 
 **The video is available on the Canvas module for the class.**  Check the "Syllabus" tab. The DVD is also [available at Clemson's library](http://libcat.clemson.edu/search~S1/?searchtype=c&searcharg=HD87.C66+2002) if the student wants a DVD copy in lieu of a streaming copy.
+
+-->
 
 
 ## Additional Course Materials
