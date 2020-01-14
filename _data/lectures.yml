@@ -3,10 +3,10 @@
   dirname: welcome
   tldr: "This lecture discusses the syllabus and outlines course expectations for the rest of the semester."
  
-# - title: "What Shaped Our World? A Historical Introduction"
-#   filename: historical-intro
-#   dirname: historical-intro
-#   tldr: "Here's a history of the world, from 1492 to the present, summarizing major themes in international politics (and war) along the way."
+- title: "What Shaped Our World? A Historical Introduction"
+  filename: historical-intro
+  dirname: historical-intro
+  tldr: "Here's a history of the world, from 1492 to the present, summarizing major themes in international politics (and war) along the way."
  
 # - title: "Understanding Interests, Interactions, and Institutions"
 #   filename: iii
