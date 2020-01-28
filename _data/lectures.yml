@@ -23,10 +23,10 @@
   dirname: war-2
   tldr: "Wars happens (i.e. bargaining breaks down) because of uncertainty, issue indivisibility, and commitment problems."
  
-# - title: "Domestic Politics and War"
-#   filename: domestic-politics-1
-#   dirname: domestic-politics-1
-#   tldr: "Leader incentives and institutions may explain bargaining failure (i.e. war) even as war is something that makes everyone worse off."
+- title: "Domestic Politics and War"
+  filename: domestic-politics-1
+  dirname: domestic-politics-1
+  tldr: "Leader incentives and institutions may explain bargaining failure (i.e. war) even as war is something that makes everyone worse off."
 
 # - title: "Alliances and Bargaining"
 #   filename: alliance-bargaining
