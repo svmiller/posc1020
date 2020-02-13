@@ -137,7 +137,8 @@ Ideos %>%
 Ideos %>%
   filter(Category %in% c("Left-Wing", "Right-Wing")) %>%
   ggplot(.,aes(year,num, color=Category, linetype=Category)) + 
-  theme_steve_web() + geom_line(size=1.1) +
+  theme_steve_web() +
+  geom_line(size=1.1) +
   scale_x_continuous(breaks = seq(1970, 2015, by = 5)) +
   scale_color_manual(values = pal("five38")) +
   xlab("Year") + ylab("Number of U.S. Terror Attacks by Ideologues") +
@@ -153,7 +154,7 @@ Ideos %>%
 
 Ideos %>%
   filter(Category %in% c("Christian", "Islamic")) %>%
-  ggplot(.,aes(year,num, color=Category, linetype=Category)) + 
+  ggplot(.,aes(year,num, color=Category, linetype=Category, fill=Category)) + 
   theme_steve_web() + geom_line(size=1.1) +
   scale_x_continuous(breaks = seq(1970, 2015, by = 5)) +
   scale_color_manual(values = pal("five38")) +
@@ -421,24 +422,37 @@ asn_stats %>%
 ###
 
 ```{r palestinian-terrorist-strategies-gtd-1970-2015, echo=F, eval=T, message=F, error=F, warning=F, fig.width = 14, fig.height = 8.5}
+tribble(~`Attack Type`, ~styear, ~endyear,
+        "Hijacking", 1970, 1985,
+        "Bombing/Explosion", 1970, 1985) %>%
+    rowwise() %>%
+  mutate(iyear = list(seq(styear, endyear))) %>%
+  unnest() %>% select(`Attack Type`, iyear) -> typeyears
+
 GTD %>% 
-  filter(grepl("Pal|Jordan", gname)) %>%
+  filter(grepl("Pal|Jordan", gname)) %>% 
   filter(attacktype1 == 4 | attacktype1 == 3) %>%
   group_by(iyear, attacktype1) %>%
   summarize(n = n()) %>%
   mutate(`Attack Type` = ifelse(attacktype1 == 4, "Hijacking", "Bombing/Explosion")) %>%
-  ggplot(.,aes(iyear, n, group=`Attack Type`, color=`Attack Type`)) + 
-  geom_line(size=1.1) + theme_steve_web() +
+  left_join(typeyears, .) %>%
+  mutate(n = ifelse(is.na(n), 0, n)) %>%
+  ggplot(.,aes(iyear, n, group=`Attack Type`, color=`Attack Type`,  fill=`Attack Type`)) + 
+    theme_steve_web() +
+    geom_bar(stat="identity",position="dodge", alpha=0.8, color="black") +
+  geom_text(aes(label=n), vjust=-.5, colour="black", family="Open Sans",
+            position=position_dodge(.9), size=4) +
+  #geom_line(size=1.1) + theme_steve_web() +
   scale_y_continuous(breaks = seq(0, 150, by=25)) +
-  scale_x_continuous(breaks = seq(1970, 2020, by = 5)) +
-  xlab("Year") + ylab("Number of Terror Incidents in a Year") +
+  scale_x_continuous(breaks = seq(1970, 1985, by = 1)) +
+  xlab("") + ylab("Number of Terror Incidents in a Year") +
   labs(title = "Palestinian Terrorists Weren't Deterred by the Hague Convention. They Changed Strategies.",
        subtitle = "Rational decisions are rational but need not solve strategic situations.",
-       caption = "Data: Global Terrorism Database. Note: GTD has missing data for all of 1993. It was easier to omit 1993 for the sake of this illustration.") +
+       caption = "Data: Global Terrorism Database. Note: query starts with groups with 'Pal*' or 'Jordan' in their name. This is not exhaustive, but there are no false positives here either.") +
   annotate("text", x = 1970, y = 20, 
            label = "Hague\nConvention\n(1970)",
            family = "Open Sans") +
-  annotate("text", x = 1975, y = 20,
+  annotate("text", x = 1973, y = 20,
            label = "Metal detectors\nappear\n(1973)",
            family = "Open Sans")
 ```
