@@ -46,47 +46,46 @@ library(blscrapeR)
 
 # Alumfutures <- readxl::read_xlsx("~/Dropbox/teaching/posc1020/trade-2/aluminum-futures.xlsx")  %>% mutate(date = mdy(date))
 
-DJI1 <- readxl::read_xlsx("~/Dropbox/data/measuring-worth/DJA.xlsx", sheet=1) %>%
-  mutate(Date = as_date(Date))
+# DJI1 <- readxl::read_xlsx("~/Dropbox/data/measuring-worth/DJA.xlsx", sheet=1) %>%
+#   mutate(Date = as_date(Date))
 
 
 library(quantmod)
 
 getSymbols("WHR", src="yahoo",
-           from= as.Date("2018-01-01"),
-           to = as.Date("2018-12-31"))
+           from= as.Date("2017-01-01"),
+           to = as.Date("2019-12-31"))
 
-getSymbols("STEEL", src="yahoo",
-           from= as.Date("2018-01-01"),
-           to = as.Date("2018-12-31"))
-
-getSymbols("^DJI", src="yahoo",
-           from= as.Date("2018-01-01"),
-           to = as.Date("2018-12-31"))
+# getSymbols("STEEL", src="yahoo",
+#            from= as.Date("2017-01-01"),
+#            to = as.Date("2019-12-31"))
+# 
+# getSymbols("^DJI", src="yahoo",
+#            from= as.Date("2017-01-01"),
+#            to = as.Date("2019-12-31"))
 
 WHR %>% data.frame %>%
   rownames_to_column() %>% tbl_df() %>%
   mutate(date = lubridate::as_date(rowname),
          year = lubridate::year(date),
-         close = WHR.Close) %>%
-  filter(year != 2019) -> WHR
+         close = WHR.Close) -> WHR
 
-DJI %>% data.frame %>%
-  rownames_to_column() %>% tbl_df() %>%
-  mutate(date = lubridate::as_date(rowname),
-         year = lubridate::year(date),
-         close = DJI.Close) %>%
-  mutate(Category = "Dow Jones Industrial Average") %>%
-  select(date, Category, close) -> DJIY
+# DJI %>% data.frame %>%
+#   rownames_to_column() %>% tbl_df() %>%
+#   mutate(date = lubridate::as_date(rowname),
+#          year = lubridate::year(date),
+#          close = DJI.Close) %>%
+#   mutate(Category = "Dow Jones Industrial Average") %>%
+#   select(date, Category, close) -> DJIY
 
 
-STEEL %>% data.frame %>%
-  rownames_to_column() %>% tbl_df() %>%
-  mutate(date = lubridate::as_date(rowname),
-         year = lubridate::year(date),
-         close = STEEL.Close) %>%
-  mutate(Category = "NYSE Arca Steel Index") %>%
-  select(date, Category, close) -> Arca
+# STEEL %>% data.frame %>%
+#   rownames_to_column() %>% tbl_df() %>%
+#   mutate(date = lubridate::as_date(rowname),
+#          year = lubridate::year(date),
+#          close = STEEL.Close) %>%
+#   mutate(Category = "NYSE Arca Steel Index") %>%
+#   select(date, Category, close) -> Arca
 
 
 ```
@@ -123,7 +122,7 @@ bind_rows(Steel, Alum) %>%
   geom_line(size=1.1) +
   scale_color_manual(values = pal("five38")) +
    scale_x_date(date_labels = "%Y", 
-                breaks = seq(as.Date("1972-01-01"), as.Date("2018-12-31"), by="2 years")) +
+                breaks = seq(as.Date("1972-01-01"), as.Date("2020-12-31"), by="2 years")) +
   ylab("Industrial Production (Index: 2012 = 100)") +
   xlab("Date") +
   annotate("rect", xmin=as.Date("1973-11-01"), xmax=as.Date("1975-01-01"),
@@ -243,16 +242,17 @@ bind_rows(Manemp, Aheman) %>%
 
 aluminum_premiums %>%
   ungroup() %>%
-  filter(group == "United States" & date == "2018-03-01") %>%
-  distinct(price) -> tariff_announce
+  filter(group == "United States") %>%
+  slice(1)   %>%
+  distinct(price) -> startingprice
 
 aluminum_premiums %>%
   ungroup() %>%
   filter(group == "United States") %>%
-  arrange(-price) %>% distinct(price) %>%
-  slice(1) -> max_price
+  slice(n()) %>%
+  distinct(price) -> last_price
 
-paste0(mround2((max_price - tariff_announce)/tariff_announce),"%") -> perc_increase
+paste0(mround2((last_price - startingprice)/startingprice),"%") -> perc_increase
 
 aluminum_premiums %>%
   filter(group == "United States") %>%
@@ -264,18 +264,18 @@ aluminum_premiums %>%
   scale_x_date(date_breaks = "1 month",
 #               date_minor_breaks = "1 week", 
                date_labels = "%b\n%Y") +
-  geom_vline(xintercept = as.Date("2018-03-01"),
-             linetype = "dashed") +
+  # geom_vline(xintercept = as.Date("2018-03-01"),
+  #            linetype = "dashed") +
   ylab("Aluminum premiums in nominal USD/MT") +
   xlab("") +
-  annotate("text",
-           x = as.Date("2018-01-25"), y = 300, 
-           size = 3.5,
-           hjust = "center",
-           label = "Trump complains\nabout 'decimation'\nof aluminum;\nannounces 10% tariff\n(March 1, 2018)",
-           family="Open Sans") +
+  # annotate("text",
+  #          x = as.Date("2018-01-25"), y = 300, 
+  #          size = 3.5,
+  #          hjust = "center",
+  #          label = "Trump complains\nabout 'decimation'\nof aluminum;\nannounces 10% tariff\n(March 1, 2018)",
+  #          family="Open Sans") +
   labs(caption = "Data: LME. LME aluminum premiums (monthly contracts going out to 15 months) work alongside LME aluminum contracts to allow market participants to hedge the all-in price and physically deliver or receive\npremium aluminium warrants in non-queued LME premium warehouses. The data may not be perfect for this exercise but they're available.",
-       title = paste0("LME Aluminum Premiums in the U.S. Increased ", perc_increase, " after Trump's March 2018 Tariff Announcement"),
+       title = paste0("LME Aluminum Premiums in the U.S. Increased ", perc_increase, " from the start of January"),
        subtitle = "Tariffs haven't helped the industry as much as they've created a supply shock that's making aluminum more expensive.")
 
 
@@ -286,13 +286,13 @@ aluminum_premiums %>%
 
 ```{r cpi-laundry-equipment-2016-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 df1 <- bls_api(c("CUUR0000SS30021"),
-               startyear = 1978, endyear = 2018, Sys.getenv("BLS_KEY"))
+               startyear = 1978, endyear = 2019, Sys.getenv("BLS_KEY"))
 
 df2 <- bls_api(c("CUUR0000SS30021"),
-               startyear = 1998, endyear = 2018, Sys.getenv("BLS_KEY"))
+               startyear = 1998, endyear = 2019, Sys.getenv("BLS_KEY"))
 
 df3 <- bls_api(c("CUUR0000SS30021"),
-               startyear = 2018, endyear = 2018, Sys.getenv("BLS_KEY"))
+               startyear = 2010, endyear = 2019, Sys.getenv("BLS_KEY"))
 
 bind_rows(df1, df2, df3) %>%
   dateCast() %>% arrange(date) %>% distinct(date, .keep_all=TRUE) %>%
@@ -333,16 +333,16 @@ bind_rows(df1, df2, df3) %>%
 
 ```{r march-2018-dow-jones, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-DJI1 %>%
-  mutate(Month = lubridate::month(Date),
-         Year = year(Date)) %>%
-  filter(Month == 3 & Year == 2018) %>%
-  ggplot(.,aes(Date, DJIA)) + theme_steve_web() +
+DJIA %>%
+  mutate(month = lubridate::month(date),
+         year = year(date)) %>%
+  filter(month == 3 & year == 2018) %>%
+  ggplot(.,aes(date, djia)) + theme_steve_web() +
   geom_line(size=1.1) +
   ylab("Dow Jones Industrial Average at Daily Close") +
   scale_y_continuous(labels = scales::comma) +
   xlab("") +
-  geom_ribbon(aes(ymin=-Inf, ymax=DJIA),
+  geom_ribbon(aes(ymin=-Inf, ymax=djia),
               alpha=0.3, fill="blue") +
   scale_x_date(date_breaks = "2 days",
 #               date_minor_breaks = "1 week", 
@@ -357,9 +357,10 @@ DJI1 %>%
 
 ###
 
-```{r whirlpool-stock-market-data-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r whirlpool-stock-market-data, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
 WHR %>%
+  filter(year == 2018) %>%
   mutate(first = first(close),
          last = last(close),
          diff = abs(((last - first)/first)*100)) %>%
@@ -368,6 +369,7 @@ WHR %>%
 whrdiff =round(whr_yd[1,1],2)
 
 WHR %>%
+  filter(year == 2018) %>%
   mutate(whrdiff = round(whr_yd[1,1],2)) %>%
   select(date, close, whrdiff) %>%
   ggplot(.,aes(date, close)) +
@@ -404,21 +406,25 @@ WHR %>%
 
 ###
 
-```{r steel-stock-market-data-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r steel-stock-market-data-2017-present, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 ###
 
 Arca %>%
-  bind_rows(., DJIY) %>%
+  mutate(Category = "NYSE Arca Steel Index") %>%
+  rename(value = close) %>%
+  bind_rows(., DJIA %>% rename(value = djia) %>% mutate(Category = "Dow Jones Industrial Average") %>% filter(year(date) >= 2017)) %>%
+  select(date, value, Category) %>%
   group_by(Category) %>%
-  mutate(diff = close - lag(close,1),
-         percdiff = round(diff/lag(close, 1)*100, 1),
+    mutate(diff = value - lag(value,1),
+         percdiff = round(diff/lag(value, 1)*100, 1),
          lab = paste0(percdiff,"%"),
-         first = first(close),
-         index = 100*(close/first)) %>%
+         first = first(value),
+         index = 100*(value/first)) %>%
+  filter(year(date) != 2020) %>%
   ggplot(.,aes(date, index, color=Category, linetype=Category)) + 
     theme_steve_web() + geom_line(size=1.1) +
-    scale_x_date(date_breaks = "1 month",
-#               date_minor_breaks = "1 week", 
+    scale_x_date(date_breaks = "1 year",
+               date_minor_breaks = "1 month", 
                date_labels = "%b\n%Y") +
   geom_vline(xintercept = as.Date("2018-03-01"),
              linetype = "dashed") +
@@ -429,19 +435,56 @@ Arca %>%
     geom_vline(xintercept = as.Date("2018-08-07"),
              linetype = "dashed") +
   annotate("text",
-           x = as.Date("2018-03-05"), y = 82.1,
+           x = as.Date("2017-01-03"), y = 130,
            size = 2.9,
            hjust = "left",
            label = "Jan. 22, 2018: Trump announces tariffs\non washing machines.\n\nMar. 1, 2018: Trump announces\naluminum/steel tariffs.\n\nJun. 15, 2018: USTR finalizes first\ntranche of China tariffs.\n\nAug. 7, 2018: USTR finalizes second\ntranche of China tariffs.",
            family="Open Sans") +
   xlab("") +
 #  ylab("Percentage Difference in Closing Value from Previous Day of Trading") +
-  ylab("Index = (Jan. 1, 2018 = 100)") +
+  ylab("Index = (Jan. 1, 2017 = 100)") +
   scale_color_manual(values=pal("five38")) +
 #  geom_bar(stat="identity", position = "dodge") +
   labs(title = "The Whole Steel Industry Got Crunched in 2018 Because of Trump's Tariffs",
        subtitle = "Bad days for the market were even worse for steel, which lost 24.5% of its value from the beginning to the end of 2018.",
-       caption = "Data: Yahoo Finance")
+       caption = "Data: Yahoo Finance, investing.com")
+
+# 
+# Arca %>%
+#   bind_rows(., DJIA %>% filter(year(date) >= 2018)) %>%
+#   group_by(Category) %>%
+#   mutate(diff = close - lag(close,1),
+#          percdiff = round(diff/lag(close, 1)*100, 1),
+#          lab = paste0(percdiff,"%"),
+#          first = first(close),
+#          index = 100*(close/first)) %>%
+#   ggplot(.,aes(date, index, color=Category, linetype=Category)) + 
+#     theme_steve_web() + geom_line(size=1.1) +
+#     scale_x_date(date_breaks = "1 month",
+# #               date_minor_breaks = "1 week", 
+#                date_labels = "%b\n%Y") +
+#   geom_vline(xintercept = as.Date("2018-03-01"),
+#              linetype = "dashed") +
+#   geom_vline(xintercept = as.Date("2018-01-22"),
+#              linetype = "dashed") +
+#     geom_vline(xintercept = as.Date("2018-06-15"),
+#              linetype = "dashed") +
+#     geom_vline(xintercept = as.Date("2018-08-07"),
+#              linetype = "dashed") +
+#   annotate("text",
+#            x = as.Date("2018-03-05"), y = 82.1,
+#            size = 2.9,
+#            hjust = "left",
+#            label = "Jan. 22, 2018: Trump announces tariffs\non washing machines.\n\nMar. 1, 2018: Trump announces\naluminum/steel tariffs.\n\nJun. 15, 2018: USTR finalizes first\ntranche of China tariffs.\n\nAug. 7, 2018: USTR finalizes second\ntranche of China tariffs.",
+#            family="Open Sans") +
+#   xlab("") +
+# #  ylab("Percentage Difference in Closing Value from Previous Day of Trading") +
+#   ylab("Index = (Jan. 1, 2018 = 100)") +
+#   scale_color_manual(values=pal("five38")) +
+# #  geom_bar(stat="identity", position = "dodge") +
+#   labs(title = "The Whole Steel Industry Got Crunched in 2018 Because of Trump's Tariffs",
+#        subtitle = "Bad days for the market were even worse for steel, which lost 24.5% of its value from the beginning to the end of 2018.",
+#        caption = "Data: Yahoo Finance")
 ```
 
 <!-- ![FSDKFJDS:FJKLSD:F:FJSD](stock-market-tank.png) -->
