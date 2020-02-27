@@ -189,6 +189,8 @@ bind_rows(Manemp, Aheman) %>%
   geom_line(size=1.1) +
   scale_color_manual(values = pal("five38")) +
   ylab("Index (2012 average=100)") +
+  scale_x_date(breaks = "1 year",
+               date_labels = "%Y") +
   xlab("") +
   annotate("text",
            x = as.Date("2016-12-25"), y = 112, 
@@ -275,7 +277,7 @@ aluminum_premiums %>%
   #          label = "Trump complains\nabout 'decimation'\nof aluminum;\nannounces 10% tariff\n(March 1, 2018)",
   #          family="Open Sans") +
   labs(caption = "Data: LME. LME aluminum premiums (monthly contracts going out to 15 months) work alongside LME aluminum contracts to allow market participants to hedge the all-in price and physically deliver or receive\npremium aluminium warrants in non-queued LME premium warehouses. The data may not be perfect for this exercise but they're available.",
-       title = paste0("LME Aluminum Premiums in the U.S. Increased ", perc_increase, " from the start of January"),
+       title = paste0("LME Aluminum Premiums in the U.S. Increased ", perc_increase, " from the Start of 2018"),
        subtitle = "Tariffs haven't helped the industry as much as they've created a supply shock that's making aluminum more expensive.")
 
 
