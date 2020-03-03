@@ -82,14 +82,14 @@ This was a disaster in the U.S. and worse in the Eurozone.
 
 ```{r financial-crisis-gdp-growth, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-WDI(country=c("GR", "US", "IE", "PT", "ES"), indicator = "NY.GDP.PCAP.KD.ZG", start=2000, end=2017) %>%
+WDI(country=c("GR", "US", "IE", "PT", "ES"), indicator = "NY.GDP.PCAP.KD.ZG", start=2000, end=2019) %>%
   rename(gdpgrowth = "NY.GDP.PCAP.KD.ZG", Country = country) %>%
   ggplot(.,aes(year, gdpgrowth,linetype = Country, group=Country, color=Country)) + 
   theme_steve_web() +
   scale_color_manual(values = pal("google")) +
   geom_line(size=1.5) +
   geom_hline(yintercept = 0, linetype="dashed") +
-  scale_x_continuous(breaks = seq(2000, 2016, by =2)) +
+  scale_x_continuous(breaks = seq(2000, 2018, by =2)) +
   xlab("Year") + ylab("GDP Growth (in Annual %)") +
   labs(caption = "Data: World Bank National Accounts Data",
        title = "The 2007 Financial Crisis Rocked GDP Growth in These Five Prominent Countries",
@@ -147,9 +147,8 @@ Simple: profit, and a higher rate of return.
 - Ability to invest in resources not available in home/capital-rich country.
 - Certainly differences in business environment matter too.
 
-###
 
-```{r fdi-high-lowmid-income, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r fdi-high-lowmid-income, echo=F, eval=F, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
 WDI(country=c("XD", "XO"), indicator = "BX.KLT.DINV.CD.WD", start=1970, end=2018) %>%
   rename(fdi = "BX.KLT.DINV.CD.WD", Country = country) %>%
@@ -157,13 +156,38 @@ WDI(country=c("XD", "XO"), indicator = "BX.KLT.DINV.CD.WD", start=1970, end=2018
   ggplot(.,aes(year, fdi,linetype = Country, group=Country, color=Country)) + theme_steve_web() +
   geom_line(size=1.5) +
   scale_color_manual(values = pal("google")) +
-  scale_x_continuous(breaks = seq(1970, 2015, by =5)) +
+  scale_x_continuous(breaks = seq(1970, 2020, by =5)) +
   xlab("Year") + ylab("FDI (in Trillions of Current USD)") +
   labs(caption = "Data: IMF Balance of Payments Database via World Bank API",
        title = "FDI in Developing Countries Gets Our Attention but Most FDI is Between Rich Countries",
-       subtitle = "FDI everywhere took a hit after the 2007 financial crisis for obvious reasons.")
+       subtitle = "FDI everywhere took a hit after the 2007 financial crisis for obvious reasons, and it's taking a hit among rich countries more recently due to changes in U.S. economic policy.")
 
 ```
+
+###
+
+```{r fdi-bonds-equity-high-lowmid-income, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+WDI(country=c("XD", "XO"), indicator =c("BX.KLT.DINV.CD.WD","BX.PEF.TOTL.CD.WD"), start=1970, end=2018) %>%
+  rename(fdi = "BX.KLT.DINV.CD.WD",
+         equity = "BX.PEF.TOTL.CD.WD",
+         Country = country) %>% tbl_df() %>%
+  mutate(fdi = fdi/1000000000000,
+        equity = equity/1000000000000) %>% 
+  select(Country, year, fdi, equity) %>%
+  gather(var, value, 3:4) %>%
+  mutate(var = ifelse(var == "fdi", "Foreign Direct Investment", "Equity")) %>%
+  ggplot(.,aes(year, value,linetype = Country, group=Country, color=Country)) + theme_steve_web() +
+  geom_line(size=1.5) +
+  facet_wrap(~var) +
+  scale_color_manual(values = pal("google")) +
+  scale_x_continuous(breaks = seq(1970, 2020, by =5)) +
+  xlab("Year") + ylab("Value in Trillions of Current USD") +
+  labs(caption = "Data: IMF Balance of Payments Database via World Bank API",
+       title = "FDI and Equity to Developing Countries Get Our Attention but Most FDI and equity are Between Rich Countries",
+       subtitle = "FDI and equity everywhere took a hit after the 2007 financial crisis for obvious reasons, and it's taking a hit among rich countries more recently due to changes in U.S. economic policy.")
+
+```
+
 
 ### The Risks of Foreign Investment
 
@@ -241,7 +265,7 @@ Concessional lending is less controversial than private FDI, but debt is still d
 
 MNCs constitute one of the major institutional players in international finance. Types of FDI:
 
-- Green field: build a new factory from the ground up (e.g. Michelin in Greenville)
+- Greenfield: build a new factory from the ground up (e.g. Michelin in Greenville)
 - Mergers and acquisitions (e.g. Anheuser-Busch InBev)
 - Joint ventures (i.e. shared ownership)
 
