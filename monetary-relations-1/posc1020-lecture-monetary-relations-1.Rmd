@@ -190,10 +190,10 @@ fredr(series_id = "FPCPITOTLZGARG",
          cpi = value/100,
          lab = paste0(round(value, 1), "%")) %>% tbl_df() %>%
   ggplot(.,aes(year(date), cpi)) + theme_steve_web() +
+    geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
   geom_text(aes(label=lab), vjust=-.5, colour="black",
             position=position_dodge(.9), size=3.5,
             family = "Open Sans") +
-  geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
   scale_x_continuous(breaks = seq(1996, 2014, by =2)) +
   xlab("") + ylab("Consumer Price Index (Annual %)") +
   labs(caption = "Data: IMF via Federal Reserve Bank of St. Louis API.",
@@ -307,7 +307,7 @@ fredr(series_id = "EXUSEU",
   scale_x_date(date_breaks = "2 years", date_minor_breaks = "1 year", date_labels = "%Y") +
   labs(caption = "Data: Board of Governors of the Federal Reserve System (US). Shaded areas indicate U.S. recessions.",
        title = "The Euro is Usually Worth More Than the Dollar",
-       subtitle = "A dollar and 16 cents bought one Euro to open 1999 and, despite obvious fluctuation, that's about the exchange rate now.")
+       subtitle = "A dollar and 18 cents bought one Euro to open 1999 and, despite obvious fluctuation, that's about the exchange rate now.")
 
 ```
 
@@ -401,7 +401,7 @@ WDI(country=c("CN", "US"), indicator = "PX.REX.REER", start=1980, end=year(today
   ggplot(.,aes(year, rer,linetype = Country, group=Country, color=Country)) +
   theme_steve_web() +
   geom_line(size=1.5) +
-  scale_x_continuous(breaks = seq(1980, 2015, by =5)) +
+  scale_x_continuous(breaks = seq(1980, 2020, by =5)) +
   scale_color_brewer(palette="Set1") +
   # scale_color_manual(values = pal("dataroots")) +
   xlab("") + ylab("Real Effective Exchange Rate Index") +
