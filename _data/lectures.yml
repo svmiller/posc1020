@@ -74,27 +74,27 @@
   dirname: monetary-relations-2
   tldr: "A discussion of the major IMRs the world has known and some major currency crises, like 'Nixon Shock' and 'Black Wednesday.'"
  
-# - title: "Why Are Some Countries Richer Than Others?"
-#   filename: development-1
-#   dirname: development-1
-#   tldr: "There are broad correlates for development patterns and rich countries bear some responsibility for why poor countries are poor."
+- title: "Why Are Some Countries Richer Than Others?"
+  filename: development-1
+  dirname: development-1
+  tldr: "There are broad correlates for development patterns and rich countries bear some responsibility for why poor countries are poor."
 
-# - title: "Development Policies and Development Politics"
-#   filename: development-2
-#   dirname: development-2
-#   tldr: "Less-developed countries have various development policies (e.g. ISI, EOI, commodity cartels), with varying levels of success."
+- title: "Development Policies and Development Politics"
+  filename: development-2
+  dirname: development-2
+  tldr: "Less-developed countries have various development policies (e.g. ISI, EOI, commodity cartels), with varying levels of success."
 
-# - title: "The International Politics of Human Rights"
-#   filename: human-rights-1
-#   dirname: human-rights-1
-#   tldr: "Human rights have generally improved over time even as a function of a post-WWII international interest in this issue."
+- title: "The International Politics of Human Rights"
+  filename: human-rights-1
+  dirname: human-rights-1
+  tldr: "Human rights have generally improved over time even as a function of a post-WWII international interest in this issue."
 
-# - title: "The Environment as Collective Action Problem"
-#   filename: environment-1
-#   dirname: environment-1
-#   tldr: "The environment is a public good and a common, which helps explain why cooperating on it is so difficult."
+- title: "The Environment as Collective Action Problem"
+  filename: environment-1
+  dirname: environment-1
+  tldr: "The environment is a public good and a common, which helps explain why cooperating on it is so difficult."
 
-# - title: "The Future of International Politics"
-#   filename: future-1
-#   dirname: future-1
-#   tldr: "What does the future of international politics hold? Concerns for WMD proliferation, the ''rise of China'', and globalization's side effects."
+- title: "The Future of International Politics"
+  filename: future-1
+  dirname: future-1
+  tldr: "What does the future of international politics hold? Concerns for WMD proliferation, the ''rise of China'', and globalization's side effects."
