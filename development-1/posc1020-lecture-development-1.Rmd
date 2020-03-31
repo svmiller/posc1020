@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r loadstuff, include=FALSE}
-
+ 
 
 library(WDI)
 library(tidyverse)
@@ -54,7 +54,7 @@ Colhist <- read_csv("~/Dropbox/data/icow/ICOW Colonial History 1.0/coldata100.cs
 
 ```{r gddpc-zambia-rok-1960-1975, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 WDI(country = c("ZM", "KR"), indicator = c("NY.GDP.PCAP.CD"),
-    start = 1960, end = 2016, extra = FALSE, cache = NULL) %>%
+    start = 1960, end = 2019, extra = FALSE, cache = NULL) %>%
   rename(gdppc = `NY.GDP.PCAP.CD`)  %>%
   mutate(Country = country) %>%
   filter(year <= 1975) %>%
@@ -62,7 +62,7 @@ WDI(country = c("ZM", "KR"), indicator = c("NY.GDP.PCAP.CD"),
   geom_line(size=1.1) + 
   scale_color_brewer(palette="Set1") +
   labs(caption = "Data: World Bank",
-       title = "GDP per Capita for Zambia (Rhodesia) and South Korea, 1960-1975",
+       title = "GDP per Capita for Zambia (Northern Rhodesia) and South Korea, 1960-1975",
        subtitle = "Zambia (Rhodesia) was much better endowed and had more growth potential in the 1960s.") +
   scale_x_continuous(breaks = seq(1960, 1975, by = 1)) +
   xlab("Year") + ylab("GDP per Capita")
@@ -79,9 +79,9 @@ WDI(country = c("ZM", "KR"), indicator = c("NY.GDP.PCAP.CD"),
   geom_line(size=1.1) + 
   scale_color_brewer(palette="Set1") +
   labs(caption = "Data: World Bank",
-       title = "GDP per Capita for Zambia (Rhodesia) and South Korea, 1960-2016",
+       title = "GDP per Capita for Zambia (Northern Rhodesia) and South Korea, 1960 to the Present",
        subtitle = "South Korea's development far exceeded what we would've expected in the 1960s.") +
-  scale_x_continuous(breaks = seq(1960, 2015, by = 5)) +
+  scale_x_continuous(breaks = seq(1960, 2020, by = 5)) +
   scale_y_continuous(labels = scales::comma) +
   ylab("GDP per Capita") + xlab("Year")
 ```
@@ -138,7 +138,7 @@ Intuition behind the "resource curse":
 - States rich in primary commodities tend to generate most income from foreign receipts.
 - This decreases incentive to innovate to improve productive capacities.
 
-Recall our previous example of Rhodesia/Zimbabwe and South Korea.
+Recall our previous example of Northern Rhodesia/Zimbabwe and South Korea.
 
 ###
 
@@ -154,14 +154,14 @@ WDI(country = "all", indicator = c("NY.GDP.PCAP.CD",
   filter(iso2c != "1A" & iso2c != "ZQ") %>%
   head(10) %>%
   mutate(oilround = mround2(oilrent/100),
-         mediangdppc = median(gdppc),
-         mediangdpb = median(gdp)/1000000000) -> top10_oilstates
+         mediangdppc = median(gdppc, na.rm=T),
+         mediangdpb = median(gdp, na.rm=T)/1000000000) -> top10_oilstates
 
 # mediangdppc <- prettyNum(round(median(top10_oilstates$gdppc), 2),",")
-mediangdppc <- median(top10_oilstates$gdppc)
-mediangdpb = round(median(top10_oilstates$gdp)/1000000000,2)
-maxgdppc = max(top10_oilstates$gdppc)
-maxgdp = round(max(top10_oilstates$gdp)/1000000000, 2)
+mediangdppc <- median(top10_oilstates$gdppc, na.rm=T)
+mediangdpb = round(median(top10_oilstates$gdp, na.rm=T)/1000000000,2)
+maxgdppc = max(top10_oilstates$gdppc, na.rm=T)
+maxgdp = round(max(top10_oilstates$gdp, na.rm=T)/1000000000, 2)
 
 scgdpb = 183873000000/1000000000 # https://www.deptofnumbers.com/gdp/south-carolina/
 scgdppc = 37063
