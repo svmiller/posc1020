@@ -10,6 +10,10 @@ permalink: /course-materials/
 
 Frieden, Jeffry A, David A. Lake and Kenneth A. Schultz (2016). [*World Politics: Interests, Interactions, Institutions*](https://www.amazon.com/World-Politics-Interests-Interactions-Institutions/dp/0393938093). 3rd Edition. New York, NY: W.W. Norton and Company.
 
+### A Comment on the Required Reading
+
+For what it is worth, I intend to teach around this book this semester. It is surprisingly difficult for instructors to teach an introductory class to an entire subfield in political science without a textbook that can easily synthesize volumes of information in a manner comprehensible to a student audience for whom this might be their first college class (let alone their first political science class). I assign this particular textbook because I think it the best on the market. If it did not exist, I would feel compelled to write it myself. However, I understand the nature of the pandemic is leading students to evaluate how to cut important costs. So, I intend to teach this class with some grace around actually obtaining the book itself. Students should explore their options on [eBay](https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313&_nkw=frieden+world+politics&_sacat=0) and [Amazon](https://www.amazon.com/s?k=frieden+world+politics&ref=nb_sb_noss_2). For what it is worth, I assigned the third edition of the textbook thinking it would be cheaper to obtain secondhand than the more current fourth edition. Yet, I have seen used versions of the fourth edition for purchase that are cheaper than the third edition. If it is cheaper, students should consider the fourth edition. The structure of the book is almost identical across editions even as the fourth edition is more current. Students should be able to follow along just fine with it.
+
 <!--
 
 ## Short Paper Instructions
