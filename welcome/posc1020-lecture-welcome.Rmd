@@ -54,37 +54,11 @@ library(tidyverse)
 library(stevemisc)
 library(ggpmisc)
 library(anonymizer)
-library(ggcal)
+library(lubridate)
 library(stringr)
 library(kfigr)
 library(broom)
 
-mydate <- seq(mon+2, lastday, by="1 day")
-mydate <- c(mydate, finalexam)
-
-
-remove_dates <- c(as.Date("2020-03-12"),
-                  seq(as.Date("2020-03-16"), as.Date("2020-03-20"), by = "1 day"))
-
-mydate <- mydate[! mydate %in% remove_dates]
-
-myfills <- ifelse(format(mydate, "%w") %in% c(0,1, 3, 5,6), "Other Day" ,"Class Day")
-
-# Fill in exams
-
-exam_dates <- c(as.Date("2020-01-30"), 
-                as.Date("2020-02-20"),
-                as.Date("2020-04-02"),
-                finalexam)
-myfills <- ifelse(mydate %in% exam_dates, "Exam/Quiz" ,myfills)
-
-# Fill in paper due dates
-
-# myfills <- ifelse(mydate %in% c(as.Date("2019-11-23")), "Paper Due (Turnitin)", myfills)
-
-give_me_days <- seq(as.Date("2020-01-01"),
-                    as.Date("2020-04-30"), by="1 day")
-give_me_days <- as.numeric(str_sub(give_me_days, start= -2))
 
 
 
@@ -315,18 +289,17 @@ bib["friedenetal2016wp"]
 ### Grading Policy
 
 | **Assignment** | **(Due) Date** | **Percent of Grade** |
-|:-----------|:----------:|:----------------:|
-| Attendance/Participation | | 10% |
-| Map Quiz | Jan. 30 | 10% | 
-| Midterm 1         | Feb. 20 | 20% |
-| Midterm 2 | April 2 | 25% |
-| Final | April 30, 8-10:30 a.m. | 30% |
+|:---------------|:--------------:|:--------------------:|
+| Discussion | Periodically | 15% |
+| Midterm 1 | *before* Oct 1. 9:30 a.m. | 20% |
+| Midterm 2 | *before* Nov. 5, 9:30 a.m. | 30% |
+| Final Exam | *before* Dec. 11, 9:30 p.m. | 35% |
 
-Check syllabus for more information about the map quiz.
+Check syllabus for more information about the discussion requirements.
 
 ### Attendance/Participation Policy
 
-```{r attenddata, include=FALSE}
+```{r attenddata, include=FALSE, echo=T, results="hide"}
 read_csv("~/Dropbox/teaching/attendance-grades-relationship.csv") %>%
   select(name:class,-id) %>%
   mutate(name = anonymize(name, .seed = 8675309, .algo = "crc32"),
@@ -355,18 +328,31 @@ M2df <- tidy(M2)
 # library(ggplot2)
 ```
 
-Effectively mandatory: I deduct all participation points after five unexcused absences.
+I'd otherwise go on a big spiel here about the importance of attending class, but... lol...
 
-- Don't ask me how many you missed. You'll know more than me.
-- Each class you miss coincides with an estimated `r round(M1$coefficients[2], 3)*5` points in your overall grade.
+\bigskip
 
-Be prepared to answer questions. I might assign quizzes.
+For this semester:
 
-- Quizzes will be graded/weighted against your participation grade for the semester.
+- Attendance is assumed not required.
+- Please make it a point to attend (online) lectures.
+
+
+
+<!-- Effectively mandatory: I deduct all participation points after five unexcused absences. -->
+
+<!-- - Don't ask me how many you missed. You'll know more than me. -->
+<!-- - Each class you miss coincides with an estimated `r round(M1$coefficients[2], 3)*5` points in your overall grade. -->
+
+<!-- Be prepared to answer questions. I might assign quizzes. -->
+
+<!-- - Quizzes will be graded/weighted against your participation grade for the semester. -->
 
 ###
 
-```{r attendplot, eval=T, echo=F, fig.height=8.5, fig.width = 14}
+![](musgrave-tweet.png)
+
+```{r attendplot, eval=F, echo=F, fig.height=8.5, fig.width = 14}
 
 # estdecrease <- round(M1df[2,2]*5, 3)
 # estdecrease_t <- round(M1df[2, 4], 3)
@@ -407,30 +393,71 @@ Attend %>%
 
 ```{r calendar, eval=T, echo=F, fig.height=8.5, fig.width = 14}
 # library(ggplot2)
-library(ggcal)
-ggcal(mydate, myfills) +
-  theme(plot.title=element_text(face="bold"),
-        plot.caption=element_text(hjust=1, size=9,
-                                    margin=margin(t=10), face="italic")) +
+# Calendar dates of importance ----
+
+mon <- as.Date("2020-08-17")
+
+not_here_dates <- c(ymd(20201103),
+              ymd(20201123):ymd(20201127))
+
+exam_dates <- c(ymd(20201001), ymd(20201105), ymd(20201211))
+semester_dates <- seq(ymd(20200819),ymd(20201204), by=1)
+
+
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
+
+tibble(date = seq(ymd(20200801), ymd(20201231), by=1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         exams = ifelse(date %in% exam_dates, 1, 0), # is it an exam?
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+Cal %>%
+  mutate(category = NA,
+         category = ifelse(semester == 1, "Semester", category),
+         category = ifelse(semester == 1 & wkdy %in% c("Tue", "Thu"), "Class Day", category),
+         category = ifelse(exams == 1, "Exams", category),
+         category = ifelse(is.na(category) | (semester == 1 & not_here == 1), "NA", category)) -> Cal 
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  theme_steve_web() + 
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=category), color="black", size=.45) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day),family="Open Sans") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
   scale_fill_manual(values=c("Class Day"="steelblue", 
-                             "Other Day"="lightsteelblue",
-                             "Exam/Quiz"="lightpink2",
-                             "Paper Due (Turnitin)" = "indianred4"),
-                    breaks=c("Class Day","Exam/Quiz","Paper Due (Turnitin)")) +
-  theme(legend.position="bottom") +
-#  geom_point(shape=1, size=7) +
-  geom_text(aes(label=give_me_days)) +
-  labs(caption = "Notable dates: Professor out of town (March 12), Spring Break (March 16-20)")
+                             "Semester"="lightsteelblue",
+                             "NA" = "white", # I like these whited out...
+                             "Exams"="indianred4"),
+                    #... but also suppress a label for a non-class semester day
+                    breaks=c("Class Day","Exams")) +
+  labs(fill = "", x="", y="",
+       caption = "Notable dates: Fall Break (Nov. 3... please vote), Thanksgiving Break (Nov. 23-27)")
 
 ```
 
 
-### Cell Phones, Laptops, etc...
+<!-- ### Cell Phones, Laptops, etc... -->
 
-Unless SDS says its mandatory, put your laptops/phones away during class.
+<!-- Unless SDS says its mandatory, put your laptops/phones away during class. -->
 
-- They are terrible learning devices. Take notes by hand instead.
-- You're on Facebook or playing Pokemon Go anyway. Don't pretend you're not.
+<!-- - They are terrible learning devices. Take notes by hand instead. -->
+<!-- - You're on Facebook or playing Pokemon Go anyway. Don't pretend you're not. -->
 
 
 ### Email Policy
@@ -448,41 +475,41 @@ I'm usually quick to respond to student e-mails. However, I may not if:
 8. You're grade-grubbing.
 9. You want an extra credit opportunity.
 
-### Make-up Exams
+<!-- ### Make-up Exams -->
 
-**No, *and don't bother asking***.
+<!-- **No, *and don't bother asking***. -->
 
-- Sniffles/headaches don't count. Soldier through it.
-- University-sponsored events/holidays count, but give me two weeks advance.
+<!-- - Sniffles/headaches don't count. Soldier through it. -->
+<!-- - University-sponsored events/holidays count, but give me two weeks advance. -->
 
-Students with valid excuses have one week *at the most* to make up an exam.
+<!-- Students with valid excuses have one week *at the most* to make up an exam. -->
 
 ### Disabilities Policy
 
 I'm more than happy to accommodate, but:
 
 - The student has to take the intiative. I can't.
-- Do let me know privately after class if I should expect to hear from SDS soon.
+- Do let me know privately after class if I should expect to hear from SAS soon.
 
-If you require the Test Proctoring Center, *schedule your midterm and final now*.
+<!-- If you require the Test Proctoring Center, *schedule your midterm and final now*. -->
 
-- I will not spend my free time watching you take an exam.
+<!-- - I will not spend my free time watching you take an exam. -->
 
 # Etiquette and Expectations
 ### My Contact Information
 
 - *Name*: Steve Miller (as in the band)
 - *E-mail*: \textcolor{clemsonorange}{svmille@clemson.edu}
-- *Office Hours*: TR: 1:00 p.m.-2:00 p.m.
-- *Office*: 230A Brackett Hall
+- *Office Hours*: \shrug
+- *Office*: \shrug
 - *Website*: \textcolor{clemsonorange}{posc1020.svmiller.com}
 
 ### Additional Course Materials
 
-I don't like Canvas. I only intend to use it for:
+<!-- I don't like Canvas. I only intend to use it for: -->
 
-- Turnitin (and grading the Turnitin assignments)
-- Classwide e-mails
+<!-- - Turnitin (and grading the Turnitin assignments) -->
+<!-- - Classwide e-mails -->
 
 I do like making lectures publicly available, though.
 
@@ -509,27 +536,27 @@ I take seriously the "science" of political science.
 - This may not be intuitive, but I'm also eager to help in-class or office hours.
 
 
-### Etiquette Concerns
+<!-- ### Etiquette Concerns -->
 
-In-class:
+<!-- In-class: -->
 
-- Raise your hand and ask a question the *moment* something doesn't make sense.
-    - I do have a bad habit of talking a bit fast.
-- *Do the reading before class*. Seriously.
-- Resist the urge to write down every word on a slide.
-    - Listening is more important than reading in this context.
+<!-- - Raise your hand and ask a question the *moment* something doesn't make sense. -->
+<!--     - I do have a bad habit of talking a bit fast. -->
+<!-- - *Do the reading before class*. Seriously. -->
+<!-- - Resist the urge to write down every word on a slide. -->
+<!--     - Listening is more important than reading in this context. -->
 
-### Etiquette Concerns
+<!-- ### Etiquette Concerns -->
 
-Outside class: 
+<!-- Outside class:  -->
 
-- **Resist the urge** to e-mail me if you missed a class (for which there wasn't an exam).
-    - Short answer: you missed what was on the syllabus.
-- Please use conventional e-mail etiquette.
-    - This is a good professional exercise for you.
-- Knock first, even when the door is open.
-- You may not use my office supplies.
-- I am not a study session. Come prepared with something specific to ask or discuss.
+<!-- - **Resist the urge** to e-mail me if you missed a class (for which there wasn't an exam). -->
+<!--     - Short answer: you missed what was on the syllabus. -->
+<!-- - Please use conventional e-mail etiquette. -->
+<!--     - This is a good professional exercise for you. -->
+<!-- - Knock first, even when the door is open. -->
+<!-- - You may not use my office supplies. -->
+<!-- - I am not a study session. Come prepared with something specific to ask or discuss. -->
 
 # Homework
 ### You Have Homework!
