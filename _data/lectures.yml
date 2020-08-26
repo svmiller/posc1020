@@ -8,10 +8,10 @@
   dirname: historical-intro
   tldr: "Here's a history of the world, from 1492 to the present, summarizing major themes in international politics (and war) along the way."
  
-# - title: "Understanding Interests, Interactions, and Institutions"
-#   filename: iii
-#   dirname: iii
-#   tldr: "Identifying decision-makers, their strategic behavior, and their institutional frameworks, will help us understand international politics."
+- title: "Understanding Interests, Interactions, and Institutions"
+  filename: iii
+  dirname: iii
+  tldr: "Identifying decision-makers, their strategic behavior, and their institutional frameworks, will help us understand international politics."
 
 # - title: "Why Are There Wars?"
 #   filename: war-1
