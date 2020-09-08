@@ -105,7 +105,7 @@ Price <- fredr(series_id = "CPIAUCSL",
 fredr(series_id = "WTISPLC",
              observation_start = as.Date("1947-01-01")) %>%
   rename(WTISPLC = value) %>% select(-series_id) %>%
-  left_join(., Price) %>%
+  left_join(., Price) %>% na.omit %>%
   mutate(last = last(CPIAUCSL),
          index = (CPIAUCSL/last)*100,
     real = (WTISPLC/index)*100) -> priceoil
@@ -153,7 +153,7 @@ Price <- fredr(series_id = "CPIAUCSL",
 fredr(series_id = "WTISPLC",
              observation_start = as.Date("1947-01-01")) %>%
   rename(WTISPLC = value) %>% select(-series_id) %>%
-  left_join(., Price) %>%
+  left_join(., Price) %>% na.omit %>%
   mutate(last = last(CPIAUCSL),
          index = (CPIAUCSL/last)*100,
          real = (WTISPLC/index)*100) -> oil
@@ -175,7 +175,7 @@ dat %>%
   geom_point() + 
   geom_smooth() +
   xlab("Price of Oil (WTI, Inflation-Adjusted to Current USD)") + ylab("Net Presidential Approval Rating") +
-  labs(title = "Few Presidents Exemplify the Conventional Wisdom About Gas Prices and Presidential Approval as George W. Bush",
+  labs(title = "Few Presidents Exemplify a Negative Relationship Between Gas Prices and Presidential Approval as George W. Bush",
        subtitle = "Bush's approval rating sank amid a slew of problems, especially the energy crisis.",
        caption = "Data: Federal Reserve Bank of St. Louis, American Presidency Project.")
 
@@ -494,10 +494,10 @@ War may happen because domestic actors want it to happen.
 
 All have real implications for the bargaining between A and B in a crisis.
 
-### Map Quiz
+<!-- ### Map Quiz -->
 
-You have a map quiz on Thursday.
+<!-- You have a map quiz on Thursday. -->
 
-- Five regions (see syllabus), 10 countries per region (i.e. 50 "questions").
-- See the country prompt, identify it on the appropriate map.
+<!-- - Five regions (see syllabus), 10 countries per region (i.e. 50 "questions"). -->
+<!-- - See the country prompt, identify it on the appropriate map. -->
 
