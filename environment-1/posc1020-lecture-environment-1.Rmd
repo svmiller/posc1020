@@ -20,7 +20,7 @@ titlefont: "Titillium Web"
 ```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
 knitr::opts_chunk$set(cache=TRUE)
 knitr::opts_chunk$set(fig.path='figs/')
-knitr::opts_chunk$set(cache.path='cache/')
+knitr::opts_chunk$set(cache.path='cache/', message=F)
 
 knitr::opts_chunk$set(
                   fig.process = function(x) {
@@ -36,16 +36,12 @@ library(tidyverse)
 library(lubridate)
 library(stringr)
 library(stevemisc)
+library(stevedata)
 library(scales)
 library(knitr)
 library(weathermetrics)
 library(WDI)
 library(artyfarty)
-data(co2data)
-data(sealevels)
-data(odgi)
-data(so2data)
-data(arcticseaice)
 
 GTTS <- read_csv("~/Dropbox/data/global-temperature-time-series/annual_csv.csv")
 
@@ -63,9 +59,9 @@ GTTS <- read_csv("~/Dropbox/data/global-temperature-time-series/annual_csv.csv")
 
 ```{r carbondioxide-emissions-all-time, eval=T, echo=F, fig.height=8.5, fig.width = 14}
 
-co2data %>%
-  ggplot(.,aes(year,co2)) + theme_steve_web() + 
-  geom_ribbon(aes(ymin=-Inf, ymax=co2),
+co2emissions %>%
+  ggplot(.,aes(year,value)) + theme_steve_web() + 
+  geom_ribbon(aes(ymin=-Inf, ymax=value),
               alpha=0.3, fill="grey66") +
   geom_line(size=1.1) +
   geom_hline(yintercept = 300, linetype = "dashed") +
@@ -85,15 +81,15 @@ co2data %>%
 ###
 
 ```{r vanishing-sea-ice, eval=T, echo=F, fig.height=8.5, fig.width = 14}
-arcticseaice %>%
-  ggplot(.,aes(Year, Annual)) + theme_steve_web() + #,ymin=lb_annual, ymax=ub_annual
-  geom_ribbon(aes(ymin=-Inf, ymax=Annual),
+arcticseaice %>% mutate(value = value/1e6) %>%
+  ggplot(.,aes(year, value)) + theme_steve_web() + #,ymin=lb_annual, ymax=ub_annual
+  geom_ribbon(aes(ymin=-Inf, ymax=value),
               alpha=0.3, fill="skyblue3") +
   geom_line(size=1.1, color="skyblue3", alpha = 0.9) +
-  ylab("Annual Sea Ice Extent (10^6 sq km)") +
   scale_x_continuous(breaks = seq(1900, 2015, by = 5)) +
 #  geom_ribbon(alpha = I(0.2), color = I("black")) +
   labs(title = "The Arctic Sea Ice is Rapidly Vanishing in Our Lifetime",
+       y = "Annual Sea Ice Extent (10^6 sq km)",
        subtitle = "The Arctic shows no sign of returning to the reliably frozen region of recent past decades.",
        caption = "Data: Connolly et al. (2017), ''Re-calibration of Arctic sea ice extent datasets using Arctic surface air temperature records''. *Hydrological Sciences Journal* 62(8): 1317--40.")
 
@@ -117,32 +113,33 @@ sealevels %>%
 
 ###
 
-```{r very-stupid-graph, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
-GTTS %>%
-  filter(Source == "GISTEMP") %>%
-  mutate(Mean = ((9/5)*Mean) + 58) %>%
-  ggplot(.,aes(Year,Mean)) + geom_line() + 
+```{r very-stupid-graph, eval=T, echo=F, fig.height = 9, fig.width=14, warning=F}
+LOTI %>%
+  filter(month(date) == 9) %>%
+  #filter(Source == "GISTEMP") %>%
+  mutate(value = ((9/5)*value) + 58) %>%
+  ggplot(.,aes(year(date),value)) + geom_line() + 
   geom_smooth(method="loess") +
-  scale_x_continuous(breaks=seq(1880, 2015, by = 5)) +
+  scale_x_continuous(breaks=seq(1880, 2020, by = 5)) +
   ylim(-0.5, 100) +
   theme_steve_web() +
-  xlab("Year") + ylab("Average Temperature (in Fahrenheit)") +
-  labs(title = "A Very Stupid Graph on How Global Temperatures Have Changed Over Time, 1880-2016",
+  xlab("Year") + ylab("Average September Temperature (in Fahrenheit)") +
+  labs(title = "A Very Stupid Graph on How Global Temperatures Have Changed Over Time, 1880-2020",
        subtitle = "You can easily ''lie'' with data by misrepresenting scale and, importantly, context.",
-       caption = "Data: Global Temperature Time Series. Inspiration: National Review Online (https://twitter.com/NRO/status/676516015078039556)")
+       caption = "Data: ?LOTI in stevedata (via NASA/GISS). Data subset to complete months (September in this graph). Inspiration: National Review Online (https://twitter.com/NRO/status/676516015078039556)")
 
 ```
 
 ###
 
-```{r mean-temperature-anomalies, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
+```{r mean-temperature-anomalies, eval=T, echo=F, fig.height = 9, fig.width=14, warning=F}
 
-GTTS %>%
-  filter(Source == "GISTEMP") %>%
+LOTI %>%
+  filter(month(date) == 9) %>%
 #  mutate(Mean = ((9/5)*Mean) + 58) %>%
-  ggplot(.,aes(Year,Mean)) + geom_line() + 
+  ggplot(.,aes(year(date),value)) + geom_line() + 
   geom_smooth(method="loess") +
-  scale_x_continuous(breaks=seq(1880, 2015, by = 5)) +
+  scale_x_continuous(breaks=seq(1880, 2020, by = 5)) +
 #  ylim(-0.5, 4.1) +
 #  scale_x_date(date_breaks = "10 years", date_minor_breaks = "2 months", date_labels = "%Y") +
   theme_steve_web() +
@@ -155,17 +152,19 @@ GTTS %>%
 #  annotate("text", x=2016, hjust = 1, y=4.1, label = "World Bank: ''substantial species extinction, extensive loss of ecosystem functioning, large risks to global and regional food security''") +
   labs(title = "Annual Mean Temperature Anomalies (in Celsius) Relative to 1950-1980 Base Period",
        subtitle = "Thing is we've known about this for like the past 30 years and...",
-       caption = "Data: Global Temperature Time Series") +
+       caption = "Data: ?LOTI in stevedata (via NASA/GISS). Data subset to most recent month in data (September).",
+       y = "Mean Temperature Anomalies (September)") +
   geom_hline(yintercept = 0, linetype = "dashed")
 ```
 
 ###
 
-```{r mean-temperature-anomalies-context, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
+```{r mean-temperature-anomalies-context, eval=T, echo=F, fig.height = 9, fig.width=14, warning=F}
 
-GTTS %>%
-  filter(Source == "GISTEMP") %>%
-  ggplot(.,aes(Year,Mean)) + geom_line() + 
+LOTI %>%
+  filter(month(date) == 9) %>%
+#  mutate(Mean = ((9/5)*Mean) + 58) %>%
+  ggplot(.,aes(year(date),value)) + geom_line() + 
   geom_smooth(method="loess") +
   scale_x_continuous(breaks=seq(1880, 2015, by = 5)) +
   ylim(-0.5, 4.1) +
@@ -181,28 +180,49 @@ GTTS %>%
            family = "Open Sans") +
   labs(title = "Annual Mean Temperature Anomalies (in Celsius) Relative to 1950-1980 Base Period",
        subtitle = "Thing is we've known about this for like the past 30 years and...",
-       caption = "Data: Global Temperature Time Series") +
+       caption = "Data: ?LOTI in stevedata (via NASA/GISS). Data subset to most recent month in data (September).",
+       y = "Mean Temperature Anomalies (September)") +
   geom_hline(yintercept = 0, linetype = "dashed")
 ```
 
 ###
 
-```{r clemson-weather-2017-1950-2018, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F, message=F}
+```{r clemson-weather-2017-1950-2018, eval=T, echo=F, fig.height = 9, fig.width=14, warning=F, message=F}
 
-Clemson <- read_csv("https://gist.githubusercontent.com/svmiller/80a8837ec169b5cb853b0991a0f82a18/raw/fb1e6fe001b5beee0678478547a2bd7c7a1bf64a/clemson-weather-data.csv")
+# Clemson <- read_csv("https://gist.githubusercontent.com/svmiller/80a8837ec169b5cb853b0991a0f82a18/raw/fb1e6fe001b5beee0678478547a2bd7c7a1bf64a/clemson-weather-data.csv")
+# 
+# Clemson %>%
+#   mutate(date = as.Date(date),
+#          year = lubridate::year(date),
+#          month = lubridate::month(date),
+#          day = lubridate::day(date),
+#          yd = lubridate::yday(date),
+#          tmax = celsius.to.fahrenheit(value/10)) -> Clemsonweatherdata
 
-Clemson %>%
-  mutate(date = as.Date(date),
-         year = lubridate::year(date),
-         month = lubridate::month(date),
-         day = lubridate::day(date),
-         yd = lubridate::yday(date),
-         tmax = celsius.to.fahrenheit(value/10)) -> Clemsonweatherdata
+# Clemsonweatherdata %>%
+#   filter(year < 2017) %>%
+#   filter(!(month == 2 & day == 29)) %>%
+#   select(date, year:yd, everything()) %>%
+#   group_by(yd) %>%
+#   mutate(
+#     upper     = max(tmax, na.rm = TRUE), # identify max value for each day
+#     lower     = min(tmax, na.rm = TRUE), # identify min value for each day
+#     avg       = mean(tmax, na.rm = TRUE),  # calculate mean value for each day
+#     se        = sd(tmax, na.rm = TRUE) / sqrt(length(tmax)), # calculate standard error of mean
+#     avg_upper = avg + (qt(.975, df = n()) * se),  # calculate 95% CI for mean
+#     avg_lower = avg - (qt(.975, df = n()) * se) # calculate 95% CI for mean
+#   ) -> past_data
+# 
+# 
+# Clemsonweatherdata %>%
+#   filter(year == 2017) %>%
+#   group_by(year) %>%  # create matching x-axis as historical data
+#   ungroup() -> c17
 
-Clemsonweatherdata %>%
-  filter(year < 2017) %>%
+clemson_temps %>%
+  filter(between(year, 1950, 1980)) %>%
   filter(!(month == 2 & day == 29)) %>%
-  select(date, year:yd, everything()) %>% 
+  select(date, year:yd, everything()) %>%
   group_by(yd) %>%
   mutate(
     upper     = max(tmax, na.rm = TRUE), # identify max value for each day
@@ -213,11 +233,13 @@ Clemsonweatherdata %>%
     avg_lower = avg - (qt(.975, df = n()) * se) # calculate 95% CI for mean
   ) -> past_data
 
-
-Clemsonweatherdata %>%
-  filter(year == 2017) %>%
-  group_by(year) %>%  # create matching x-axis as historical data
-  ungroup() -> c17
+clemson_temps %>%
+  filter(year(date) == 2019) %>%
+  mutate(date = as.Date(date),
+         year = lubridate::year(date),
+         month = lubridate::month(date),
+         day = lubridate::day(date),
+         yd = lubridate::yday(date)) -> c19
 
 
 # create dataframe that represents the lowest temp for each day for the historical data
@@ -226,7 +248,7 @@ past_lows <- past_data %>%
   summarise(past_low = min(tmax, na.rm = TRUE)) # identify lowest temp for each day from 1995-2013
 
 # create dataframe that identifies the days in 2014 in which the temps were lower than all previous 19 years
-present_lows <- c17 %>%
+present_lows <- c19 %>%
   left_join(past_lows) %>%  # merge historical lows to current year low data
   mutate(record = ifelse(tmax < past_low, "Y", "N")) %>% # identifies if current year was record low
   filter(record == "Y")  # filter for days that represent current year record lows
@@ -237,7 +259,7 @@ past_highs <- past_data %>%
   summarise(past_high = max(tmax, na.rm = TRUE))  # identify highest temp for each day from 1995-2013
 
 # create dataframe that identifies the days in 2014 in which the temps were higher than all previous 19 years
-present_highs <- c17 %>%
+present_highs <- c19 %>%
   left_join(past_highs) %>%  # merge historical highs to current year low data
   mutate(record = ifelse(tmax > past_high, "Y", "N")) %>% # identifies if current year was record high
   filter(record == "Y")  # filter for days that represent current year record highs
@@ -253,11 +275,11 @@ dgr_fmt <- function(x, ...) {
 # create y-axis variable
 a <- dgr_fmt(seq(0, 110, by = 10))
 
-# create a small dataframe to represent legend symbol for 2017 Temperature
+# create a small dataframe to represent legend symbol for 2019 Temperature
 legend_data <- data.frame(x = seq(175, 182), y = rnorm(8, 15, 2))
 
 # create dates for last day of each month
-last_days <- c17 %>%
+last_days <- c19 %>%
   group_by(month) %>%
   slice(last(day)) %>%
   .$yd
@@ -281,7 +303,7 @@ ggplot(past_data, aes(yd, tmax)) +
   geom_linerange(past_data, 
                  mapping = aes(x = yd, ymin = avg_lower, ymax = avg_upper),
                  colour = "wheat4") +
-  geom_line(c17, mapping = aes(x = yd, y = tmax, group = 1)) +
+  geom_line(c19, mapping = aes(x = yd, y = tmax, group = 1)) +
   geom_vline(xintercept = 0, colour = "wheat4", linetype=1, size=1) +
   geom_hline(yintercept = seq(0, 110, by = 10), colour = "white", linetype = 1) +
   geom_vline(xintercept = last_days, colour = "wheat4", linetype = 3, size = .5) +
@@ -297,9 +319,9 @@ ggplot(past_data, aes(yd, tmax)) +
 #  annotate("text", x = 86, y = 15, label = "We had 23 days that were \nthe coldest since 1995", size = 3, colour = "blue3", hjust = 0) +
  # annotate("segment", x = 268, xend = 274, y = 80, yend = 84, colour = "firebrick3") +
 #  annotate("text", x = 276, y = 84, label = "We had 18 days that were \nthe warmest since 1995", size = 3, colour = "firebrick3", hjust = 0) +
- ggtitle("Clemson's 2017 Temperatures Relative to the 1950-1980 Period",
-          subtitle = "Clemson had an unusually mild winter in 2017 in which the city saw 11 record highs from January to March relative to the 1950-1980 period.") +
-  labs(caption = "Source: NOAA. Inspiration: https://github.com/bradleyboehmke/Dayton-Weather-2018\nNote: red/blue dots indicate record highs/lows relative to 1950-1980 period.") +
+ ggtitle("Clemson's 2019 Temperatures Relative to the 1950-1980 Period",
+          subtitle = "Clemson has been having milder and milder winters the past few years and the early fall months were *much* warmer than usual.") +
+  labs(caption = "Source: clemson_temps in stevedata (via NOAA). Inspiration: https://github.com/bradleyboehmke/Dayton-Weather-2018\nNote: red/blue dots indicate record highs/lows relative to 1950-1980 period.") +
 #  theme(
 #    plot.title = element_text(face = "bold", colour = "#3C3C3C", size = 20),
 #    plot.subtitle = element_text(size = 9, color = "#3F3F3F"),
@@ -312,7 +334,7 @@ ggplot(past_data, aes(yd, tmax)) +
   annotate("segment", x = 183, xend = 185, y = 12.2, yend = 12.2, colour = "wheat4", size=.5) +
   annotate("segment", x = 185, xend = 185, y = 12.2, yend = 17.7, colour = "wheat4", size=.5) +
   annotate("text", x = 196, y = 14.75, label = "NORMAL RANGE", size=2, colour="gray30") +
-  annotate("text", x = 172, y = 14.75, label = "2017\nTEMPERATURE", hjust=1, size=2, colour="gray30") +
+  annotate("text", x = 172, y = 14.75, label = "2019\nTEMPERATURE", hjust=1, size=2, colour="gray30") +
   annotate("text", x = 193, y = 25, label = "RECORD HIGH", size=2, colour="gray30") +
   annotate("text", x = 193, y = 5, label = "RECORD LOW", size=2, colour="gray30")
 ```
@@ -320,20 +342,20 @@ ggplot(past_data, aes(yd, tmax)) +
 
 ###
 
-```{r ozone-depletion, eval=T, echo=F, fig.height = 8.5, fig.width=15, warning=F}
+```{r ozone-depletion, eval=T, echo=F, fig.height = 9, fig.width=15, warning=F}
 
-odgi %>%
-  filter(Category == "ODGI(new in 2012) Antarctic" | Category == "ODGI(new in 2012) Mid-Lat") %>%
-  rename(Metric = Category) %>%
-  ggplot(.,aes(Year, Value, group=Metric, color=Metric, linetype=Metric)) + theme_steve_web() +
+ODGI %>%
+  select(year, cat, odgi_new) %>%
+  ggplot(.,aes(year, odgi_new, color=cat, linetype=cat)) +
+  theme_steve_web() +
   geom_line(size=1.5) +
-  xlab("Year") + ylab("Ozone-Depleting Gas Index") +
   scale_x_continuous(breaks=seq(1990, 2015, by=5)) +
   theme(legend.position = "bottom") +
   labs(title = "Ozone Depletion Constitutes a (Partial) Success on an Issue Notorious for Collective Action Problems",
        subtitle = "Overall, the ODGI-A/ODGI-ML and sum chlorines (in ppts) has fallen, as have several particular/conspicuous chlorines (e.g. CFC-11 and CFC-12) even as others (like halon and HCFC) have slightly risen.",
-       caption = "Data: NOAA Ozone Depleting Gas Index")
-
+       caption = "Data: ?ODGI in stevedata (via NOAA Ozone Depleting Gas Index)",
+       x = "", y = "Ozone-Depleting Gas Index",
+       color = "", linetype="")
 ```
 
 # Collective Action and the Environment
@@ -415,39 +437,43 @@ Collective action problems, like acid rain, are tractable in smaller groups and 
 
 ###
 
-```{r sulfure-dioxide, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
+```{r sulfure-dioxide, eval=T, echo=F, fig.height = 9, fig.width=14, warning=F}
 
-so2data %>%
-  ggplot(.,aes(year, y=meanppb, ymin = lb, ymax= ub)) +
+so2concentrations %>%
+  ggplot(.,aes(year, y=value, ymin = lb, ymax= ub)) +
   theme_steve_web() +
   geom_ribbon(alpha = I(0.2), color = "black", fill="yellow4") + geom_line() +
-  xlab("Year") + ylab("Sulfur Dioxide Concentration (ppb)") +
+  xlab("") + ylab("Sulfur Dioxide Concentration (ppb)") +
   scale_x_continuous(breaks = seq(1980, 2016, by = 4)) +
   geom_hline(yintercept = 75, linetype = "dashed") +
   annotate("text", x= 1981, hjust=0,  y = 83, label = "National Standard (75ppb)",
            family="Open Sans") +
-  labs(title = "Sulfur Dioxide Emissions in the U.S. Have Decreased 87% Since 1980",
+  labs(title = "Sulfur Dioxide Emissions in the U.S. Have Decreased Over 87% Since 1980",
        subtitle = "The U.S. has largely met the 75ppb line by 2010 in large measure because of the EPA and the concentrated costs acid rain pose on the populations of polluting countries.",
-       caption = "Data: Environmental Protetion Agency (EPA)")
+       caption = "Data: ?so2concentrations in stevedata (via Environmental Protetion Agency)")
   
 
 ```
 
 ###
 
-```{r chlorofluorocarbons, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
-
-odgi %>%
-  filter(Area == "Antarctic") %>%
-  filter(Category == "CFC-12" | Category == "CFC-11" | Category == "CFC-113") %>%
-  ggplot(.,aes(Year, Value, group=Category, color=Category, linetype=Category)) + theme_steve_web() +
+```{r chlorofluorocarbons, eval=T, echo=F, fig.height = 9, fig.width=14, warning=F}
+ODGI %>%
+  filter(cat == "Antarctic") %>%
+  select(year:cfc11, cfc113) %>%
+  gather(var, val, -year, -cat) %>%
+  mutate(var = forcats::fct_recode(var,
+                                   "CFC-11" = "cfc11",
+                                   "CFC-12" = "cfc12",
+                                   "CFC-113" = "cfc113")) %>%
+  ggplot(.,aes(year, val, color=var, linetype=var)) +
+  theme_steve_web() +
   geom_line(size=1.5) +
-  xlab("Year") + ylab("Chlorine Presence in Antarctica (in ppt)") +
   scale_x_continuous(breaks=seq(1990, 2015, by=5)) +
-  theme(legend.position = "bottom") +
   labs(title = "Chlorofluorocarbon (CFC) Emissions Have (Generally) Fallen As Well",
        subtitle = "This followed because costs were concentrated on a few countries, as were the proposed benefits.",
-       caption = "Data: NOAA Ozone Depleting Gas Index")
+       caption = "Data: ?ODGI in stevedata (via NOAA Ozone Depleting Gas Index)",
+       color = "", linetype="")
 
 ```
 
@@ -471,10 +497,10 @@ Prisoner's dilemmas become tractable with the emergence of "privileged groups."
 
 ###
 
-```{r co2_emissions_country, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
+```{r co2_emissions_country, eval=T, echo=F, fig.height = 9, fig.width=14, warning=F}
 
 WDI(country = "all", indicator = c("en.atm.co2e.pc","EN.ATM.CO2E.KT"),
-    start = 1960, end = 2014, extra = FALSE, cache = NULL) %>% tbl_df() %>%
+    start = 1960, end = 2016, extra = FALSE, cache = NULL) %>% tbl_df() %>%
   rename(co2epc = en.atm.co2e.pc,
          co2e = EN.ATM.CO2E.KT) %>%
   mutate(ccode = countrycode::countrycode(iso2c, "iso2c", "cown"),
@@ -490,16 +516,16 @@ WDI(country = "all", indicator = c("en.atm.co2e.pc","EN.ATM.CO2E.KT"),
 
 co2emissionscountry %>%
   arrange(-year, -co2epert) %>%
-  filter(year == 2014) %>%
+  filter(year == 2016) %>%
   head(10) %>%
   mutate(labl = paste0(mround2(co2epert),"%")) %>% 
   ggplot(.,aes(reorder(country, -co2epert), co2epert)) + theme_steve_web() +
   geom_bar(stat="identity", alpha=0.8, color="black", fill="#619cff") +
   geom_text(aes(label=labl), vjust=-.5, colour="black",
             position=position_dodge(.9), size=4) +
-  xlab("Country") + ylab("Country % of World Carbon Dioxide Emissions, 2014") +
-  labs(title = "Country Percentage of Carbon Dioxide Emissions, 2014",
-       subtitle = "China is the biggest volume emmiter of carbon dioxide and India, if you can believe it, is just eight-tenths of a percent from being the median.",
+  xlab("Country") + ylab("Country % of World Carbon Dioxide Emissions, 2016") +
+  labs(title = "Country Percentage of Carbon Dioxide Emissions, 2016",
+       subtitle = "China is the biggest volume emiter of carbon dioxide and the top three are incidentally the top three in population size.",
        caption = "Data: Carbon Dioxide Information Analysis Center, Environmental Sciences Division, Oak Ridge National Laboratory.")
 
 
@@ -507,19 +533,19 @@ co2emissionscountry %>%
 
 ###
 
-```{r co2_emissions_countrypc, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
+```{r co2_emissions_countrypc, eval=T, echo=F, fig.height = 9, fig.width=14, warning=F}
 co2emissionscountry %>%
   arrange(-year, -co2epc) %>%
-  filter(year == 2014) %>%
+  filter(year == 2016) %>%
   head(10) %>%
   mutate(labl = round(co2epc, 2)) %>% 
   ggplot(.,aes(reorder(country, -co2epc), co2epc)) + theme_steve_web() +
   geom_bar(stat="identity", alpha=0.8, color="black", fill="#619cff") +
   geom_text(aes(label=labl), vjust=-.5, colour="black",
             position=position_dodge(.9), size=4) +
-  xlab("Country") + ylab("Country Carbon Dioxide Emissions, 2014 (Kilotons per Capita)") +
-  labs(title = "Country Carbon Dioxide Emissions per Capita, 2014",
-       subtitle = "China might be the biggest emitter, but it's the Gulf states (and the United States) that dominate this list of per capita emitters.",
+  xlab("Country") + ylab("Country Carbon Dioxide Emissions, 2016 (Kilotons per Capita)") +
+  labs(title = "Country Carbon Dioxide Emissions per Capita, 2016",
+       subtitle = "China might be the biggest emitter, but it's largely the oil-rich Gulf states (and the United States) that dominate this list of per capita emitters.",
        caption = "Data: Carbon Dioxide Information Analysis Center, Environmental Sciences Division, Oak Ridge National Laboratory.")
 
 ```
@@ -527,19 +553,20 @@ co2emissionscountry %>%
 
 ###
 
-```{r co2_emissions_select, eval=T, echo=F, fig.height = 8.5, fig.width=14, warning=F}
+```{r co2_emissions_select, eval=T, echo=F, fig.height = 9, fig.width=14, warning=F}
 co2emissionscountry %>%
   arrange(-year, -co2e) %>% 
-  filter(iso2c %in% c("CN","US","IN","GB","JP","DE","RU")) %>%
+  filter(iso2c %in% c("CN","US","IN","GB","JP","RU")) %>%
   rename(Country = country) %>%
   ggplot(.,aes(year,co2epc, color=Country,linetype=Country)) +
   theme_steve_web() + geom_line(size=1.1) +
   scale_color_manual(values = pal("google")) +
   scale_x_continuous(breaks = seq(1960, 2015, by = 5)) +
-  xlab("Year") + ylab("Country Carbon Dioxide Emissions, 2014 (Kilotons per Capita)") +
-  labs(title = "Carbon Dioxide Emissions per Capita for Select Countries, 1960-2014",
+  xlab("") + ylab("Country Carbon Dioxide Emissions, 2016 (Kilotons per Capita)") +
+  labs(title = "Carbon Dioxide Emissions per Capita for Select Countries, 1960-2016",
        subtitle = "The U.S. has always been a high-volume emitter and large per capita emitter as well. The emissions for China, always a large-population country, have risen concurrent with its development.",
-       caption = "Data: Carbon Dioxide Information Analysis Center, Environmental Sciences Division, Oak Ridge National Laboratory.")
+       caption = "Data: Carbon Dioxide Information Analysis Center, Environmental Sciences Division, Oak Ridge National Laboratory.",
+       color = "", linetype="")
 ```
 
 # Conclusion
