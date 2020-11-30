@@ -1,5 +1,5 @@
 ---
-title: "The Future of International Politics"
+title: "The Future of International Politics: WMDs and Their Proliferation"
 subtitle: POSC 1020  -- Introduction to International Relations
 author: Steven V. Miller
 institute: Department of Political Science
@@ -34,15 +34,8 @@ knitr::opts_chunk$set(
 knitr::opts_chunk$set(cache=TRUE)
 
 library(tidyverse)
-library(lubridate)
-library(stringr)
 library(stevemisc)
-library(scales)
-library(WDI)
-library(rvest)
-library(ggrepel)
-library(OECD)
-library(forecast)
+library(stevedata)
 
 FAS <- read_csv("~/Dropbox/data/fas-nukes/number-of-nuclear-warheads-in-the-inventory-of-the-nuclear-powers-1945-2014.csv") %>%
   rename(nukes = `Nuclear weapons inventory by country`)
@@ -52,33 +45,6 @@ tribble(
   "China", 2014, 255, # simple interpolation from 2013 to 2015, using Bulletin data
 ) %>%
   bind_rows(FAS, .) -> FAS
-
-MB <- read_csv("~/Dropbox/data/military-balance/2015/mb2015.csv")
-SWIID <- read_csv("~/Dropbox/data/swiid/swiid6_2/swiid6_2_summary.csv")
-
-MB$nukes <- 0
-MB$nukes[MB$country == "United States"] <- 4760
-MB$nukes[MB$country == "United Kingdom"] <- 225
-MB$nukes[MB$country == "Russia"] <- 4300
-MB$nukes[MB$country == "Pakistan"] <- 120
-MB$nukes[MB$country == "Israel"] <- 80
-MB$nukes[MB$country == "India"] <- 110
-MB$nukes[MB$country == "France"] <- 300
-MB$nukes[MB$country == "China"] <- 250
-
-Trade <- read_csv("~/Dropbox/data/cow/trade/Dyadic_COW_4.0.csv")
-
-library(fredr)
-
-library(pwt9)
-data(pwt9.0)
-
-Immig <- read_csv("~/Dropbox/teaching/posc1020/future-1/immig-policy.csv", skip=2) %>%
-  mutate(dummy = c(0,0,0,1)) %>%
-  select(Category, dummy, everything()) %>%
-  gather(Country, Value, `Italy`:`Germany`) %>%
-  group_by(dummy, Country) %>%
-  summarize(sum = sum(Value)) %>% arrange(Country)
 
 ```
 
@@ -96,10 +62,12 @@ Immig <- read_csv("~/Dropbox/teaching/posc1020/future-1/immig-policy.csv", skip=
 2. The future of American global leadership (i.e. "The Rise of China?")
 3. Globalization and its discontents
 
+This lecture will be about the first topic.
+
 ## The Proliferation of WMDs
 ###
 
-```{r nuke-inventories-1945-2014, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r nuke-inventories-1945-2014, echo=F, eval=T, fig.width = 14, fig.height = 9, warning = F, message = F}
 
 FAS %>%
   group_by(Year) %>%
@@ -118,7 +86,7 @@ FAS %>%
 
 ###
 
-```{r nuke-inventories-1945-2014-no-usa-rus, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r nuke-inventories-1945-2014-no-usa-rus, echo=F, eval=T, fig.width = 14, fig.height = 9, warning = F, message = F}
 
 FAS %>%
   filter(Country != "United States" & Country != "Russia") %>%
@@ -138,7 +106,7 @@ FAS %>%
 
 ###
 
-```{r nuclear-proliferation-1945-2014, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+```{r nuclear-proliferation-1945-2014, echo=F, eval=T, fig.width = 14, fig.height = 9, warning = F, message = F}
 
 FAS %>%
   filter(Country != "United States" & Country != "Russia" & Country != "United Kingdom" & Country != "France") %>%
@@ -245,496 +213,14 @@ One final option: threat and use of military force. However, this is fraught wit
 2. Not a good option when nuclear weapons aren't the focal point of the problem (see: Iran, DPRK)
 3. Most nuclear development is *sub rosa* after the Osirak reactor bombing.
 
-## The ''Rise of China'' and the Future of American Leadership
-###
-
-```{r gdp-forecasts-usa-chn, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-
-# You could also do E095_LTB instead of EO103_LTB
-# get_dataset("EO103_LTB",
-#             filter = list(c("USA","CHN"),
-#                           c("GDP")),
-#             start_time = 2018, end_time = 2060) %>%
-#   rename(year = obsTime) %>%
-#   mutate(Country = ifelse(LOCATION == "CHN", "China", "United States"),
-#          gdp = obsValue/1000000,
-#          year = as.integer(year))
-
-usa_chn_gdp_forecasts %>% 
-  mutate(gdp = ifelse(is.na(gdp), f_gdp, gdp)) %>%
-  mutate(gdp = gdp/1000000000000,
-         f_lo80 = f_lo80/1000000000000,
-         f_hi80 = f_hi80/1000000000000) %>%
-  # filter(year == 2037)
-  ggplot(.,aes(year, gdp,  linetype=Country, color = Country, fill=Country)) +
-  theme_steve_web() +
-  geom_ribbon(aes(ymin = f_lo80, ymax = f_hi80), alpha = 0.4) +
-  geom_line(size=1.5) +
-  scale_color_brewer(palette = "Set1") +
-  scale_x_continuous(breaks = seq(1960, 2050, by = 10)) +
-  xlab("") + ylab("Gross Domestic Product (Observed and Forecasted) in Trillions Constant 2010 US$") +
-  geom_vline(xintercept = 2037,linetype = "dashed") +
-  scale_color_brewer(palette = "Set1") +
-  annotate("text", x=2036, y = 35, 
-           label = "China surpasses the U.S. in GDP\n(2037)", 
-           hjust = 1, family = "Open Sans")  +
-  labs(title = "China Should Surpass the U.S. in GDP by 2037",
-       subtitle = "China's yearly growth in economic activity to date is greater than the growth we observe in U.S. economic output even as (reasonable) worries about China's economic trajectory persist.",
-       caption = "Data: World Bank national accounts data, and OECD National Accounts data files. Forecast based on last year in World Bank data (2017).")
-
-# oecd_forecasts  %>%
-#   rename(Country = country) %>%
-#   filter(Country == "CHN" | Country == "USA") %>%
-#   mutate(Country = ifelse(Country == "CHN", "China", "United States"),
-#          gdp = value/1000000) %>%
-#   ggplot(.,aes(year, gdp,  linetype=Country, color = Country)) +
-#   theme_steve_web() +
-#   geom_line(size=1.5) +
-#   theme(legend.position = "bottom") +
-#   scale_x_continuous(breaks = seq(1990, 2060, by = 5)) +
-#   xlab("Year") + ylab("Gross Domestic Product (Observed and Forecasted, in Millions and in PPPs)") +
-#   geom_vline(xintercept = 2021,linetype = "dashed") +
-#   scale_color_brewer(palette = "Set1") +
-#   annotate("text", x=2021.5, y = 35,
-#            label = "China surpasses the U.S. in GDP", hjust = 0, family = "Open Sans") +
-#   labs(title = "In 2014, the OECD Forecasted China Will Surpass the U.S. in GDP in 2021",
-#        subtitle = "China's yearly growth in economic activity to date is greater than the growth we observe in U.S. economic output even as (reasonable) worries about China persist.",
-#        caption = "Data: OECD Outlook No 95 - May 2014 - Long-term baseline projections provided by  Organisation for Economic Co-operation and Development (OECD)")
-
-```
-
-###
-
-```{r military-balance-usa-chn-2015, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-
-MB %>%
-  mutate(`Defense\nBudget` = mround2(defbudg/sum(defbudg, na.rm=T)),
-         `Population` = round((pop/sum(as.numeric(pop), na.rm = T))*100, 2),
-         `Active\nPersonnel` = round((active/sum(active, na.rm = T))*100, 2),
-         `Size of\nArmy\n(Personnel)` = round((army/sum(army, na.rm = T))*100, 2),
-         `Size of\nNavy\n(Personnel)` = round((navy/sum(navy, na.rm = T))*100, 2),
-         `Size of\nAir Force\n(Personnel)` = round((af/sum(af, na.rm = T))*100, 2),
-         `Total Equipment\n(Army)` = round((armyequip/sum(armyequip, na.rm = T))*100, 2),
-         `Total Equipment\n(Navy)` = round((navyequip/sum(navyequip, na.rm = T))*100, 2),
-         `Total Equipment\n(Air Force)` = round((afequip/sum(afequip,na.rm=T))*100, 2),
-         `Military\nSatellites` = round((otherequip/sum(otherequip, na.rm = T))*100, 2),
-         `Nuclear\nWarheads` = round((nukes/sum(nukes, na.rm = T))*100, 2)) %>%
-  select(country, `Defense\nBudget`:`Nuclear\nWarheads`) %>%
-  filter(country == "United States" | country == "China") %>%
-  rename(Country = country) %>%
-  gather(variable, value, -Country) %>%
-  mutate(lab = paste0(value,"%")) %>%
-  ggplot(.,aes(variable, value, color = Country)) + theme_steve_web() +
-  geom_bar(aes(fill=Country), stat="identity", position = "dodge", alpha=0.8, color = "black") +
-  xlab("Military Indicator") + ylab("Percentage of World Total") +
-  theme(legend.position = "bottom") +
-  scale_fill_brewer(palette="Set1") +
-  geom_text(aes(label=lab, group=Country), color="black",
-            position=position_dodge(width=.9), 
-            size=3.75, vjust = -.5, family = "Open Sans") +
-  labs(title = "China's Eventual ''Rise'' Still Comes Amid Major Military Disparity with the United States",
-       subtitle = "Generally: China beats U.S. on manpower and never quality or equipment. We expects these trends to persist even as China surpasses the U.S. in economic output.",
-       caption = "Data: Military Balance (2015) and Federation of American Scientists (for Nukes)
-       Army Equipment: Tanks, recon equipment, armored fighting vehicles, artillery
-       Navy Equipment: submarines, principal surface combatants, amphibious equipment,
-       Air Force Equipment: Combat-capable aircraft")
-
-```
-
-### What's the Problem With China's Rise?
-
-"Rising" states expect to do better in war.
-
-- As a result, it's more likely to threaten force to revise the status quo.
-- A "risen" China is less likely to honor the terms of a pre-power transition agreement.
-
-Indeed, commitment problems magnify the war-proneness of power transitions.
-
-- Further, the U.S. and China have more disagreements than previous cases like Germany and Japan after WWII.
-
-### Is There Cause for Optimism?
-
-Optmistic analysts see promise in China's globalization/leadership efforts.
-
-- e.g. participation in WTO, Asian Infrastructure and Investment Bank
-
-Indeed, China seems to have a vested stake in the current economic/political order, disputes with the U.S. notwithstanding.
-
-- However, Chinese behavior still permits major skepticism.
-
-## Globalization and Its Discontents
-###
-
-```{r cell-subscriptions-1980-2016, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-
-WDI(country=c("US", "GB", "DE", "CA", "FR"), indicator = "IT.CEL.SETS.P2", start=1980, end=2016) %>%
-  rename(cell = "IT.CEL.SETS.P2", Country = country) %>%
-  ggplot(.,aes(year, cell,linetype = Country, group=Country, color=Country)) + 
-  theme_steve_web() +
-  geom_line(size=1.5) +
-  scale_color_brewer(palette="Set1") +
-  geom_hline(yintercept = 0, linetype="dashed") +
-  scale_x_continuous(breaks = seq(1980, 2016, by =4)) +
-  xlab("Year") + ylab("Mobile Cellular Subscriptions (per 100 people)") +
-  labs(caption = "Data: International Telecommunication Union, via the World Bank",
-       title = "More and More People Are Owning Cell Phones",
-       subtitle = "Globalization has made cell phone ownership readily accessible, which has been a major boon to quality of life in Western countries.") +
-  theme(legend.position = "bottom")
-
-```
-
-###
-
-```{r usa-household-computers-1984-2015, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-
-tibble(year = c(1984, 1989, 1993, 1997, 2000, 2001, 2003, 2007, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016),
-       perc = c(8.2, 15, 22.9, 36.6, 51, 56.3, 61.8, 69.7, 74.1, 76.7, 75.6, 78.9, 83.8, 85.1, 86.8, 89.3)) %>%
-  mutate(lab = paste0(perc,"%")) %>%
-  ggplot(.,aes(as.factor(year),perc)) + theme_steve_web() + 
-  geom_bar(stat="identity", position = "dodge", alpha=0.8, color = "black", fill="#00BFC4") +
-  geom_text(aes(label=lab), vjust = -.5, colour = "black",
-            position = position_dodge(.9), family="Open Sans") +
-  ylim(0, 100) +
-  xlab("Year") + ylab("Percentage of Households") +
-  labs(caption = "Data: Current Population Survey Estimates",
-       title = "Almost Every Household Has a Computer These Days, Thanks to Globalization",
-       subtitle = "Household computers used to be a luxury item before parts could be cheaply made/imported from Asia. In fact, the old Apple Macintosh from 1984 cost more than $6,000 in 2017 USD.")
-
-# https://www.census.gov/content/dam/Census/library/publications/2018/acs/ACS-39.pdf
-  
-
-```
-
-###
-
-```{r usa-price-index-tech-goods-1997-2015, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-read_html("https://www.bls.gov/opub/ted/2015/long-term-price-trends-for-computers-tvs-and-related-items.htm") %>%
-  html_node("table") %>%
-  html_table() %>% tbl_df() %>%
-  mutate(Date = seq(as.Date("1997-12-01"), as.Date("2015-08-01"), by = "1 month")) -> LTPT
-
-LTPT %>%
-  select(Date, everything(), -Month, 
-         -`Internet services and electronic information providers`, -`Photographic equipment and supplies`,
-         -`Computer software and accessories`) %>%
-  gather(Category, Value, 2:ncol(.)) %>%
-  ggplot(.,aes(Date, Value, color=Category, group=Category, linetype=Category)) + theme_steve_web() +
-  geom_line(size=1.1) + 
-  scale_color_brewer(palette="Set1") +
-  # scale_color_manual(values=c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", "#FB9A99", "#E31A1C", "#FDBF6F")) +
-  scale_x_date(date_breaks = "2 years",
-               breaks = seq(1996, 2016, by = 2),
-               date_labels = "%Y") +
-  xlab("") + ylab("") +
-  labs(title = "The Price Indices For Computers and TVs Have Declined More Than 95% Since December 1997",
-       subtitle = "Most of the decline happened between 1998 and 2003 following a boom in cheaper parts and products coming from trading partners in Asia.",
-       caption = "Data: Bureau of Labor and Statistics. Base: December 1997.\nSource: https://www.bls.gov/opub/ted/2015/long-term-price-trends-for-computers-tvs-and-related-items.htm")
-
-```
-
-###
-
-```{r let-them-watch-tv, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-ggplot() + 
-  geom_line(data = cpi_various_items, aes(date, cpi, color = Category), size=1.1) +
-  theme_steve_web() + 
-  guides(color = FALSE) +
-  geom_hline(yintercept = 100, linetype = "dashed") +
-  scale_x_date(limits = as.Date(c("2000-01-01","2020-01-01")),
-               date_labels = "%Y",
-               date_breaks = "2 year") +
-  scale_colour_brewer(palette = "RdBu") +
-  # scale_x_date(#date_breaks = "1 year",
-  #              breaks = seq(as.Date("2000-01-01"),
-  #                           as.Date("2022-12-31"), by="1 year"),
-  #              #date_minor_breaks = "3 months", 
-  #              date_labels = "%Y") +
-#  geom_line(size=1.1) +
-  geom_text(data = cpi_various_items %>% filter(date == "2018-12-01"), aes(label = Category, 
-                                                          x = as.Date("2019-01-01"), 
-                                                          y = cpi, 
-                                                          hjust = 0,
-                                                          color = Category,
-                                                          fontface = "bold",
-                                                          family = "Open Sans"),
-            size = 3) +
-  xlab("Date") + ylab("Consumer Price Index for Urban Consumers") +
-  labs(title = "''Let Them Watch TV''",
-       caption = "Data: Bureau of Labor Statistics. Base period = Jan. 1, 2000.",
-       subtitle = "Liberalized trade has made consumer electronics (like TVs) fractions of their past prices. Yet, young adults face mounting costs for college, child-raising,\nand health care that government policy has failed to address.")
-  # geom_label_repel(aes(label = Category),
-  #                  nudge_x = 1,
-  #                  na.rm = TRUE)
-```
-
-###
-
-```{r usa-rok-trade-balance-1949-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-
-
-Trade %>% filter(ccode1 == 2  & ccode2 == 732) %>%
-  mutate(deficit = flow2 - flow1) %>%
-  select(year, deficit) %>%
-  bind_rows(., tibble(year = c(2015, 2016, 2017, 2018),
-                      deficit = c(-28273.2, -27571.8, -22887.4,-17946.4 ))) %>% 
-  ggplot(.,aes(year, deficit)) + theme_steve_web() +
-  geom_bar(stat="identity", position = "dodge", alpha=0.8, color = "black", fill="#F8766D") +
-  scale_x_continuous(breaks=seq(1950, 2015, by = 5)) +
-  scale_y_continuous(labels = scales::comma) +
-  xlab("Year") + ylab("Balance of Trade, in Millions (Negative Values = ''Deficits'')") +
-  labs(title = "The Boom in Cheap Household Computers Followed a Surge of Imports from South Korea (Among Others)",
-       subtitle = "South Korea specializes in cheaply producing high-quality consumer electronics for consumption in the U.S.",
-       caption = "Data: Correlates of War Dyadic Trade Data (v. 4.0, 1949-2014). U.S. Census Bureau: 2015-2018.")
-
-```
-
-###
-
-```{r usa-manufacturing-employment-1987-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-
-fredr(series_id = "PRS30006013",
-             observation_start = as.Date("1947-01-01")) %>%
-  ggplot(.,aes(date, value)) + geom_line(size=1.5, color="#00BFC4") + 
-  theme_steve_web() +
-  scale_x_date(date_breaks = "2 years",
-               breaks = seq(1988, 2018, by = 2),
-               date_labels = "%Y",
-               limits = as.Date(c('1986-01-01','2019-01-01'))) +
-  xlab("") + ylab("Manufacturing Employment (Seasonally Adjusted, Indexed [2012])") +
-  labs(caption = "Data:  U.S. Bureau of Labor Statistics. Data are seasonally adjusted with 2012 as the index year. Shaded areas are recessions.",
-       title = "U.S. Manufacturing Employment Has Declined as Globalization Has Increased",
-       subtitle = "You'll almost always hear of this as ''jobs leaving the country'' because of globalization.") +
-  annotate("rect", xmin=as.Date("1990-07-01"), xmax=as.Date("1991-04-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66") +
-  annotate("rect", xmin=as.Date("2001-04-01"), xmax=as.Date("2001-10-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66") +
-  annotate("rect", xmin=as.Date("2008-01-01"), xmax=as.Date("2009-07-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66") +
-  ylim(90, 155)
-
-```
-
-###
-
-```{r usa-manufacturing-output-1987-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-
-fredr(series_id = "OUTMS",
-             observation_start = as.Date("1987-01-01")) %>%
-  ggplot(.,aes(date, value)) + geom_line(size=1.5, color="#00BFC4") + theme_steve_web() +
-  scale_x_date(date_breaks = "2 years",
-               breaks = seq(1986, 2018, by = 2),
-               date_labels = "%Y",
-               limits = as.Date(c('1986-01-01','2019-01-01'))) +
-  xlab("") + ylab("Manufacturing Output (Seasonally Adjusted, Indexed [2012])") +
-  labs(caption = "Data:  U.S. Bureau of Labor Statistics. Data are seasonally adjusted with 2012 as the index year. Shaded areas are recessions.",
-       title = "U.S. Manufacturing Output Has Generally Risen Despite the Drop in Manufacturing Employment",
-       subtitle = "Automation explains more of this phenomenon than globalization, but globalization gets the blame.") +
-  annotate("rect", xmin=as.Date("1990-07-01"), xmax=as.Date("1991-04-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66") +
-  annotate("rect", xmin=as.Date("2001-04-01"), xmax=as.Date("2001-10-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66") +
-  annotate("rect", xmin=as.Date("2008-01-01"), xmax=as.Date("2009-07-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66") +
-  ylim(60, 140)
-
-```
-
-###
-
-
-```{r usa-manufacturing-compensation-1987-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-fredr(series_id = "COMPRMS",
-             observation_start = as.Date("1987-01-01")) %>%
-  ggplot(.,aes(date, value)) + geom_line(size=1.5, color="#00BFC4") + theme_steve_web() +
-  scale_x_date(date_breaks = "2 years",
-               breaks = seq(1986, 2018, by = 2),
-               date_labels = "%Y",
-               limits = as.Date(c('1986-01-01','2019-01-01'))) +
-  xlab("") + ylab("Manufacturing Compensation per Hour (Seasonally Adjusted, Indexed [2012])") +
-  labs(caption = "Data:  U.S. Bureau of Labor Statistics. Data are seasonally adjusted with 2012 as the index year. Shaded areas are recessions.",
-       title = "Manufacturing Pays More Now Than It Did When There Was More Manufacturing Employment",
-       subtitle = "Real compensation per hour is on the rise because automation/globalization has decreased demand for low-skilled labor and increased demand for high-skilled labor. This raises wages.") +
-  annotate("rect", xmin=as.Date("1990-07-01"), xmax=as.Date("1991-04-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66") +
-  annotate("rect", xmin=as.Date("2001-04-01"), xmax=as.Date("2001-10-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66") +
-  annotate("rect", xmin=as.Date("2008-01-01"), xmax=as.Date("2009-07-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66")
-```
-
-
-###
-
-```{r usa-labor-share-income-1987-2018, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-fredr(series_id = "PRS30006173",
-             observation_start = as.Date("1987-01-01")) %>%
-  ggplot(.,aes(date, value)) + geom_line(size=1.5, color="#00BFC4") + theme_steve_web() +
-  scale_x_date(date_breaks = "2 years",
-               breaks = seq(1986, 2016, by = 2),
-               date_labels = "%Y",
-               limits = as.Date(c('1986-01-01','2016-01-01'))) +
-  xlab("") + ylab("Manufacturing Compensation per Hours (Seasonally Adjusted, Indexed [2012])") +
-  labs(caption = "Data:  U.S. Bureau of Labor Statistics. Data are seasonally adjusted with 2012 as the index year. Shaded areas are recessions.",
-       title = "Labor Share of Income in Manufacturing Has Gone Down",
-       subtitle = "Gains in income/productivity result in wages for skilled labor/management or reinvestment in capital.") +
-  annotate("rect", xmin=as.Date("1990-07-01"), xmax=as.Date("1991-04-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66") +
-  annotate("rect", xmin=as.Date("2001-04-01"), xmax=as.Date("2001-10-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66") +
-  annotate("rect", xmin=as.Date("2008-01-01"), xmax=as.Date("2009-07-01"), ymin=-Inf, ymax=Inf, alpha = .6, fill = "gray66")
-```
-
-
-
-###
-
-```{r labor-share-income-1950-2014, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-pwt9.0 %>% tbl_df() %>%
-  mutate(region = countrycode::countrycode(country, "country.name", "region")) %>% 
-  mutate(Category = ifelse(region %in% c("Northern America",
-                                         "Western Europe",
-                                         "Australia and New Zealand",
-                                         "Northern Europe"),
-                           "Advanced Western Economy", "Other Economy")) %>% 
-  group_by(year, Category) %>%
-  summarize(labsh = mean(labsh, na.rm=T)) %>%
-  ggplot(.,aes(year, labsh, color=Category, linetype=Category)) + theme_steve_web() +
-  geom_line(size=1.1) + scale_color_brewer(palette="Set1") +
-  scale_y_continuous(labels = scales::percent) +
-  scale_x_continuous(breaks = seq(1950, 2015, by = 5)) +
-  xlab("") + ylab("Labor Share of Income") +
-  labs(caption = "Data: Penn World Table 9.0\n''Advanced Western Economy'' determined by World Bank region for convenience. These observations are the U.S., Canada, Australia, New Zealand, and countries in Western/Northern Europe.",
-       title = "It's Not Just the United States: Labor Share of Income is Falling Everywhere",
-       subtitle = "The trend has been observable as long we have data with more pronounced slides happening in the 1980s.")
-```
-
-###
-
-```{r what-explains-declining-share-of-income-imf, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-tibble::tribble(
-  ~Group, ~`Actual change`, ~Technology, ~`GVC Participation`, ~`Financial Integration`, ~`Policy/institutions`, ~Unexplained,
- "AEs",          -3.55,       -1.64,              -0.65,                  -0.48,                -0.17,        -0.61,
-  "EMs",          -5.28,       -0.31,              -4.37,                   0.96,                -0.13,        -1.43,
-  "EMs exluding China",          -2.58,       -1.24,                 -3,                   1.12,                -0.16,         0.69
-  ) %>%
-  gather(Category, Value, `Actual change`:Unexplained) %>%
-  filter(Category != "Actual change" & Group == "AEs") %>%
-  mutate(perc = Value/sum(Value),
-         label = paste0(mround2(perc),"%")) %>%
-  ggplot(.,aes(Category, perc)) + theme_steve_web() +
-  geom_bar(stat="identity", color="black", alpha=0.8) +
-  xlab("") + ylab("Percent of Explained Decrease in Labor Share of Income") +
-  scale_y_continuous(labels = scales::percent) +
-  geom_text(aes(label=label), vjust = -.5, colour = "black",
-            position = position_dodge(.9), family="Open Sans") +
-  labs(title = "What Explains Declining Share of Income in Advanced Economies? Technology.",
-       subtitle = "An IMF report from April 2017 found most  of the movement is explained by declining relative price of investment and initial exposure to routinization across sectors.",
-       caption = "Data: IMF. Reconfiguration of Figure 3.11 in ''World Economic Outlook, April 2017: Gaining Momentum?''")
-
-
-```
-
-###
-
-```{r income-inequality-labor-share-income, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-SWIID %>%
-  mutate(country = ifelse(country == "United States", "United States of America", country)) %>%
-  select(country, year, gini_disp) %>%
-  left_join(., pwt9.0) %>%
-  select(country, year, gini_disp, labsh) %>%
-  mutate(region = countrycode::countrycode(country, "country.name", "region")) %>%
-  mutate(Category = ifelse(region %in% c("Northern America",
-                                         "Western Europe",
-                                         "Australia and New Zealand",
-                                         "Northern Europe"),
-                           "Advanced Western Economy", "Other Economy")) %>%
-  filter(Category == "Advanced Western Economy" & year > 1970) %>%
-  ggplot(.,aes(gini_disp, labsh)) + theme_steve_web() +
-  geom_point() + geom_smooth(method="loess") + xlim(20, 36) +
-  xlab("GINI") + ylab("Labor Share of Income") +
-  labs(title = "Income Inequality Generally Rises in the West as Labor Share of Income Falls",
-       subtitle = "Labor share of income decline happens for a variety of reasons but can have important political/economic effects.",
-       caption = "Data: Penn World Table (v. 9.0). SWIID (v. 6.2)")
-
-```
-
-###
-
-```{r income-inequality-labor-share-income-usa, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-SWIID %>%
-  select(country, year, gini_disp) %>%
-  filter(country == "United States") %>%
-  mutate(country = "United States of America") %>%
-  left_join(., pwt9.0) %>%
-  select(country, year, gini_disp, labsh) %>%
-  filter(country == "United States of America") %>%
-  mutate(z_gini = scale(gini_disp),
-         z_labsh = scale(labsh)) %>% 
-  gather(Category, value, z_gini:z_labsh) %>%
-  mutate(Category = ifelse(Category == "z_gini", "GINI", "Labor Share of Income")) %>%
-  ggplot(.,aes(year, value, color=Category, linetype=Category)) + theme_steve_web() +
-  geom_line(size=1.1) + scale_color_brewer(palette="Set1") +
-  scale_x_continuous(breaks = seq(1960, 2016, by = 4)) +
-  xlab("") + ylab("GINI or Labor Share of Income (Standardized)") +
-  labs(title = "The Correlation Between Income Inequality and Labor Share of Income Is Particularly Strong in the U.S. (r = -.702)",
-       subtitle = "Labor share of income's decline is global and has multiple reasons but U.S. policy may be making its effects even worse.",
-       caption = "Data: Penn World Table (v. 9.0). SWIID (v. 6.2)")
-```
-
-###
-
-```{r income-inequality-usa-ukg-fra-gmy-can, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-
-SWIID %>%
-  filter(country == "United States" | country == "United Kingdom" | country == "France" | country == "Germany" | country == "Canada") %>%
-  rename(Country = country) %>%
-  ggplot(.,aes(year, gini_disp, color = Country, linetype=Country)) + theme_steve_web() +
-  xlab("Year") + ylab("GINI") +
-  scale_x_continuous(breaks = seq(1960, 2015, by = 5)) +
-  geom_line(size=1.5) +
-  scale_color_brewer(palette="Set1") +
-  theme(legend.position="bottom") +
-  labs(title = "Globalization Skepticism Appears Most Concentrated in Western Countries With Severe Income Inequality",
-       subtitle = "Globalization and trade become easy scapegoats to justify austerity measures and cuts to social spending that only compound the problem.",
-       caption = "Data: SWIID (v. 6.2)")
-
-```
-
-
-
-###
-
-```{r wvs-swiid-income-inequality-scapegoating-immigrants, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
-# Andorra: 28.22657
-# South Korea: 31
-SWIID %>%
-  filter(year >= 2000 & year <= 2008) %>%
-  group_by(country) %>%
-  summarize(meangini = mean(gini_disp, na.rm=T)) %>%
-  rename(Country = country) %>%
-  left_join(Immig, .) %>%
-  mutate(meangini = ifelse(Country == "South Korea", 31, meangini),
-         meangini = ifelse(Country == "Andorra", 28.22657, meangini)) %>%
-  filter(dummy == 1) %>%
-  mutate(region = countrycode::countrycode(Country, "country.name", "region")) %>%
-  mutate(Category = ifelse(region %in% c("Northern America",
-                                         "Western Europe",
-                                         "Australia and New Zealand",
-                                         "Northern Europe", "Southern Europe", "Eastern Europe"),
-                           "Advanced Economy", "Other Economy"),
-         Category = ifelse(Country == "Serbia" | Country == "Moldova" | Country == "Ukraine", "Other Economy", Category),
-         Category = ifelse(Country == "Japan" | Country == "Chile" | Country == "Cyprus", "Advanced Economy", Category)) -> giniimmig
-
-giniimmig %>%
-  group_by(Category) %>%
-  summarize(cor = cor(sum, meangini)) -> cors
-
-giniimmig %>%
-  ggplot(.,aes(meangini, sum)) + theme_steve_web() +
-  geom_point(aes(color=Category)) + geom_smooth(method="loess") +
-  geom_text_repel(aes(meangini, sum, label = Country)) +
-  xlab("Average GINI (2000-2008)") + ylab("Percent Saying Would-Be Immigrants Should Be Prohibited From Entering Country") +
-  labs(title = "Higher Income Inequality Coincides With Societies Scapegoating Immigrants As Part of the Problem",
-       subtitle = "Less-developed countries are generally more anti-immigrant but the correlation is near identical in more developed economies.",
-       caption = "Data: World Values Survey (Wave 5). SWIID (v. 6.2)")
-
-```
-
 # Conclusion
 ### Conclusion
 
-- WMDs have become easier and cheaper to produce, and more countries are producing them.
-    - Solutions require altering the incentives of would-be proliferators, through both carrots and sticks.
-- China's "rise" may lead to war with the U.S.
-    - Preventing this requires integrating China into U.S.-created institutions.
-- Globalization is a force for peace, but it's a policy that creates winners and losers.
-    - How you compensate the losers will condition the future of globalization.
+WMDs have become easier and cheaper to produce, and more countries are producing them.
+
+- Solutions require altering the incentives of would-be proliferators, through both carrots and sticks.
+- Arguments that contend they're not a big deal rest on the peculiar case of the Cold War.
+
+There's real reason to be wary of nuclear proliferation.
+
+- It's also not evident we can effectively stop it.
