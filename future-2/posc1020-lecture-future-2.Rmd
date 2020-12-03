@@ -164,7 +164,7 @@ Indeed, commitment problems magnify the war-proneness of power transitions.
 
 ### Is There Cause for Optimism?
 
-Optmistic analysts see promise in China's globalization/leadership efforts.
+Optimistic analysts see promise in China's globalization/leadership efforts.
 
 - e.g. participation in WTO, Asian Infrastructure and Investment Bank
 
@@ -204,7 +204,7 @@ usa_computers %>%
             position = position_dodge(.9), family="Open Sans", size=3.1) +
   ylim(0, 100) +
   xlab("") + ylab("Percentage of Households with a Computer") +
-  labs(caption = "Data: Current Population Survey Estimates",
+  labs(caption = "Data: Current Population Survey Estimates. See ?usa_computers in {stevedata}.",
        title = "Almost Every Household Has a Computer These Days, Thanks to Globalization",
        subtitle = "Household computers used to be a luxury item before parts could be cheaply made/imported from Asia. In fact, the old Apple Macintosh from 1984 cost more than $6,000 in 2017 USD.")
 
@@ -264,7 +264,7 @@ ggplot() +
             size = 3) +
   xlab("Date") + ylab("Consumer Price Index for Urban Consumers") +
   labs(title = "''Let Them Watch TV''",
-       caption = "Data: Bureau of Labor Statistics. Base period = Jan. 1, 2000.",
+       caption = "Data: Bureau of Labor Statistics. Base period = Jan. 1, 2000. See ?LTWT in {stevedata}.",
        subtitle = "Liberalized trade has made consumer electronics (like TVs) fractions of their past prices. Yet, young adults face mounting costs for college, child-raising,\nand health care that government policy has failed to address.")
 
 ```
