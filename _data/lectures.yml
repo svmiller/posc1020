@@ -1,8 +1,8 @@
-- title: "Syllabus Day (i.e. Welcome)"
-  filename: welcome
-  dirname: welcome
-  tldr: "This lecture discusses the syllabus and outlines course expectations for the rest of the semester."
- 
+# - title: "Syllabus Day (i.e. Welcome)"
+#   filename: welcome
+#   dirname: welcome
+#   tldr: "This lecture discusses the syllabus and outlines course expectations for the rest of the semester."
+#  
 # - title: "What Shaped Our World? A Historical Introduction"
 #   filename: historical-intro
 #   dirname: historical-intro
