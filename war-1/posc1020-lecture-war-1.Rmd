@@ -36,8 +36,8 @@ knitr::opts_chunk$set(
 
 library(tidyverse)
 library(stevemisc)
-library(maddison)
-library(DiagrammeR)
+# library(maddison)
+# library(DiagrammeR)
 
 InterWars <- read_csv("~/Dropbox/data/cow/wars/Inter-StateWarData_v4.0.csv") 
 ExtraWars <- read_csv("~/Dropbox/data/cow/wars/Extra-StateWarData_v4.0.csv") 
@@ -359,7 +359,7 @@ Would A actually offer that, though?
 
 - In other words, are $x = p - k$ and $1 - x \ge 1 - p - k$ both true?
 
-Recall: we just demonstrated $x = p + k$. From that, we can say  $1 - x \ge 1 - p - k$ by definition.
+Recall: we just demonstrated $x = p - k$. From that, we can say  $1 - x \ge 1 - p - k$ by definition.
 
 - The costs of war ($k$) are positive values to subtract from the utility of fighting a war.
 
