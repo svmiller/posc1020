@@ -33,10 +33,10 @@
   dirname: alliance-bargaining
   tldr: "Alliances are institutions to coordinate security policies and influence bargaining between two sides."
 
-# - title: "Collective Security as Public Good"
-#   filename: collective-security
-#   dirname: collective-security
-#   tldr: "Collective security organizations (e.g. UN, African Union) ideally prevent/end war, but with varying degrees of success."
+- title: "Collective Security as Public Good"
+  filename: collective-security
+  dirname: collective-security
+  tldr: "Collective security organizations (e.g. UN, African Union) ideally prevent/end war, but with varying degrees of success."
 #  
 # - title: "Why Civil Wars Happen, and What We Can Do About Them"
 #   filename: civil-war
