@@ -41,7 +41,7 @@ library(stevemisc)
 library(scales)
 library(WDI)
 library(artyfarty)
-
+library(stevedata)
 # Arg <- read_csv("~/Dropbox/teaching/posc1020/monetary-relations-1/RBARBIS.csv")
 # Mex <- read_csv("~/Dropbox/teaching/posc1020/monetary-relations-1/EXMXUS.csv", na = c("."))
 # EU <- read_csv("~/Dropbox/teaching/posc1020/monetary-relations-1/EXUSEU.csv")
@@ -170,7 +170,7 @@ WDI(country=c("AR"), indicator = "SL.UEM.TOTL.ZS", start=1990, end=year(today())
             position=position_dodge(.9), size=3.5,
             family = "Open Sans") +
   geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
-  scale_x_continuous(breaks = seq(1980, 2018, by =2)) +
+  scale_x_continuous(breaks = seq(1980, 2020, by =2)) +
   xlab("") + ylab("Modeled Unemployment Rate") +
   labs(caption = "Data: International Labour Organization via World Bank API.",
        title = "Argentina's Unemployment Rate Surged to 20% During its 2001 Depression",
@@ -183,22 +183,41 @@ WDI(country=c("AR"), indicator = "SL.UEM.TOTL.ZS", start=1990, end=year(today())
 
 ```{r arg-inflation-1996-2013-imf, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
-fredr(series_id = "FPCPITOTLZGARG",
-                      observation_start = as.Date("1996-01-01"),
-             observation_end = as.Date("2013-01-01")) %>%
-  mutate(date = as.Date(date),
-         cpi = value/100,
-         lab = paste0(round(value, 1), "%")) %>% tbl_df() %>%
-  ggplot(.,aes(year(date), cpi)) + theme_steve_web() +
+# I'm like 100% positive these are via the IMF
+
+tibble(year = seq(1996, 2019),
+       cpi = c(.2, .5, .9, -1.2, -.9, -1.1, 25.9, 13.4, 4.4, 9.6, 10.9, 8.8, 8.6,
+               6.3, 10.8, 9.5, 10, 10.6, NA, NA, NA, 25.7, 34.3, 53.5),
+       lab = paste0(round(cpi, 1), "%")) %>%
+  na.omit %>%
+  ggplot(.,aes(as.factor(year), cpi)) + theme_steve_web() +
     geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
   geom_text(aes(label=lab), vjust=-.5, colour="black",
             position=position_dodge(.9), size=3.5,
             family = "Open Sans") +
-  scale_x_continuous(breaks = seq(1996, 2014, by =2)) +
+ # scale_x_continuous(breaks = seq(1996, 2014, by =2)) +
   xlab("") + ylab("Consumer Price Index (Annual %)") +
   labs(caption = "Data: IMF via Federal Reserve Bank of St. Louis API.",
        title = "Inflation Increased to Over 25% from the Previous Year After 2001",
        subtitle = "Country experts know inflation has historically been the country's most severe recurring problem.")
+  
+# 
+# fredr(series_id = "FPCPITOTLZGARG",
+#                       observation_start = as.Date("1996-01-01"),
+#              observation_end = as.Date("2013-01-01")) %>%
+#   mutate(date = as.Date(date),
+#          cpi = value/100,
+#          lab = paste0(round(value, 1), "%")) %>% tbl_df() %>%
+#   ggplot(.,aes(year(date), cpi)) + theme_steve_web() +
+#     geom_bar(stat="identity", fill = "#619CFF", color="black", alpha = 0.8) +
+#   geom_text(aes(label=lab), vjust=-.5, colour="black",
+#             position=position_dodge(.9), size=3.5,
+#             family = "Open Sans") +
+#   scale_x_continuous(breaks = seq(1996, 2014, by =2)) +
+#   xlab("") + ylab("Consumer Price Index (Annual %)") +
+#   labs(caption = "Data: IMF via Federal Reserve Bank of St. Louis API.",
+#        title = "Inflation Increased to Over 25% from the Previous Year After 2001",
+#        subtitle = "Country experts know inflation has historically been the country's most severe recurring problem.")
 
 
 
@@ -274,6 +293,11 @@ When we say Mexico's peso is depreciating, it means one U.S. dollar can buy more
 
 ```{r usa-mex-exchange-rate-1993-present-fed, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
 
+# Simple current pandemic recession hack
+bind_rows(peak = ymd("2020-02-01"),
+          trough = ymd("2021-03-01")) %>%
+  bind_rows(recessions, .) -> recessions
+
 fredr(series_id = "EXMXUS",
                       observation_start = as.Date("1993-01-01")) %>%
   ggplot(.,aes(date, value)) + 
@@ -293,6 +317,10 @@ fredr(series_id = "EXMXUS",
 ###
 
 ```{r usa-euro-exchange-rate-1999-present-fed, echo=F, eval=T, fig.width = 14, fig.height = 8.5, warning = F, message = F}
+# # Simple current pandemic recession hack
+# bind_rows(peak = ymd("2020-02-01"),
+#           trough = ymd("2021-03-01")) %>%
+#   bind_rows(recessions, .) -> recessions
 
 fredr(series_id = "EXUSEU",
                       observation_start = as.Date("1999-01-01")) %>%
