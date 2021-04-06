@@ -84,11 +84,11 @@
   dirname: development-2
   tldr: "Less-developed countries have various development policies (e.g. ISI, EOI, commodity cartels), with varying levels of success."
 
-# - title: "The International Politics of Human Rights"
-#   filename: human-rights-1
-#   dirname: human-rights-1
-#   tldr: "Human rights have generally improved over time even as a function of a post-WWII international interest in this issue."
-# 
+- title: "The International Politics of Human Rights"
+  filename: human-rights-1
+  dirname: human-rights-1
+  tldr: "Human rights have generally improved over time even as a function of a post-WWII international interest in this issue."
+
 # - title: "The Environment as Collective Action Problem"
 #   filename: environment-1
 #   dirname: environment-1
