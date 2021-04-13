@@ -94,11 +94,11 @@
   dirname: environment-1
   tldr: "The environment is a public good and a common, which helps explain why cooperating on it is so difficult."
 
-# - title: "The Future of International Politics: WMDs and Their Proliferation"
-#   filename: future-1
-#   dirname: future-1
-#   tldr: "What does the future of international politics hold? For one, WMDs are becoming easier to proliferate."
-#   
+- title: "The Future of International Politics: WMDs and Their Proliferation"
+  filename: future-1
+  dirname: future-1
+  tldr: "What does the future of international politics hold? For one, WMDs are becoming easier to proliferate."
+
 # - title: "The Future of International Politics: The Rise of China and Globalization"
 #   filename: future-2
 #   dirname: future-2
